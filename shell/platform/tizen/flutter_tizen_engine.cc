@@ -91,12 +91,13 @@ void FlutterTizenEngine::InitializeRenderer(int32_t x,
                                             int32_t height,
                                             bool transparent,
                                             bool focusable,
-                                            bool top_level) {
+                                            bool top_level,
+                                            void* parent) {
   TizenRenderer::Geometry geometry = {x, y, width, height};
 
 #ifdef TIZEN_RENDERER_EVAS_GL
   renderer_ = std::make_unique<TizenRendererEvasGL>(
-      geometry, transparent, focusable, top_level, *this);
+      geometry, transparent, focusable, top_level, parent, *this);
 
   render_loop_ = std::make_unique<TizenRenderEventLoop>(
       std::this_thread::get_id(),  // main thread

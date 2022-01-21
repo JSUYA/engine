@@ -40,6 +40,8 @@ typedef struct {
   bool focusable;
   // Whether the window should be on top layer or not.
   bool top_level;
+  // Parent object
+  void* parent;
 } FlutterDesktopWindowProperties;
 
 // Properties for configuring a Flutter engine instance.
@@ -96,6 +98,9 @@ FlutterDesktopEngineGetMessenger(FlutterDesktopEngineRef engine);
 // If the app runs on a wearable device, cast void* to Evas_Object*,
 // otherwise cast it to Ecore_Wl2_Window*.
 FLUTTER_EXPORT void* FlutterDesktopGetWindow(
+    FlutterDesktopPluginRegistrarRef registrar);
+
+FLUTTER_EXPORT void* FlutterDesktopGetImageHandle(
     FlutterDesktopPluginRegistrarRef registrar);
 
 // Posts an app control to the engine instance.

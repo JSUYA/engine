@@ -38,6 +38,7 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
   uintptr_t GetWindowId() override;
 
   void* GetWindowHandle() override { return ecore_wl2_window_; }
+  void* GetImageHandle() override { return nullptr; }
 
   void SetRotate(int angle) override;
   void SetGeometry(int32_t x,

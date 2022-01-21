@@ -59,7 +59,8 @@ FlutterDesktopEngineRef FlutterDesktopRunEngine(
     engine->InitializeRenderer(
         window_properties.x, window_properties.y, window_properties.width,
         window_properties.height, window_properties.transparent,
-        window_properties.focusable, window_properties.top_level);
+        window_properties.focusable, window_properties.top_level,
+        window_properties.parent);
   }
   if (!engine->RunEngine(engine_properties.entrypoint)) {
     FT_LOG(Error) << "Failed to start the Flutter engine.";
@@ -79,6 +80,10 @@ void FlutterDesktopShutdownEngine(FlutterDesktopEngineRef engine_ref) {
 
 void* FlutterDesktopGetWindow(FlutterDesktopPluginRegistrarRef registrar) {
   return registrar->engine->renderer()->GetWindowHandle();
+}
+
+void* FlutterDesktopGetImageHandle(FlutterDesktopPluginRegistrarRef registrar) {
+  return registrar->engine->renderer()->GetImageHandle();
 }
 
 void FlutterDesktopPluginRegistrarEnableInputBlocking(

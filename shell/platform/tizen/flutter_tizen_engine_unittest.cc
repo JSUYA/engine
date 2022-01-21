@@ -44,7 +44,7 @@ class FlutterTizenEngineTestHeaded : public FlutterTizenEngineTest {
  protected:
   void SetUp() {
     FlutterTizenEngineTest::SetUp();
-    engine_->InitializeRenderer(0, 0, 800, 600, false, true, false);
+    engine_->InitializeRenderer(0, 0, 800, 600, false, true, false, nullptr);
   }
 };
 

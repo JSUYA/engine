@@ -20,6 +20,7 @@ class TizenRendererEvasGL : public TizenRenderer {
                                bool transparent,
                                bool focusable,
                                bool top_level,
+                               void* parent,
                                Delegate& delegate);
   virtual ~TizenRendererEvasGL();
 
@@ -35,7 +36,8 @@ class TizenRendererEvasGL : public TizenRenderer {
   int32_t GetDpi() override;
   uintptr_t GetWindowId() override;
 
-  void* GetWindowHandle() override { return evas_window_; }
+  void* GetWindowHandle() override { return parent_window_; }
+  void* GetImageHandle() override { return graphics_adapter_; }
 
   void SetRotate(int angle) override;
   void SetGeometry(int32_t x,
@@ -51,20 +53,18 @@ class TizenRendererEvasGL : public TizenRenderer {
 
   bool IsSupportedExtension(const char* name) override;
 
-  Evas_Object* GetImageHandle() { return graphics_adapter_; }
-
  private:
   void Show();
 
-  bool SetupEvasWindow();
-  bool SetupEvasGL();
+  bool SetupEvasWindow(void* parent);
+  bool SetupEvasGL(void* parent);
   void DestroyEvasWindow();
   void DestroyEvasGL();
 
   static void RotationEventCb(void* data, Evas_Object* obj, void* event_info);
   void SendRotationChangeDone();
 
-  Evas_Object* evas_window_ = nullptr;
+  Evas_Object* parent_window_ = nullptr;
   Evas_Object* graphics_adapter_ = nullptr;
 
   Evas_GL* evas_gl_ = nullptr;
