@@ -26,9 +26,6 @@ class FlutterApp {
     window_prop.height = window_height_;
     window_prop.transparent = false;
     window_prop.focusable = true;
-    // Pass to parent object
-    window_prop.parent = parent_;
-    printf(" what is ? %p\n", parent_);
 
     std::string assets_path = app_path_ + "/res/flutter_assets";
     std::string icu_data_path = app_path_ + "/res/icudtl.dat";
@@ -112,7 +109,6 @@ class FlutterApp {
   std::string app_path_ = {};
   int32_t window_width_ = 0;
   int32_t window_height_ = 0;
-  void* parent_ = nullptr;
 
   FlutterDesktopEngineRef engine_ = nullptr;
 };

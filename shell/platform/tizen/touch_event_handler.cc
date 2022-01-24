@@ -5,7 +5,6 @@
 #include "touch_event_handler.h"
 
 #include "flutter/shell/platform/tizen/flutter_tizen_engine.h"
-#include "logger.h"
 
 static const int kScrollDirectionVertical = 0;
 static const int kScrollDirectionHorizontal = 1;
@@ -40,7 +39,9 @@ void TouchEventHandler::SendFlutterPointerEvent(FlutterPointerPhase phase,
                                                 size_t timestamp,
                                                 int device_id = 0) {
   // Correct errors caused by window rotation.
+#ifdef TIZEN_RENDERER_EVAS_GL
   auto windowGeometry = engine_->renderer()->GetWindowGeometry();
+#endif
   auto screenGeometry = engine_->renderer()->GetScreenGeometry();
   double width = screenGeometry.w;
   double height = screenGeometry.h;
@@ -60,8 +61,13 @@ void TouchEventHandler::SendFlutterPointerEvent(FlutterPointerPhase phase,
   FlutterPointerEvent event = {};
   event.struct_size = sizeof(event);
   event.phase = phase;
+#ifdef TIZEN_RENDERER_EVAS_GL
   event.x = new_x - windowGeometry.x;
   event.y = new_y - windowGeometry.y;
+#else
+  event.x = new_x;
+  event.y = new_y;
+#endif
   if (scroll_delta_x != 0 || scroll_delta_y != 0) {
     event.signal_kind = kFlutterPointerSignalKindScroll;
   }

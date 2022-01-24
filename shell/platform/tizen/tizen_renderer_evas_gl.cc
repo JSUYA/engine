@@ -558,19 +558,14 @@ void* TizenRendererEvasGL::OnProcResolver(const char* name) {
 
 TizenRenderer::Geometry TizenRendererEvasGL::GetWindowGeometry() {
   Geometry result;
+  // NOTE: Strictly speaking, it's not a WindowGeometry.
   evas_object_geometry_get(graphics_adapter_, &result.x, &result.y, &result.w,
                            &result.h);
-  FT_LOG(Error) << "CJS Touch Geometry  " << result.x << " " << result.y << " "
-                << result.w << " " << result.h;
   return result;
 }
 
 TizenRenderer::Geometry TizenRendererEvasGL::GetScreenGeometry() {
   Geometry result = {};
-  /*  auto* ecore_evas =
-        ecore_evas_ecore_evas_get(evas_object_evas_get(graphics_adapter_));
-    ecore_evas_screen_geometry_get(ecore_evas, nullptr, nullptr, &result.w,
-                                   &result.h);*/
   evas_object_geometry_get(parent_window_, &result.x, &result.y, &result.w,
                            &result.h);
   return result;
@@ -590,7 +585,6 @@ uintptr_t TizenRendererEvasGL::GetWindowId() {
 }
 
 void TizenRendererEvasGL::Show() {
-  // evas_object_show(graphics_adapter_);
   evas_object_show(graphics_adapter_);
 }
 
@@ -643,8 +637,6 @@ bool TizenRendererEvasGL::SetupEvasGL(void* parent_elm_window) {
 bool TizenRendererEvasGL::SetupEvasWindow(void* parent_elm_window) {
   elm_config_accel_preference_set("hw:opengl");
 
-  FT_LOG(Error) << "CJS Create Evas window / parent_elm_window "
-                << parent_elm_window;
   parent_window_ = (Evas_Object*)parent_elm_window;
 
   auto* ecore_evas = ecore_evas_ecore_evas_get(
@@ -657,7 +649,6 @@ bool TizenRendererEvasGL::SetupEvasWindow(void* parent_elm_window) {
     return false;
   }
 
-  FT_LOG(Error) << "CJS screen size: " << width << " x " << height;
   if (initial_geometry_.w == 0) {
     initial_geometry_.w = width;
   }
@@ -683,7 +674,6 @@ bool TizenRendererEvasGL::SetupEvasWindow(void* parent_elm_window) {
 }
 
 void TizenRendererEvasGL::DestroyEvasWindow() {
-  // evas_object_del(evas_win#dow_);
   evas_object_del(graphics_adapter_);
 }
 
