@@ -19,9 +19,7 @@ class TizenRenderer {
   class Delegate {
    public:
     virtual void OnOrientationChange(int32_t degree) = 0;
-    virtual void OnGeometryChange(int32_t x,
-                                  int32_t y,
-                                  int32_t width,
+    virtual void OnGeometryChange(int32_t x, int32_t y, int32_t width,
                                   int32_t height) = 0;
   };
 
@@ -48,25 +46,19 @@ class TizenRenderer {
   virtual void* GetImageHandle() = 0;
 
   virtual void SetRotate(int angle) = 0;
-  virtual void SetGeometry(int32_t x,
-                           int32_t y,
-                           int32_t width,
+  virtual void SetGeometry(int32_t x, int32_t y, int32_t width,
                            int32_t height) = 0;
-  virtual void ResizeWithRotation(int32_t x,
-                                  int32_t y,
-                                  int32_t width,
-                                  int32_t height,
-                                  int32_t degree) = 0;
+  virtual void ResizeWithRotation(int32_t x, int32_t y, int32_t width,
+                                  int32_t height, int32_t degree) = 0;
   virtual void SetPreferredOrientations(const std::vector<int>& rotations) = 0;
 
   virtual bool IsSupportedExtension(const char* name) = 0;
 
+  virtual void FirstFrame() = 0;
+
  protected:
-  explicit TizenRenderer(Geometry geometry,
-                         bool transparent,
-                         bool focusable,
-                         bool top_level,
-                         Delegate& delegate);
+  explicit TizenRenderer(Geometry geometry, bool transparent, bool focusable,
+                         bool top_level, Delegate& delegate);
 
   Geometry initial_geometry_;
   bool transparent_;

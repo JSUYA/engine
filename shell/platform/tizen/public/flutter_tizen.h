@@ -42,6 +42,8 @@ typedef struct {
   bool top_level;
   // Parent object
   void* parent;
+  // Parent object
+  const char* splash_img;
 } FlutterDesktopWindowProperties;
 
 // Properties for configuring a Flutter engine instance.

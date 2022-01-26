@@ -20,6 +20,7 @@ FlutterTizenTextureRegistrar::FlutterTizenTextureRegistrar(
 
 int64_t FlutterTizenTextureRegistrar::RegisterTexture(
     const FlutterDesktopTextureInfo* texture_info) {
+  FT_LOG(Error) << "CJS RegisterTexture";
   if (texture_info->type != kFlutterDesktopPixelBufferTexture &&
       texture_info->type != kFlutterDesktopGpuBufferTexture) {
     FT_LOG(Error) << "Attempted to register texture of unsupport type.";
@@ -69,9 +70,7 @@ bool FlutterTizenTextureRegistrar::MarkTextureFrameAvailable(
 }
 
 bool FlutterTizenTextureRegistrar::PopulateTexture(
-    int64_t texture_id,
-    size_t width,
-    size_t height,
+    int64_t texture_id, size_t width, size_t height,
     FlutterOpenGLTexture* opengl_texture) {
   ExternalTexture* texture;
   {
@@ -88,6 +87,7 @@ bool FlutterTizenTextureRegistrar::PopulateTexture(
 std::unique_ptr<ExternalTexture>
 FlutterTizenTextureRegistrar::CreateExternalTexture(
     const FlutterDesktopTextureInfo* texture_info) {
+  FT_LOG(Error) << "CJS Create";
   switch (texture_info->type) {
     case kFlutterDesktopPixelBufferTexture:
       return std::make_unique<ExternalTexturePixelGL>(
@@ -97,6 +97,7 @@ FlutterTizenTextureRegistrar::CreateExternalTexture(
     case kFlutterDesktopGpuBufferTexture:
       ExternalTextureExtensionType gl_extension =
           ExternalTextureExtensionType::kNone;
+
       if (engine_->renderer()->IsSupportedExtension(
               "EGL_TIZEN_image_native_surface")) {
         gl_extension = ExternalTextureExtensionType::kNativeSurface;

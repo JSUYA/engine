@@ -20,7 +20,7 @@
 #include "binary_messenger_impl.h"
 #include "include/flutter/engine_method_result.h"
 #include "texture_registrar_impl.h"
-
+#include "flutter/shell/platform/tizen/logger.h"
 namespace flutter {
 
 // ========== binary_messenger_impl.h ==========
@@ -157,6 +157,7 @@ TextureRegistrarImpl::TextureRegistrarImpl(
 TextureRegistrarImpl::~TextureRegistrarImpl() = default;
 
 int64_t TextureRegistrarImpl::RegisterTexture(TextureVariant* texture) {
+  FT_LOG(Error) << "CJS Software RegisterTexture";
   if (auto pixel_buffer_texture = std::get_if<PixelBufferTexture>(texture)) {
     FlutterDesktopTextureInfo info = {};
     info.type = kFlutterDesktopPixelBufferTexture;

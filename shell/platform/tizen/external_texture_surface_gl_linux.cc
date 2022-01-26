@@ -21,20 +21,14 @@ ExternalTextureSurfaceGL::ExternalTextureSurfaceGL(
       destruction_callback_(destruction_callback),
       user_data_(user_data) {}
 
-ExternalTextureSurfaceGL::~ExternalTextureSurfaceGL() {
-  FT_UNIMPLEMENTED();
-}
+ExternalTextureSurfaceGL::~ExternalTextureSurfaceGL() { FT_UNIMPLEMENTED(); }
 
 bool ExternalTextureSurfaceGL::PopulateTexture(
-    size_t width,
-    size_t height,
-    FlutterOpenGLTexture* opengl_texture) {
+    size_t width, size_t height, FlutterOpenGLTexture* opengl_texture) {
   FT_UNIMPLEMENTED();
   return false;
 }
 
-void ExternalTextureSurfaceGL::OnDestruction() {
-  FT_UNIMPLEMENTED();
-}
+void ExternalTextureSurfaceGL::OnDestruction() { FT_UNIMPLEMENTED(); }
 
 }  // namespace flutter

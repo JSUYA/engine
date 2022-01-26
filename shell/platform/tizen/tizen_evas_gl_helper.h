@@ -82,8 +82,7 @@ glFunction(); // All calls 'look' normal
  */
 #define EVAS_GL_GLES3_USE_OR_RETURN(evasgl, context, retval)               \
   Evas_GL_API* __evas_gl_glapi = evas_gl_context_api_get(evasgl, context); \
-  if (!__evas_gl_glapi)                                                    \
-    return retval;
+  if (!__evas_gl_glapi) return retval;
 
 // End of the convenience functions
 

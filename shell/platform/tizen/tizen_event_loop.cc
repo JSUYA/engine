@@ -7,6 +7,7 @@
 
 #include <utility>
 
+#include "flutter/shell/platform/tizen/logger.h"
 #ifdef TIZEN_RENDERER_EVAS_GL
 #include "flutter/shell/platform/tizen/tizen_renderer_evas_gl.h"
 #endif
@@ -95,8 +96,7 @@ void TizenEventLoop::PostTask(FlutterTask flutter_task,
 }
 
 TizenPlatformEventLoop::TizenPlatformEventLoop(
-    std::thread::id main_thread_id,
-    CurrentTimeProc get_current_time,
+    std::thread::id main_thread_id, CurrentTimeProc get_current_time,
     TaskExpiredCallback on_task_expired)
     : TizenEventLoop(main_thread_id, get_current_time, on_task_expired) {}
 
@@ -127,6 +127,7 @@ TizenRenderEventLoop::TizenRenderEventLoop(std::thread::id main_thread_id,
             self->on_task_expired_(&task.task);
           }
           self->expired_tasks_.clear();
+          static_cast<TizenRendererEvasGL*>(self->renderer_)->FirstFrame();
         }
         self->has_pending_renderer_callback_ = false;
       },

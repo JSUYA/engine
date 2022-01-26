@@ -29,8 +29,7 @@ class ExternalTextureSurfaceGL : public ExternalTexture {
   // texture object.
   //
   // Returns true on success, false on failure.
-  bool PopulateTexture(size_t width,
-                       size_t height,
+  bool PopulateTexture(size_t width, size_t height,
                        FlutterOpenGLTexture* opengl_texture) override;
   void OnDestruction() override;
 

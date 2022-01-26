@@ -6,11 +6,8 @@
 
 namespace flutter {
 
-TizenRenderer::TizenRenderer(Geometry geometry,
-                             bool transparent,
-                             bool focusable,
-                             bool top_level,
-                             Delegate& delegate)
+TizenRenderer::TizenRenderer(Geometry geometry, bool transparent,
+                             bool focusable, bool top_level, Delegate& delegate)
     : initial_geometry_(geometry),
       transparent_(transparent),
       focusable_(focusable),

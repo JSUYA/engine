@@ -7,6 +7,7 @@
 
 #include <Ecore.h>
 #include <tdm_client.h>
+
 #include <mutex>
 
 #include "flutter/shell/platform/embedder/embedder.h"
@@ -24,12 +25,9 @@ class TdmClient {
   bool IsValid();
   void WaitVblank(intptr_t baton);
   void OnEngineStop();
-  static void VblankCallback(tdm_client_vblank* vblank,
-                             tdm_error error,
-                             unsigned int sequence,
-                             unsigned int tv_sec,
-                             unsigned int tv_usec,
-                             void* user_data);
+  static void VblankCallback(tdm_client_vblank* vblank, tdm_error error,
+                             unsigned int sequence, unsigned int tv_sec,
+                             unsigned int tv_usec, void* user_data);
 
  private:
   std::mutex engine_mutex_;

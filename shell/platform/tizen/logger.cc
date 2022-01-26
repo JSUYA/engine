@@ -193,9 +193,7 @@ void Logger::Print(int level, const std::string& message) {
 #endif  // __X64_SHELL__
 }
 
-LogMessage::LogMessage(int level,
-                       const char* file,
-                       const char* function,
+LogMessage::LogMessage(int level, const char* file, const char* function,
                        int line)
     : level_(level), file_(file), function_(function), line_(line) {
   stream_ << file_ << ": " << function_ << "(" << line_ << ") > ";

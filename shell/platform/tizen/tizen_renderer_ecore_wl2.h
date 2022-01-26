@@ -18,10 +18,8 @@ namespace flutter {
 
 class TizenRendererEcoreWl2 : public TizenRenderer {
  public:
-  explicit TizenRendererEcoreWl2(Geometry geometry,
-                                 bool transparent,
-                                 bool focusable,
-                                 bool top_level,
+  explicit TizenRendererEcoreWl2(Geometry geometry, bool transparent,
+                                 bool focusable, bool top_level,
                                  Delegate& delegate);
   virtual ~TizenRendererEcoreWl2();
 
@@ -41,18 +39,15 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
   void* GetImageHandle() override { return nullptr; }
 
   void SetRotate(int angle) override;
-  void SetGeometry(int32_t x,
-                   int32_t y,
-                   int32_t width,
+  void SetGeometry(int32_t x, int32_t y, int32_t width,
                    int32_t height) override;
-  void ResizeWithRotation(int32_t x,
-                          int32_t y,
-                          int32_t width,
-                          int32_t height,
+  void ResizeWithRotation(int32_t x, int32_t y, int32_t width, int32_t height,
                           int32_t angle) override;
   void SetPreferredOrientations(const std::vector<int>& rotations) override;
 
   bool IsSupportedExtension(const char* name) override;
+
+  void FirstFrame() override{};
 
  private:
   void Show();

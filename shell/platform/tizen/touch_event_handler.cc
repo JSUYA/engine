@@ -31,13 +31,9 @@ TouchEventHandler::~TouchEventHandler() {
   touch_event_handlers_.clear();
 }
 
-void TouchEventHandler::SendFlutterPointerEvent(FlutterPointerPhase phase,
-                                                double x,
-                                                double y,
-                                                double scroll_delta_x,
-                                                double scroll_delta_y,
-                                                size_t timestamp,
-                                                int device_id = 0) {
+void TouchEventHandler::SendFlutterPointerEvent(
+    FlutterPointerPhase phase, double x, double y, double scroll_delta_x,
+    double scroll_delta_y, size_t timestamp, int device_id = 0) {
   // Correct errors caused by window rotation.
 #ifdef TIZEN_RENDERER_EVAS_GL
   auto windowGeometry = engine_->renderer()->GetWindowGeometry();

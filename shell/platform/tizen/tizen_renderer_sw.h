@@ -14,12 +14,11 @@
 
 namespace flutter {
 
-class TizenRendererEvasGL : public TizenRenderer {
+class TizenRendererSW : public TizenRenderer {
  public:
-  explicit TizenRendererEvasGL(Geometry geometry, bool transparent,
-                               bool focusable, bool top_level, void* parent,
-                               const char* splash_img, Delegate& delegate);
-  virtual ~TizenRendererEvasGL();
+  explicit TizenRendererSW(Geometry geometry, bool transparent, bool focusable,
+                           bool top_level, void* parent, Delegate& delegate);
+  virtual ~TizenRendererSW();
 
   bool OnMakeCurrent() override;
   bool OnClearCurrent() override;
@@ -33,8 +32,8 @@ class TizenRendererEvasGL : public TizenRenderer {
   int32_t GetDpi() override;
   uintptr_t GetWindowId() override;
 
-  void* GetWindowHandle() override { return parent_window_; }
-  void* GetImageHandle() override { return graphics_adapter_; }
+  void* GetWindowHandle() override { return nullptr; }
+  void* GetImageHandle() override { return nullptr; }
 
   void SetRotate(int angle) override;
   void SetGeometry(int32_t x, int32_t y, int32_t width,
@@ -44,31 +43,9 @@ class TizenRendererEvasGL : public TizenRenderer {
   void SetPreferredOrientations(const std::vector<int>& rotations) override;
 
   bool IsSupportedExtension(const char* name) override;
-
-  void FirstFrame() override;
+  void FirstFrame() override{};
 
  private:
-  void Show();
-
-  bool SetupEvasWindow(void* parent, const char* splash_img);
-  bool SetupEvasGL(void* parent);
-  void DestroyEvasWindow();
-  void DestroyEvasGL();
-
-  static void RotationEventCb(void* data, Evas_Object* obj, void* event_info);
-  void SendRotationChangeDone();
-
-  Evas_Object* parent_window_ = nullptr;
-  Evas_Object* graphics_adapter_ = nullptr;
-
-  Evas_GL* evas_gl_ = nullptr;
-  Evas_GL_Config* gl_config_ = nullptr;
-  Evas_GL_Context* gl_context_ = nullptr;
-  Evas_GL_Context* gl_resource_context_ = nullptr;
-  Evas_GL_Surface* gl_surface_ = nullptr;
-  Evas_GL_Surface* gl_resource_surface_ = nullptr;
-
-  bool first = true;
 };
 
 }  // namespace flutter

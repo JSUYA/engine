@@ -15,17 +15,16 @@ EVAS_GL_GLOBAL_GLES3_DECLARE();
 #include <GLES2/gl2ext.h>
 #include <GLES3/gl32.h>
 #endif
+#include "flutter/shell/platform/tizen/logger.h"
 
 namespace flutter {
 
 bool ExternalTexturePixelGL::PopulateTexture(
-    size_t width,
-    size_t height,
-    FlutterOpenGLTexture* opengl_texture) {
+    size_t width, size_t height, FlutterOpenGLTexture* opengl_texture) {
   if (!CopyPixelBuffer(width, height)) {
     return false;
   }
-
+  FT_LOG(Error) << "CJS pixel GL";
   // Populate the texture object used by the engine.
   opengl_texture->target = GL_TEXTURE_2D;
   opengl_texture->name = state_->gl_texture;
@@ -38,11 +37,12 @@ bool ExternalTexturePixelGL::PopulateTexture(
 }
 
 ExternalTexturePixelGL::ExternalTexturePixelGL(
-    FlutterDesktopPixelBufferTextureCallback texture_callback,
-    void* user_data)
+    FlutterDesktopPixelBufferTextureCallback texture_callback, void* user_data)
     : ExternalTexture(),
       texture_callback_(texture_callback),
-      user_data_(user_data) {}
+      user_data_(user_data) {
+  FT_LOG(Error) << "CJS pixel GL";
+}
 
 bool ExternalTexturePixelGL::CopyPixelBuffer(size_t& width, size_t& height) {
   if (!texture_callback_) {

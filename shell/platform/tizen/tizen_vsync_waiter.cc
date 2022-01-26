@@ -110,9 +110,7 @@ TdmClient::TdmClient(FlutterTizenEngine* engine) {
   engine_ = engine;
 }
 
-TdmClient::~TdmClient() {
-  DestroyTdm();
-}
+TdmClient::~TdmClient() { DestroyTdm(); }
 
 void TdmClient::OnEngineStop() {
   std::lock_guard<std::mutex> lock(engine_mutex_);
@@ -165,16 +163,11 @@ void TdmClient::DestroyTdm() {
   }
 }
 
-bool TdmClient::IsValid() {
-  return vblank_ && client_;
-}
+bool TdmClient::IsValid() { return vblank_ && client_; }
 
-void TdmClient::VblankCallback(tdm_client_vblank* vblank,
-                               tdm_error error,
-                               unsigned int sequence,
-                               unsigned int tv_sec,
-                               unsigned int tv_usec,
-                               void* user_data) {
+void TdmClient::VblankCallback(tdm_client_vblank* vblank, tdm_error error,
+                               unsigned int sequence, unsigned int tv_sec,
+                               unsigned int tv_usec, void* user_data) {
   TdmClient* client = reinterpret_cast<TdmClient*>(user_data);
   FT_ASSERT(client != nullptr);
   std::lock_guard<std::mutex> lock(client->engine_mutex_);

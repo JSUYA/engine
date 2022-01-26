@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "external_texture_surface_gl.h"
-
 #include <tbm_surface.h>
+
+#include "external_texture_surface_gl.h"
 
 #ifdef TIZEN_RENDERER_EVAS_GL
 #undef EFL_BETA_API_SUPPORT
@@ -16,7 +16,6 @@ EVAS_GL_GLOBAL_GLES3_DECLARE();
 #include <EGL/eglext.h>
 #include <GLES2/gl2ext.h>
 #include <GLES3/gl32.h>
-
 #include <tbm_bufmgr.h>
 #include <tbm_surface_internal.h>
 #ifndef EGL_DMA_BUF_PLANE3_FD_EXT
@@ -62,12 +61,12 @@ ExternalTextureSurfaceGL::~ExternalTextureSurfaceGL() {
 }
 
 bool ExternalTextureSurfaceGL::PopulateTexture(
-    size_t width,
-    size_t height,
-    FlutterOpenGLTexture* opengl_texture) {
+    size_t width, size_t height, FlutterOpenGLTexture* opengl_texture) {
   if (!texture_callback_) {
     return false;
   }
+  FT_LOG(Error) << "CJS gpu_buffer is texture ID: " << texture_id_;
+
   const FlutterDesktopGpuBuffer* gpu_buffer =
       texture_callback_(width, height, user_data_);
   if (!gpu_buffer) {
@@ -79,6 +78,7 @@ bool ExternalTextureSurfaceGL::PopulateTexture(
     FT_LOG(Info) << "tbm_surface is null for texture ID: " << texture_id_;
     return false;
   }
+  FT_LOG(Error) << "CJS gpu_buffer is texture ID: " << texture_id_;
   const tbm_surface_h tbm_surface =
       reinterpret_cast<tbm_surface_h>(const_cast<void*>(gpu_buffer->buffer));
 

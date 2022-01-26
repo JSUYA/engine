@@ -40,9 +40,7 @@ class FlutterTizenTextureRegistrar {
   // contents of the texture identified by |texture_id|.
   //
   // Returns true on success.
-  bool PopulateTexture(int64_t texture_id,
-                       size_t width,
-                       size_t height,
+  bool PopulateTexture(int64_t texture_id, size_t width, size_t height,
                        FlutterOpenGLTexture* texture);
 
   std::unique_ptr<ExternalTexture> CreateExternalTexture(

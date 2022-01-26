@@ -16,14 +16,13 @@ EVAS_GL_GLOBAL_GLES3_DEFINE();
 
 namespace flutter {
 
-TizenRendererEvasGL::TizenRendererEvasGL(Geometry geometry,
-                                         bool transparent,
-                                         bool focusable,
-                                         bool top_level,
+TizenRendererEvasGL::TizenRendererEvasGL(Geometry geometry, bool transparent,
+                                         bool focusable, bool top_level,
                                          void* parent_elm_window,
+                                         const char* splash_img,
                                          Delegate& delegate)
     : TizenRenderer(geometry, transparent, focusable, top_level, delegate) {
-  if (!SetupEvasWindow(parent_elm_window)) {
+  if (!SetupEvasWindow(parent_elm_window, splash_img)) {
     FT_LOG(Error) << "Could not set up Evas window.";
     return;
   }
@@ -31,13 +30,26 @@ TizenRendererEvasGL::TizenRendererEvasGL(Geometry geometry,
     FT_LOG(Error) << "Could not set up Evas GL.";
     return;
   }
+
+  if (splash_img) {
+    FT_LOG(Error) << "CJS img: " << splash_img;
+    evas_object_image_file_set(graphics_adapter_, splash_img, NULL);
+  } else {
+    FT_LOG(Error) << "CJS no path ";
+    char buf[255];
+    sprintf(
+        buf,
+        "/opt/usr/globalapps/com.example.elm_test/shared/res/ic_launcher.png");
+    evas_object_image_file_set(graphics_adapter_, buf, NULL);
+  }
+
   Show();
 
   is_valid_ = true;
 
   // Clear once to remove noise.
   OnMakeCurrent();
-  glClearColor(0, 0, 0, 0);
+  glClearColor(125, 0, 0, 125);
   glClear(GL_COLOR_BUFFER_BIT);
   OnPresent();
 }
@@ -584,9 +596,7 @@ uintptr_t TizenRendererEvasGL::GetWindowId() {
       ecore_evas_ecore_evas_get(evas_object_evas_get(graphics_adapter_)));
 }
 
-void TizenRendererEvasGL::Show() {
-  evas_object_show(graphics_adapter_);
-}
+void TizenRendererEvasGL::Show() { evas_object_show(graphics_adapter_); }
 
 bool TizenRendererEvasGL::SetupEvasGL(void* parent_elm_window) {
   evas_gl_ = evas_gl_new(evas_object_evas_get((Evas_Object*)parent_elm_window));
@@ -634,7 +644,8 @@ bool TizenRendererEvasGL::SetupEvasGL(void* parent_elm_window) {
   return true;
 }
 
-bool TizenRendererEvasGL::SetupEvasWindow(void* parent_elm_window) {
+bool TizenRendererEvasGL::SetupEvasWindow(void* parent_elm_window,
+                                          const char* splash_img) {
   elm_config_accel_preference_set("hw:opengl");
 
   parent_window_ = (Evas_Object*)parent_elm_window;
@@ -688,8 +699,7 @@ void TizenRendererEvasGL::DestroyEvasGL() {
   evas_gl_free(evas_gl_);
 }
 
-void TizenRendererEvasGL::RotationEventCb(void* data,
-                                          Evas_Object* obj,
+void TizenRendererEvasGL::RotationEventCb(void* data, Evas_Object* obj,
                                           void* event_info) {
   auto* self = reinterpret_cast<TizenRendererEvasGL*>(data);
   FT_UNIMPLEMENTED();
@@ -701,9 +711,7 @@ void TizenRendererEvasGL::SetRotate(int angle) {
   received_rotation_ = true;
 }
 
-void TizenRendererEvasGL::SetGeometry(int32_t x,
-                                      int32_t y,
-                                      int32_t width,
+void TizenRendererEvasGL::SetGeometry(int32_t x, int32_t y, int32_t width,
                                       int32_t height) {
   evas_object_move(graphics_adapter_, x, y);
   evas_object_resize(graphics_adapter_, width, height);
@@ -724,10 +732,8 @@ void TizenRendererEvasGL::SetGeometry(int32_t x,
   evas_object_image_native_surface_set(graphics_adapter_, &native_surface);
 }
 
-void TizenRendererEvasGL::ResizeWithRotation(int32_t x,
-                                             int32_t y,
-                                             int32_t width,
-                                             int32_t height,
+void TizenRendererEvasGL::ResizeWithRotation(int32_t x, int32_t y,
+                                             int32_t width, int32_t height,
                                              int32_t angle) {
   evas_object_move(graphics_adapter_, x, y);
   evas_object_resize(graphics_adapter_, width, height);
@@ -747,6 +753,18 @@ void TizenRendererEvasGL::SetPreferredOrientations(
 
 bool TizenRendererEvasGL::IsSupportedExtension(const char* name) {
   return strcmp(name, "EGL_TIZEN_image_native_surface") == 0;
+}
+
+void TizenRendererEvasGL::FirstFrame() {
+  if (!first) {
+    FT_LOG(Error) << "CJS FirstFrame ";
+    Evas_Native_Surface native_surface;
+    evas_gl_native_surface_get(evas_gl_, gl_surface_, &native_surface);
+    evas_object_image_native_surface_set(graphics_adapter_, &native_surface);
+  } else {
+    FT_LOG(Error) << "CJS skip first frame ";
+    first = false;
+  }
 }
 
 }  // namespace flutter

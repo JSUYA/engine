@@ -81,23 +81,18 @@ FlutterTizenEngine::FlutterTizenEngine(const FlutterProjectBundle& project)
   transformation_ = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
 }
 
-FlutterTizenEngine::~FlutterTizenEngine() {
-  renderer_ = nullptr;
-}
+FlutterTizenEngine::~FlutterTizenEngine() { renderer_ = nullptr; }
 
-void FlutterTizenEngine::InitializeRenderer(int32_t x,
-                                            int32_t y,
-                                            int32_t width,
-                                            int32_t height,
-                                            bool transparent,
-                                            bool focusable,
-                                            bool top_level,
-                                            void* parent) {
+void FlutterTizenEngine::InitializeRenderer(int32_t x, int32_t y, int32_t width,
+                                            int32_t height, bool transparent,
+                                            bool focusable, bool top_level,
+                                            void* parent,
+                                            const char* splash_img) {
   TizenRenderer::Geometry geometry = {x, y, width, height};
 
 #ifdef TIZEN_RENDERER_EVAS_GL
   renderer_ = std::make_unique<TizenRendererEvasGL>(
-      geometry, transparent, focusable, top_level, parent, *this);
+      geometry, transparent, focusable, top_level, parent, splash_img, *this);
 
   render_loop_ = std::make_unique<TizenRenderEventLoop>(
       std::this_thread::get_id(),  // main thread
@@ -303,11 +298,8 @@ void FlutterTizenEngine::SetPluginRegistrarDestructionCallback(
 }
 
 bool FlutterTizenEngine::SendPlatformMessage(
-    const char* channel,
-    const uint8_t* message,
-    const size_t message_size,
-    const FlutterDesktopBinaryReply reply,
-    void* user_data) {
+    const char* channel, const uint8_t* message, const size_t message_size,
+    const FlutterDesktopBinaryReply reply, void* user_data) {
   FlutterPlatformMessageResponseHandle* response_handle = nullptr;
   if (reply != nullptr) {
     FlutterEngineResult result =
@@ -337,8 +329,7 @@ bool FlutterTizenEngine::SendPlatformMessage(
 }
 
 void FlutterTizenEngine::SendPlatformMessageResponse(
-    const FlutterDesktopMessageResponseHandle* handle,
-    const uint8_t* data,
+    const FlutterDesktopMessageResponseHandle* handle, const uint8_t* data,
     size_t data_length) {
   embedder_api_.SendPlatformMessageResponse(engine_, handle, data, data_length);
 }
@@ -347,11 +338,8 @@ void FlutterTizenEngine::SendPointerEvent(const FlutterPointerEvent& event) {
   embedder_api_.SendPointerEvent(engine_, &event, 1);
 }
 
-void FlutterTizenEngine::SendWindowMetrics(int32_t x,
-                                           int32_t y,
-                                           int32_t width,
-                                           int32_t height,
-                                           double pixel_ratio) {
+void FlutterTizenEngine::SendWindowMetrics(int32_t x, int32_t y, int32_t width,
+                                           int32_t height, double pixel_ratio) {
   FlutterWindowMetricsEvent event = {};
   event.struct_size = sizeof(FlutterWindowMetricsEvent);
   event.left = static_cast<size_t>(x);
@@ -416,9 +404,7 @@ void FlutterTizenEngine::OnOrientationChange(int32_t degree) {
   SetWindowOrientation(degree);
 }
 
-void FlutterTizenEngine::OnGeometryChange(int32_t x,
-                                          int32_t y,
-                                          int32_t width,
+void FlutterTizenEngine::OnGeometryChange(int32_t x, int32_t y, int32_t width,
                                           int32_t height) {
 #ifdef TIZEN_RENDERER_EVAS_GL
   FT_UNIMPLEMENTED();
@@ -526,6 +512,7 @@ FlutterRendererConfig FlutterTizenEngine::GetRendererConfig() {
       return reinterpret_cast<FlutterTizenEngine*>(user_data)
           ->renderer_->OnProcResolver(name);
     };
+    FT_LOG(Error) << "CJS gl_external_texture_frame_callback";
     config.open_gl.gl_external_texture_frame_callback =
         [](void* user_data, int64_t texture_id, size_t width, size_t height,
            FlutterOpenGLTexture* texture) -> bool {
@@ -537,11 +524,19 @@ FlutterRendererConfig FlutterTizenEngine::GetRendererConfig() {
                                                           height, texture);
     };
   } else {
+    FT_LOG(Error) << "CJS Software Rendering";
     config.type = kSoftware;
     config.software.struct_size = sizeof(config.software);
     config.software.surface_present_callback =
         [](void* user_data, const void* allocation, size_t row_bytes,
-           size_t height) -> bool { return true; };
+           size_t height) -> bool {
+      auto host = static_cast<FlutterTizenEngine*>(user_data);
+      auto renderer = host->renderer();
+      FT_LOG(Error) << "CJS surface_present_callback renderer : " << renderer
+                    << " row_bytes : " << row_bytes
+                    << " width : " << row_bytes / 4 << " height : " << height;
+      return true;
+    };
   }
   return config;
 }

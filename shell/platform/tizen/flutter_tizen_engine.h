@@ -63,14 +63,9 @@ class FlutterTizenEngine : public TizenRenderer::Delegate {
   FlutterTizenEngine& operator=(FlutterTizenEngine const&) = delete;
 
   // Sets up an instance of TizenRenderer.
-  void InitializeRenderer(int32_t x,
-                          int32_t y,
-                          int32_t width,
-                          int32_t height,
-                          bool transparent,
-                          bool focusable,
-                          bool top_level,
-                          void* parent);
+  void InitializeRenderer(int32_t x, int32_t y, int32_t width, int32_t height,
+                          bool transparent, bool focusable, bool top_level,
+                          void* parent, const char* splash_img);
 
   // Starts running the engine with the given entrypoint. If null, defaults to
   // main().
@@ -121,16 +116,14 @@ class FlutterTizenEngine : public TizenRenderer::Delegate {
 
   // Sends the given message to the engine, calling |reply| with |user_data|
   // when a reponse is received from the engine if they are non-null.
-  bool SendPlatformMessage(const char* channel,
-                           const uint8_t* message,
+  bool SendPlatformMessage(const char* channel, const uint8_t* message,
                            const size_t message_size,
                            const FlutterDesktopBinaryReply reply,
                            void* user_data);
 
   // Sends the given data as the response to an earlier platform message.
   void SendPlatformMessageResponse(
-      const FlutterDesktopMessageResponseHandle* handle,
-      const uint8_t* data,
+      const FlutterDesktopMessageResponseHandle* handle, const uint8_t* data,
       size_t data_length);
 
   // Informs the engine of an incoming pointer event.
@@ -138,20 +131,14 @@ class FlutterTizenEngine : public TizenRenderer::Delegate {
 
   // Sends a window metrics update to the Flutter engine using current window
   // dimensions in physical
-  void SendWindowMetrics(int32_t x,
-                         int32_t y,
-                         int32_t width,
-                         int32_t height,
+  void SendWindowMetrics(int32_t x, int32_t y, int32_t width, int32_t height,
                          double pixel_ratio);
 
   void SetWindowOrientation(int32_t degree);
   void OnOrientationChange(int32_t degree) override;
-  void OnGeometryChange(int32_t x,
-                        int32_t y,
-                        int32_t width,
+  void OnGeometryChange(int32_t x, int32_t y, int32_t width,
                         int32_t height) override;
-  void OnVsync(intptr_t baton,
-               uint64_t frame_start_time_nanos,
+  void OnVsync(intptr_t baton, uint64_t frame_start_time_nanos,
                uint64_t frame_target_time_nanos);
 
   // Passes locale information to the Flutter engine.

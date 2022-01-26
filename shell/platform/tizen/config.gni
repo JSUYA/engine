@@ -1,8 +1,8 @@
-# Copyright 2020 Samsung Electronics Co., Ltd. All rights reserved.
-# Use of this source code is governed by a BSD-style license that can be
-# found in the LICENSE file.
+#Copyright 2020 Samsung Electronics Co., Ltd.All rights reserved.
+#Use of this source code is governed by a BSD - style license that can be
+#found in the LICENSE file.
 
 declare_args() {
-  # Whether to build the Tizen shell.
+#Whether to build the Tizen shell.
   build_tizen_shell = false
 }

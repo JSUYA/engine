@@ -12,10 +12,8 @@
 namespace flutter {
 
 TizenRendererEcoreWl2::TizenRendererEcoreWl2(Geometry geometry,
-                                             bool transparent,
-                                             bool focusable,
-                                             bool top_level,
-                                             Delegate& delegate)
+                                             bool transparent, bool focusable,
+                                             bool top_level, Delegate& delegate)
     : TizenRenderer(geometry, transparent, focusable, top_level, delegate) {
   if (!SetupEcoreWl2()) {
     FT_LOG(Error) << "Could not set up Ecore Wl2.";
@@ -247,9 +245,7 @@ uintptr_t TizenRendererEcoreWl2::GetWindowId() {
   return ecore_wl2_window_id_get(ecore_wl2_window_);
 }
 
-void TizenRendererEcoreWl2::Show() {
-  ecore_wl2_window_show(ecore_wl2_window_);
-}
+void TizenRendererEcoreWl2::Show() { ecore_wl2_window_show(ecore_wl2_window_); }
 
 bool TizenRendererEcoreWl2::SetupEcoreWl2() {
   if (!ecore_wl2_init()) {
@@ -531,8 +527,7 @@ void TizenRendererEcoreWl2::DestroyEGL() {
   }
 }
 
-Eina_Bool TizenRendererEcoreWl2::RotationEventCb(void* data,
-                                                 int type,
+Eina_Bool TizenRendererEcoreWl2::RotationEventCb(void* data, int type,
                                                  void* event) {
   auto* self = reinterpret_cast<TizenRendererEcoreWl2*>(data);
   auto* rotation_event =
@@ -546,18 +541,14 @@ void TizenRendererEcoreWl2::SetRotate(int angle) {
   received_rotation_ = true;
 }
 
-void TizenRendererEcoreWl2::SetGeometry(int32_t x,
-                                        int32_t y,
-                                        int32_t width,
+void TizenRendererEcoreWl2::SetGeometry(int32_t x, int32_t y, int32_t width,
                                         int32_t height) {
   ecore_wl2_window_geometry_set(ecore_wl2_window_, x, y, width, height);
   ecore_wl2_window_position_set(ecore_wl2_window_, x, y);
 }
 
-void TizenRendererEcoreWl2::ResizeWithRotation(int32_t x,
-                                               int32_t y,
-                                               int32_t width,
-                                               int32_t height,
+void TizenRendererEcoreWl2::ResizeWithRotation(int32_t x, int32_t y,
+                                               int32_t width, int32_t height,
                                                int32_t angle) {
   ecore_wl2_egl_window_resize_with_rotation(ecore_wl2_egl_window_, x, y, width,
                                             height, angle);
