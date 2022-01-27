@@ -31,6 +31,14 @@ TizenRendererEvasGL::TizenRendererEvasGL(Geometry geometry,
     FT_LOG(Error) << "Could not set up Evas GL.";
     return;
   }
+  
+  char buf[255];
+  sprintf(
+      buf,
+      "/opt/usr/globalapps/com.example.elm_test/shared/res/ic_launcher.png");
+  FT_LOG(Error) << "CJS Set Splash Image : " << buf;
+  evas_object_image_file_set(graphics_adapter_, buf, NULL);
+ 
   Show();
 
   is_valid_ = true;
@@ -95,6 +103,7 @@ bool TizenRendererEvasGL::OnPresent() {
 }
 
 uint32_t TizenRendererEvasGL::OnGetFBO() {
+  this->CloseSplashImage();
   if (!IsValid()) {
     return 999;
   }
@@ -747,6 +756,17 @@ void TizenRendererEvasGL::SetPreferredOrientations(
 
 bool TizenRendererEvasGL::IsSupportedExtension(const char* name) {
   return strcmp(name, "EGL_TIZEN_image_native_surface") == 0;
+}
+
+void TizenRendererEvasGL::CloseSplashImage() {
+  if (splash_frame) {
+    
+      FT_LOG(Error) << "CJS FirstFrame ";
+      Evas_Native_Surface native_surface;
+      evas_gl_native_surface_get(evas_gl_, gl_surface_, &native_surface);
+      evas_object_image_native_surface_set(graphics_adapter_, &native_surface);
+      splash_frame = false;
+  }
 }
 
 }  // namespace flutter

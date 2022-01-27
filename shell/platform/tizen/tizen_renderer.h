@@ -61,6 +61,8 @@ class TizenRenderer {
 
   virtual bool IsSupportedExtension(const char* name) = 0;
 
+  virtual void CloseSplashImage() = 0;
+
  protected:
   explicit TizenRenderer(Geometry geometry,
                          bool transparent,

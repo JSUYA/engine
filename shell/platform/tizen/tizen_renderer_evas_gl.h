@@ -53,6 +53,8 @@ class TizenRendererEvasGL : public TizenRenderer {
 
   bool IsSupportedExtension(const char* name) override;
 
+  void CloseSplashImage() override;
+
  private:
   void Show();
 
@@ -73,6 +75,9 @@ class TizenRendererEvasGL : public TizenRenderer {
   Evas_GL_Context* gl_resource_context_ = nullptr;
   Evas_GL_Surface* gl_surface_ = nullptr;
   Evas_GL_Surface* gl_resource_surface_ = nullptr;
+
+  
+  bool splash_frame = true;
 };
 
 }  // namespace flutter

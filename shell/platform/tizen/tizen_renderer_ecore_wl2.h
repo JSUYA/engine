@@ -54,6 +54,8 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
 
   bool IsSupportedExtension(const char* name) override;
 
+  void CloseSplashImage() override{};
+
  private:
   void Show();
 
