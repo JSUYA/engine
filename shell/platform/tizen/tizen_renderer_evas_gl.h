@@ -36,6 +36,7 @@ class TizenRendererEvasGL : public TizenRenderer {
   uintptr_t GetWindowId() override;
 
   void* GetWindowHandle() override { return evas_window_; }
+  const char* GetImageUrl() override { return nullptr; }
 
   Evas_Object* GetImageHandle() { return graphics_adapter_; }
 

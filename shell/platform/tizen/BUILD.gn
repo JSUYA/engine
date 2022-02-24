@@ -15,13 +15,17 @@ config("embedder_rpath") {
 
 source_set("flutter_engine") {
   visibility = [ ":*" ]
-
+  
+  
+  
   libs = [ "flutter_engine" ]
 
   lib_dirs = [ root_out_dir ]
 
   public_configs = [ ":embedder_rpath" ]
-
+  
+  
+  
   deps = [ "//flutter/shell/platform/embedder:flutter_engine" ]
 }
 
@@ -46,7 +50,10 @@ config("rootstrap_include_dirs") {
     "$local_prefix/include",
     "$local_prefix/include/appfw",
     "$local_prefix/include/base",
+    "$local_prefix/include/dali2-adaptor",
+    "$local_prefix/include/dali2-core",
     "$local_prefix/include/dlog",
+    "$local_prefix/include/dali2-toolkit",
     "$local_prefix/include/ecore-1",
     "$local_prefix/include/ecore-imf-1",
     "$local_prefix/include/ecore-input-1",
@@ -207,8 +214,10 @@ template("embedder") {
         "tizen_renderer_ecore_wl2.cc",
         "tizen_vsync_waiter.cc",
       ]
-
       libs += [
+        "dali2-toolkit",
+        "dali2-adaptor",
+        "dali2-core",
         "ecore_wl2",
         "tizen-extension-client",
       ]

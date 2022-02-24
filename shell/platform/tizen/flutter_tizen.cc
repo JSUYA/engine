@@ -81,6 +81,11 @@ void* FlutterDesktopGetWindow(FlutterDesktopPluginRegistrarRef registrar) {
   return registrar->engine->renderer()->GetWindowHandle();
 }
 
+const char* FlutterDesktopFlutterImageUrl(FlutterDesktopPluginRegistrarRef registrar)
+{
+  return registrar->engine->renderer()->GetImageUrl();
+}
+
 void FlutterDesktopPluginRegistrarEnableInputBlocking(
     FlutterDesktopPluginRegistrarRef registrar,
     const char* channel) {

@@ -318,6 +318,7 @@ bool FlutterTizenEngine::SendPlatformMessage(
     }
   }
 
+
   FlutterPlatformMessage platform_message = {
       sizeof(FlutterPlatformMessage),
       channel,

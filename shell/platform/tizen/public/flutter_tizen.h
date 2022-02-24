@@ -98,6 +98,9 @@ FlutterDesktopEngineGetMessenger(FlutterDesktopEngineRef engine);
 FLUTTER_EXPORT void* FlutterDesktopGetWindow(
     FlutterDesktopPluginRegistrarRef registrar);
 
+FLUTTER_EXPORT const char* FlutterDesktopFlutterImageUrl(
+    FlutterDesktopPluginRegistrarRef registrar);
+
 // Posts an app control to the engine instance.
 FLUTTER_EXPORT void FlutterDesktopNotifyAppControl(
     FlutterDesktopEngineRef engine,

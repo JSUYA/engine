@@ -10,8 +10,15 @@
 #include <Ecore_Wl2.h>
 #include <tizen-extension-client-protocol.h>
 
+
 #include <string>
 
+#include <dali-toolkit/dali-toolkit.h>
+
+#include <dali/public-api/adaptor-framework/native-image-source.h>
+#include <dali/devel-api/adaptor-framework/native-image-source-queue.h>
+#include <tbm_surface.h>
+#include <tbm_surface_queue.h>
 #include "flutter/shell/platform/tizen/tizen_renderer.h"
 
 namespace flutter {
@@ -37,7 +44,8 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
   int32_t GetDpi() override;
   uintptr_t GetWindowId() override;
 
-  void* GetWindowHandle() override { return ecore_wl2_window_; }
+  void* GetWindowHandle() override { return nullptr;}//ecore_wl2_window_; }
+  const char* GetImageUrl() override { return mImageUrl; }
 
   void SetRotate(int angle) override;
   void SetGeometry(int32_t x,
@@ -73,8 +81,8 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
   void SetTizenPolicyNotificationLevel(int level);
 
   Ecore_Wl2_Display* ecore_wl2_display_ = nullptr;
-  Ecore_Wl2_Window* ecore_wl2_window_ = nullptr;
-  Ecore_Wl2_Egl_Window* ecore_wl2_egl_window_ = nullptr;
+  //Ecore_Wl2_Window* ecore_wl2_window_ = nullptr;
+//  Ecore_Wl2_Egl_Window* ecore_wl2_egl_window_ = nullptr;
 
   EGLConfig egl_config_ = nullptr;
   EGLDisplay egl_display_ = EGL_NO_DISPLAY;
@@ -84,8 +92,12 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
   EGLSurface egl_resource_surface_ = EGL_NO_SURFACE;
 
   std::string egl_extension_str_;
+  
+  Dali::NativeImageSourceQueuePtr mNativeImageQueue = nullptr;
 
-  tizen_policy* tizen_policy_ = nullptr;
+  Dali::Texture mNativeTexture;
+  tbm_surface_queue_h mTbmQueue = nullptr;
+  const char* mImageUrl = nullptr;
 };
 
 }  // namespace flutter

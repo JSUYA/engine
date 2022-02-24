@@ -45,6 +45,7 @@ class TizenRenderer {
   virtual int32_t GetDpi() = 0;
   virtual uintptr_t GetWindowId() = 0;
   virtual void* GetWindowHandle() = 0;
+  virtual const char* GetImageUrl() = 0;
 
   virtual void SetRotate(int angle) = 0;
   virtual void SetGeometry(int32_t x,
