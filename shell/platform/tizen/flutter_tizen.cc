@@ -81,6 +81,19 @@ void* FlutterDesktopGetWindow(FlutterDesktopPluginRegistrarRef registrar) {
   return registrar->engine->renderer()->GetWindowHandle();
 }
 
+void FlutterDesktopSetBuffer(FlutterDesktopPluginRegistrarRef registrar, void* buffer) {
+  registrar->engine->renderer()->SetBuffer(buffer);
+}
+
+void FlutterDesktopSetUpdateCallback(FlutterDesktopPluginRegistrarRef registrar, void* updateCallback) {
+  
+  registrar->engine->renderer()->SetUpdateCallback(updateCallback);
+}
+
+FLUTTER_EXPORT void* FlutterDesktopGetBuffer(FlutterDesktopPluginRegistrarRef registrar) {
+  return registrar->engine->renderer()->GetBuffer();
+}
+
 void FlutterDesktopPluginRegistrarEnableInputBlocking(
     FlutterDesktopPluginRegistrarRef registrar,
     const char* channel) {

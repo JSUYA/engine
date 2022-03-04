@@ -1,0 +1,113 @@
+From 1a0ed0684e4d3c820042b0cd32d99eb3208620fa Mon Sep 17 00:00:00 2001
+From: JunsuChoi <jsuya.choi@samsung.com>
+Date: Wed, 16 Feb 2022 10:00:00 +0900
+Subject: [PATCH] test dali&nui
+
+---
+ .../tizen/tizen_renderer_ecore_wl2.cc         | 26 +++++++++++++------
+ .../platform/tizen/tizen_renderer_ecore_wl2.h |  8 +++++-
+ 2 files changed, 25 insertions(+), 9 deletions(-)
+
+diff --git a/shell/platform/tizen/tizen_renderer_ecore_wl2.cc b/shell/platform/tizen/tizen_renderer_ecore_wl2.cc
+index 671cee94b5..558d9a3fec 100644
+--- a/shell/platform/tizen/tizen_renderer_ecore_wl2.cc
++++ b/shell/platform/tizen/tizen_renderer_ecore_wl2.cc
+@@ -9,6 +9,13 @@
+ 
+ #include "flutter/shell/platform/tizen/logger.h"
+ 
++#include <tbm_surface.h>
++#include <tbm_surface_queue.h>
++
++
++
++
++
+ namespace flutter {
+ 
+ TizenRendererEcoreWl2::TizenRendererEcoreWl2(Geometry geometry,
+@@ -324,12 +331,13 @@ bool TizenRendererEcoreWl2::SetupEcoreWl2() {
+ }
+ 
+ bool TizenRendererEcoreWl2::SetupEGL() {
++/*
+   ecore_wl2_egl_window_ = ecore_wl2_egl_window_create(
+       ecore_wl2_window_, initial_geometry_.w, initial_geometry_.h);
+   if (!ecore_wl2_egl_window_) {
+     FT_LOG(Error) << "Could not create an EGL window.";
+     return false;
+-  }
++  }*/
+ 
+   if (!ChooseEGLConfiguration()) {
+     FT_LOG(Error) << "Could not choose an EGL configuration.";
+@@ -361,10 +369,11 @@ bool TizenRendererEcoreWl2::SetupEGL() {
+   {
+     const EGLint attribs[] = {EGL_NONE};
+ 
+-    auto* egl_window = static_cast<EGLNativeWindowType*>(
+-        ecore_wl2_egl_window_native_get(ecore_wl2_egl_window_));
+-    egl_surface_ =
+-        eglCreateWindowSurface(egl_display_, egl_config_, egl_window, attribs);
++//    int nativeimagequeue = 123;
++    tbm_surface_queue_h mTbmQueue = nullptr;// Dali::AnyCast<tbm_surface_queue_h>(nativeimagequeue);
++
++    auto egl_window = reinterpret_cast<EGLNativeWindowType*>(mTbmQueue );
++    egl_surface_ = eglCreateWindowSurface(egl_display_, egl_config_, egl_window, attribs);
+     if (egl_surface_ == EGL_NO_SURFACE) {
+       FT_LOG(Error) << "Could not create an onscreen window surface.";
+       return false;
+@@ -524,11 +533,11 @@ void TizenRendererEcoreWl2::DestroyEGL() {
+     eglTerminate(egl_display_);
+     egl_display_ = EGL_NO_DISPLAY;
+   }
+-
++/*
+   if (ecore_wl2_egl_window_) {
+     ecore_wl2_egl_window_destroy(ecore_wl2_egl_window_);
+     ecore_wl2_egl_window_ = nullptr;
+-  }
++  }*/
+ }
+ 
+ Eina_Bool TizenRendererEcoreWl2::RotationEventCb(void* data,
+@@ -559,8 +568,9 @@ void TizenRendererEcoreWl2::ResizeWithRotation(int32_t x,
+                                                int32_t width,
+                                                int32_t height,
+                                                int32_t angle) {
++                                                 /*
+   ecore_wl2_egl_window_resize_with_rotation(ecore_wl2_egl_window_, x, y, width,
+-                                            height, angle);
++                                            height, angle);*/
+ }
+ 
+ void TizenRendererEcoreWl2::SendRotationChangeDone() {
+diff --git a/shell/platform/tizen/tizen_renderer_ecore_wl2.h b/shell/platform/tizen/tizen_renderer_ecore_wl2.h
+index 468249802e..fccb27464e 100644
+--- a/shell/platform/tizen/tizen_renderer_ecore_wl2.h
++++ b/shell/platform/tizen/tizen_renderer_ecore_wl2.h
+@@ -13,6 +13,12 @@
+ #include <string>
+ 
+ #include "flutter/shell/platform/tizen/tizen_renderer.h"
++#include <dali/dali.h>
++#include <dali/public-api/object/any.h>
++#include <dali/devel-api/adaptor-framework/native-image-source-queue.h>
++
++
++
+ 
+ namespace flutter {
+ 
+@@ -74,7 +80,7 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
+ 
+   Ecore_Wl2_Display* ecore_wl2_display_ = nullptr;
+   Ecore_Wl2_Window* ecore_wl2_window_ = nullptr;
+-  Ecore_Wl2_Egl_Window* ecore_wl2_egl_window_ = nullptr;
++  //Ecore_Wl2_Egl_Window* ecore_wl2_egl_window_ = nullptr;
+ 
+   EGLConfig egl_config_ = nullptr;
+   EGLDisplay egl_display_ = EGL_NO_DISPLAY;
+-- 
+2.17.1
+

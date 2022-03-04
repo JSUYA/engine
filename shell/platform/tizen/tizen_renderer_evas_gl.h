@@ -36,6 +36,12 @@ class TizenRendererEvasGL : public TizenRenderer {
   uintptr_t GetWindowId() override;
 
   void* GetWindowHandle() override { return evas_window_; }
+  void SetBuffer(void* buffer) override;
+  
+  void* GetBuffer() override { return mBuffer; }
+  void SetUpdateCallback(void* updateCallback) override { }
+
+  bool PresentSoftwareBitmap(const void* allocation, size_t row_bytes, size_t height) override;
 
   Evas_Object* GetImageHandle() { return graphics_adapter_; }
 
@@ -75,6 +81,11 @@ class TizenRendererEvasGL : public TizenRenderer {
   Evas_GL_Context* gl_resource_context_ = nullptr;
   Evas_GL_Surface* gl_surface_ = nullptr;
   Evas_GL_Surface* gl_resource_surface_ = nullptr;
+
+
+
+  void* mBuffer = nullptr;
+  const void* mAlloc = nullptr;
 };
 
 }  // namespace flutter

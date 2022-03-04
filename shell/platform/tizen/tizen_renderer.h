@@ -45,6 +45,11 @@ class TizenRenderer {
   virtual int32_t GetDpi() = 0;
   virtual uintptr_t GetWindowId() = 0;
   virtual void* GetWindowHandle() = 0;
+  virtual void SetBuffer(void *buffer) = 0;
+  virtual void* GetBuffer() = 0;
+  virtual void SetUpdateCallback(void* updateCallback) = 0;
+  virtual bool PresentSoftwareBitmap(const void* allocation, size_t row_bytes, size_t height) = 0;
+  
 
   virtual void SetRotate(int angle) = 0;
   virtual void SetGeometry(int32_t x,

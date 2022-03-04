@@ -6,13 +6,25 @@
 #define EMBEDDER_TIZEN_RENDERER_ECORE_WL2_H_
 
 #define EFL_BETA_API_SUPPORT
+
+
+
 #include <EGL/egl.h>
 #include <Ecore_Wl2.h>
 #include <tizen-extension-client-protocol.h>
 
-#include <string>
+
+#include "dali/public-api/object/any.h"
+
+#include "dali-toolkit/dali-toolkit.h"
+#include "dali/devel-api/adaptor-framework/native-image-source-queue.h"
+#include "tbm_surface.h"
+#include "tbm_surface_queue.h"
 
 #include "flutter/shell/platform/tizen/tizen_renderer.h"
+
+#include <string>
+
 
 namespace flutter {
 
@@ -38,6 +50,16 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
   uintptr_t GetWindowId() override;
 
   void* GetWindowHandle() override { return ecore_wl2_window_; }
+
+  void SetBuffer(void* buffer) override;
+  
+  void* GetBuffer() override { return mBuffer; }
+
+  void SetUpdateCallback(void* updateCallback) override {
+    mUpdateCallback = (void (*)(int, int, int, int))updateCallback;
+  }
+
+  bool PresentSoftwareBitmap(const void* allocation, size_t row_bytes, size_t height) override;
 
   void SetRotate(int angle) override;
   void SetGeometry(int32_t x,
@@ -86,6 +108,18 @@ class TizenRendererEcoreWl2 : public TizenRenderer {
   std::string egl_extension_str_;
 
   tizen_policy* tizen_policy_ = nullptr;
+
+
+
+  Dali::NativeImageSourceQueuePtr mNativeImageQueue = nullptr;
+  //tbm_surface_queue_h mTbmQueue = nullptr;
+  Dali::Texture mNativeTexture;
+
+
+  void* mBuffer = nullptr;
+  const void* mAlloc = nullptr;
+
+  void (*mUpdateCallback)(int, int, int, int);
 };
 
 }  // namespace flutter

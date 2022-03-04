@@ -21,6 +21,7 @@ source_set("flutter_engine") {
   lib_dirs = [ root_out_dir ]
 
   public_configs = [ ":embedder_rpath" ]
+  public_configs += [ "//build/config/compiler:rtti" ]
 
   deps = [ "//flutter/shell/platform/embedder:flutter_engine" ]
 }
@@ -52,6 +53,10 @@ config("rootstrap_include_dirs") {
     "$local_prefix/include/ecore-input-1",
     "$local_prefix/include/ecore-wayland-1",
     "$local_prefix/include/ecore-wl2-1",
+    "$local_prefix/include/dali",
+    "$local_prefix/include/dali-toolkit",
+    "$local_prefix/include/dali-adaptor",
+
     "$local_prefix/include/efl-1",
     "$local_prefix/include/efl-extension",
     "$local_prefix/include/eina-1",
@@ -144,6 +149,7 @@ template("embedder") {
 
     defines += invoker.defines
     defines += [ "FLUTTER_ENGINE_NO_PROTOTYPES" ]
+    
 
     configs +=
         [ "//flutter/shell/platform/common:desktop_library_implementation" ]
@@ -209,6 +215,9 @@ template("embedder") {
       ]
 
       libs += [
+        "dali2-core",
+        "dali2-adaptor",
+        "dali2-toolkit",
         "ecore_wl2",
         "tizen-extension-client",
       ]

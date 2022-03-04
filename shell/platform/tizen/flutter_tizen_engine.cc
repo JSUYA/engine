@@ -493,7 +493,7 @@ FlutterDesktopMessage FlutterTizenEngine::ConvertToDesktopMessage(
 
 FlutterRendererConfig FlutterTizenEngine::GetRendererConfig() {
   FlutterRendererConfig config = {};
-  if (IsHeaded()) {
+  if (false) {
     config.type = kOpenGL;
     config.open_gl.struct_size = sizeof(config.open_gl);
     config.open_gl.make_current = [](void* user_data) -> bool {
@@ -540,7 +540,12 @@ FlutterRendererConfig FlutterTizenEngine::GetRendererConfig() {
     config.software.struct_size = sizeof(config.software);
     config.software.surface_present_callback =
         [](void* user_data, const void* allocation, size_t row_bytes,
-           size_t height) -> bool { return true; };
+           size_t height) -> bool { 
+             FT_LOG(Error) << "CJS present callback ";
+            //reinterpret_cast<FlutterTizenEngine*>(user_data)->renderer_->SetBuffer((void*)allocation);
+            return reinterpret_cast<FlutterTizenEngine*>(user_data)->renderer_->PresentSoftwareBitmap(allocation, row_bytes, height);
+
+        };
   }
   return config;
 }

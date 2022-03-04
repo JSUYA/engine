@@ -2,11 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+
+
 #include "tizen_renderer_ecore_wl2.h"
 
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#include <dali/devel-api/common/stage.h>
 
+#include "dali-toolkit/public-api/image-loader/image-url.h"
 #include "flutter/shell/platform/tizen/logger.h"
 
 namespace flutter {
@@ -324,6 +328,61 @@ bool TizenRendererEcoreWl2::SetupEcoreWl2() {
 }
 
 bool TizenRendererEcoreWl2::SetupEGL() {
+
+    tbm_surface_queue_h mTbmQueue = nullptr;
+    mTbmQueue = tbm_surface_queue_create(3 , 500, 500, TBM_FORMAT_ARGB8888, 0);
+    mNativeImageQueue = Dali::NativeImageSourceQueue::New(mTbmQueue);
+    mNativeTexture = Dali::Texture::New(*mNativeImageQueue);
+    Dali::Toolkit::ImageUrl imageUrl = Dali::Toolkit::ImageUrl::New(mNativeTexture);
+    //std::string url = imageUrl.GetUrl();
+    std::string url = std::string(imageUrl.GetUrltoChar());
+    FT_LOG(Error) << "CJS URL : " << url;
+    
+    #if _GLIBCXX_USE_CXX11_ABI == 1
+        //FT_LOG(Error) << "CJS _GLIBCXX_USE_CXX11_ABI == 1";
+        //std::string url = imageUrl.GetUrl();
+        //FT_LOG(Error) << "CJS URL : " << url;
+    #else
+        //FT_LOG(Error) << "CJS _GLIBCXX_USE_CXX11_ABI == 0";
+        //std::string url = imageUrl.GetUrl();
+        //FT_LOG(Error) << "CJS URL : " << url;
+    #endif
+
+    //std::string url = imageUrl.GetUrl();
+    //FT_LOG(Error) << "CJS URL : " << url;
+
+
+
+FT_LOG(Error) << "CJS Call NativeImageSourceQueue New";
+mNativeImageQueue = Dali::NativeImageSourceQueue::New(500,500, Dali::NativeImageSourceQueue::ColorFormat::RGBA8888);
+
+FT_LOG(Error) << "CJS Call tbm";
+//tbm_surface_queue_h mTbmQueue = nullptr;
+
+
+Dali::Any any = mNativeImageQueue->GetNativeImageSourceQueue();
+if (any.GetType() == typeid(tbm_surface_queue_h))
+{
+  FT_LOG(Error) << "CJS Call Same Type";
+} else {
+  
+  
+  std::string name = any.GetType().name();
+  std::string hash = std::to_string(any.GetType().hash_code());
+
+  std::string name2 = typeid(tbm_surface_queue_h).name();
+  std::string hash2 = std::to_string(typeid(tbm_surface_queue_h).hash_code());
+  if (name == name2)
+    FT_LOG(Error) << "CJS Name is same ";
+  else
+    FT_LOG(Error) << "CJS Name is not same ";
+
+  FT_LOG(Error) << "CJS Call diff Type " + name + " " + hash + " / " + name2 + " " + hash2;
+}
+//mTbmQueue = Dali::AnyCast<tbm_surface_queue_h>(mNativeImageQueue->GetNativeImageSourceQueue());
+
+
+
   ecore_wl2_egl_window_ = ecore_wl2_egl_window_create(
       ecore_wl2_window_, initial_geometry_.w, initial_geometry_.h);
   if (!ecore_wl2_egl_window_) {
@@ -539,6 +598,38 @@ Eina_Bool TizenRendererEcoreWl2::RotationEventCb(void* data,
       reinterpret_cast<Ecore_Wl2_Event_Window_Rotation*>(event);
   self->delegate_.OnOrientationChange(rotation_event->angle);
   return ECORE_CALLBACK_PASS_ON;
+}
+
+void TizenRendererEcoreWl2::SetBuffer(void* buffer) { 
+  //FT_LOG(Error) << "CJS Called SetBuffer";
+    if (mAlloc)
+    {
+      FT_LOG(Error) << "CJS memcpy";
+      memcpy(buffer, mAlloc, sizeof(uint32_t)*500*500);
+      
+      mBuffer = (void*)mAlloc;
+      mAlloc = nullptr;
+    }
+    //mBuffer = buffer; 
+}
+
+bool TizenRendererEcoreWl2::PresentSoftwareBitmap(const void* allocation, size_t row_bytes, size_t height) {
+  /*if(!mBuffer) {
+    FT_LOG(Error) << "CJS No Buffer";
+    return false;
+  }*/
+  
+  FT_LOG(Error) << "CJS Set allocation " << row_bytes << " "  << height << "  " << allocation;
+  mAlloc = allocation;
+
+  mUpdateCallback(0 ,0, row_bytes / 4, height);
+
+  //    int (*renderFrameCB)() = (int (*)())nuiRenderFrameCB;
+
+  //memcpy(mBuffer, allocation, sizeof(size_t)*(row_bytes / 4)*height);
+  //allocation = mBuffer;
+  //SetBuffer((void*)allocation);
+  return true;
 }
 
 void TizenRendererEcoreWl2::SetRotate(int angle) {

@@ -98,6 +98,17 @@ FlutterDesktopEngineGetMessenger(FlutterDesktopEngineRef engine);
 FLUTTER_EXPORT void* FlutterDesktopGetWindow(
     FlutterDesktopPluginRegistrarRef registrar);
 
+FLUTTER_EXPORT void FlutterDesktopSetBuffer(
+    FlutterDesktopPluginRegistrarRef registrar,
+    void* buffer);
+
+FLUTTER_EXPORT void FlutterDesktopSetUpdateCallback(
+    FlutterDesktopPluginRegistrarRef registrar,
+    void* callback);
+
+FLUTTER_EXPORT void* FlutterDesktopGetBuffer(
+    FlutterDesktopPluginRegistrarRef registrar);
+
 // Posts an app control to the engine instance.
 FLUTTER_EXPORT void FlutterDesktopNotifyAppControl(
     FlutterDesktopEngineRef engine,

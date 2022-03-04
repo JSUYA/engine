@@ -733,6 +733,31 @@ void TizenRendererEvasGL::RotationEventCb(void* data,
   self->delegate_.OnOrientationChange(0);
 }
 
+
+void TizenRendererEvasGL::SetBuffer(void* buffer) { 
+  FT_LOG(Error) << "CJS Called SetBuffer";
+    if (mAlloc)
+    {
+      FT_LOG(Error) << "CJS memcpy";
+      memcpy(buffer, mAlloc, sizeof(uint32_t)*500*500);
+      mBuffer = (void*)mAlloc;
+    }
+    //mBuffer = buffer; 
+}
+
+bool TizenRendererEvasGL::PresentSoftwareBitmap(const void* allocation, size_t row_bytes, size_t height) {
+  /*if(!mBuffer) {
+    FT_LOG(Error) << "CJS No Buffer";
+    return false;
+  }*/
+  FT_LOG(Error) << "CJS Set allocation " << row_bytes << " "  << height;
+  mAlloc = allocation;
+  //memcpy(mBuffer, allocation, sizeof(size_t)*(row_bytes / 4)*height);
+  //allocation = mBuffer;
+  //SetBuffer((void*)allocation);
+  return true;
+}
+
 void TizenRendererEvasGL::SetRotate(int angle) {
   elm_win_rotation_set(evas_window_, angle);
   received_rotation_ = true;

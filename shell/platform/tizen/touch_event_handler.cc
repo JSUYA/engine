@@ -5,6 +5,7 @@
 #include "touch_event_handler.h"
 
 #include "flutter/shell/platform/tizen/flutter_tizen_engine.h"
+#include "flutter/shell/platform/tizen/logger.h"
 
 static const int kScrollDirectionVertical = 0;
 static const int kScrollDirectionHorizontal = 1;
@@ -43,6 +44,7 @@ void TouchEventHandler::SendFlutterPointerEvent(FlutterPointerPhase phase,
   // Correct errors caused by window rotation.
   auto geometry = engine_->renderer()->GetWindowGeometry();
   double new_x = x, new_y = y;
+  FT_LOG(Error) << "CJS Event " << x << " " << y;
 
   if (rotation == 90) {
     new_x = geometry.h - y;
@@ -55,6 +57,7 @@ void TouchEventHandler::SendFlutterPointerEvent(FlutterPointerPhase phase,
     new_y = geometry.w - x;
   }
 
+FT_LOG(Error) << "CJS Event " << new_x << " " << new_y;
   FlutterPointerEvent event = {};
   event.struct_size = sizeof(event);
   event.phase = phase;
@@ -75,36 +78,41 @@ void TouchEventHandler::SendFlutterPointerEvent(FlutterPointerPhase phase,
 Eina_Bool TouchEventHandler::OnTouch(void* data, int type, void* event) {
   auto* self = reinterpret_cast<TouchEventHandler*>(data);
   auto window_id = self->engine_->renderer()->GetWindowId();
+  
+  {
+    auto* button_event = reinterpret_cast<Ecore_Event_Mouse_Button*>(event);
+    FT_LOG(Error) << "CJS Event " << button_event->x << " " << button_event->y << " win id " << window_id << " " << button_event->window;
+  }
 
   if (type == ECORE_EVENT_MOUSE_BUTTON_DOWN) {
     auto* button_event = reinterpret_cast<Ecore_Event_Mouse_Button*>(event);
-    if (window_id == button_event->window) {
+    //if (window_id == button_event->window) {
       self->pointer_state_ = true;
       self->SendFlutterPointerEvent(kDown, button_event->x, button_event->y, 0,
                                     0, button_event->timestamp,
                                     button_event->multi.device);
       return ECORE_CALLBACK_DONE;
-    }
+    //}
 
   } else if (type == ECORE_EVENT_MOUSE_BUTTON_UP) {
     auto* button_event = reinterpret_cast<Ecore_Event_Mouse_Button*>(event);
-    if (window_id == button_event->window) {
+    //if (window_id == button_event->window) {
       self->pointer_state_ = false;
       self->SendFlutterPointerEvent(kUp, button_event->x, button_event->y, 0, 0,
                                     button_event->timestamp,
                                     button_event->multi.device);
       return ECORE_CALLBACK_DONE;
-    }
+    //}
   } else if (type == ECORE_EVENT_MOUSE_MOVE) {
     auto* move_event = reinterpret_cast<Ecore_Event_Mouse_Move*>(event);
-    if (window_id == move_event->window) {
+    //if (window_id == move_event->window) {
       if (self->pointer_state_) {
         self->SendFlutterPointerEvent(kMove, move_event->x, move_event->y, 0, 0,
                                       move_event->timestamp,
                                       move_event->multi.device);
         return ECORE_CALLBACK_DONE;
       }
-    }
+    //}
   } else if (type == ECORE_EVENT_MOUSE_WHEEL) {
     auto* wheel_event = reinterpret_cast<Ecore_Event_Mouse_Wheel*>(event);
     if (window_id == wheel_event->window) {
