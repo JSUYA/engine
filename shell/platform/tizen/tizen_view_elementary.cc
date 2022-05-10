@@ -3,7 +3,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "tizen_window_elementary.h"
+#include "tizen_view_elementary.h"
 
 #include "flutter/shell/platform/tizen/flutter_tizen_view.h"
 #include "flutter/shell/platform/tizen/logger.h"
@@ -21,11 +21,11 @@ static const int kScrollOffsetMultiplier = 20;
 
 namespace flutter {
 
-TizenWindowElementary::TizenWindowElementary(TizenBaseHandle::Geometry geometry,
-                                             bool transparent,
-                                             bool focusable,
-                                             bool top_level)
-    : TizenWindow(geometry, transparent, focusable, top_level) {
+TizenViewElementary::TizenViewElementary(TizenBaseHandle::Geometry geometry,
+                                         bool transparent,
+                                         bool focusable,
+                                         bool top_level)
+    : TizenView(geometry, transparent, focusable, top_level) {
   if (!CreateWindow()) {
     FT_LOG(Error) << "Failed to create a platform window.";
     return;
@@ -36,12 +36,12 @@ TizenWindowElementary::TizenWindowElementary(TizenBaseHandle::Geometry geometry,
   Show();
 }
 
-TizenWindowElementary::~TizenWindowElementary() {
+TizenViewElementary::~TizenViewElementary() {
   UnregisterEventHandlers();
   DestroyWindow();
 }
 
-bool TizenWindowElementary::CreateWindow() {
+bool TizenViewElementary::CreateWindow() {
   elm_config_accel_preference_set("hw:opengl");
 
   elm_win_ = elm_win_add(nullptr, nullptr,
@@ -88,12 +88,12 @@ bool TizenWindowElementary::CreateWindow() {
   return elm_win_ && image_;
 }
 
-void TizenWindowElementary::DestroyWindow() {
+void TizenViewElementary::DestroyWindow() {
   evas_object_del(elm_win_);
   evas_object_del(image_);
 }
 
-void TizenWindowElementary::SetWindowOptions() {
+void TizenViewElementary::SetWindowOptions() {
   if (top_level_) {
     efl_util_set_notification_window_level(elm_win_,
                                            EFL_UTIL_NOTIFICATION_LEVEL_TOP);
@@ -120,10 +120,10 @@ void TizenWindowElementary::SetWindowOptions() {
   elm_win_wm_rotation_available_rotations_set(elm_win_, &rotations[0], 4);
 }
 
-void TizenWindowElementary::RegisterEventHandlers() {
+void TizenViewElementary::RegisterEventHandlers() {
   rotatoin_changed_callback_ = [](void* data, Evas_Object* object,
                                   void* event_info) {
-    auto* self = reinterpret_cast<TizenWindowElementary*>(data);
+    auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_) {
       if (self->elm_win_ == object) {
         // FIXME
@@ -138,7 +138,7 @@ void TizenWindowElementary::RegisterEventHandlers() {
 
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_DOWN] =
       [](void* data, Evas* evas, Evas_Object* object, void* event_info) {
-        auto* self = reinterpret_cast<TizenWindowElementary*>(data);
+        auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_) {
           if (self->elm_win_ == object) {
             auto* mouse_event =
@@ -157,7 +157,7 @@ void TizenWindowElementary::RegisterEventHandlers() {
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_UP] = [](void* data, Evas* evas,
                                                       Evas_Object* object,
                                                       void* event_info) {
-    auto* self = reinterpret_cast<TizenWindowElementary*>(data);
+    auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_) {
       if (self->elm_win_ == object) {
         auto* mouse_event = reinterpret_cast<Evas_Event_Mouse_Up*>(event_info);
@@ -174,7 +174,7 @@ void TizenWindowElementary::RegisterEventHandlers() {
 
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_MOVE] =
       [](void* data, Evas* evas, Evas_Object* object, void* event_info) {
-        auto* self = reinterpret_cast<TizenWindowElementary*>(data);
+        auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_) {
           if (self->elm_win_ == object) {
             auto* mouse_event =
@@ -193,7 +193,7 @@ void TizenWindowElementary::RegisterEventHandlers() {
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_WHEEL] = [](void* data, Evas* evas,
                                                          Evas_Object* object,
                                                          void* event_info) {
-    auto* self = reinterpret_cast<TizenWindowElementary*>(data);
+    auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_) {
       if (self->elm_win_ == object) {
         auto* wheel_event =
@@ -221,7 +221,7 @@ void TizenWindowElementary::RegisterEventHandlers() {
   ecore_event_key_handlers_.push_back(ecore_event_handler_add(
       ECORE_EVENT_KEY_DOWN,
       [](void* data, int type, void* event) -> Eina_Bool {
-        auto* self = reinterpret_cast<TizenWindowElementary*>(data);
+        auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_) {
           auto* key_event = reinterpret_cast<Ecore_Event_Key*>(event);
           if (key_event->window == self->GetWindowId()) {
@@ -236,7 +236,7 @@ void TizenWindowElementary::RegisterEventHandlers() {
   ecore_event_key_handlers_.push_back(ecore_event_handler_add(
       ECORE_EVENT_KEY_UP,
       [](void* data, int type, void* event) -> Eina_Bool {
-        auto* self = reinterpret_cast<TizenWindowElementary*>(data);
+        auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_) {
           auto* key_event = reinterpret_cast<Ecore_Event_Key*>(event);
           if (key_event->window == self->GetWindowId()) {
@@ -249,7 +249,7 @@ void TizenWindowElementary::RegisterEventHandlers() {
       this));
 }
 
-void TizenWindowElementary::UnregisterEventHandlers() {
+void TizenViewElementary::UnregisterEventHandlers() {
   evas_object_smart_callback_del(elm_win_, "rotation,changed",
                                  rotatoin_changed_callback_);
 
@@ -272,7 +272,7 @@ void TizenWindowElementary::UnregisterEventHandlers() {
   ecore_event_key_handlers_.clear();
 }
 
-TizenBaseHandle::Geometry TizenWindowElementary::GetRenderTargetGeometry() {
+TizenBaseHandle::Geometry TizenViewElementary::GetRenderTargetGeometry() {
   // FIXME : evas_object_geometry_get() and ecore_wl2_window_geometry_get() are
   // not equivalent.
   Geometry result;
@@ -281,7 +281,7 @@ TizenBaseHandle::Geometry TizenWindowElementary::GetRenderTargetGeometry() {
   return result;
 }
 
-void TizenWindowElementary::SetRenderTargetGeometry(Geometry geometry) {
+void TizenViewElementary::SetRenderTargetGeometry(Geometry geometry) {
   evas_object_resize(elm_win_, geometry.width, geometry.height);
   evas_object_move(elm_win_, geometry.left, geometry.top);
 
@@ -289,7 +289,7 @@ void TizenWindowElementary::SetRenderTargetGeometry(Geometry geometry) {
   evas_object_move(image_, geometry.left, geometry.top);
 }
 
-TizenBaseHandle::Geometry TizenWindowElementary::GetScreenGeometry() {
+TizenBaseHandle::Geometry TizenViewElementary::GetScreenGeometry() {
   Geometry result;
   Ecore_Evas* ecore_evas =
       ecore_evas_ecore_evas_get(evas_object_evas_get(elm_win_));
@@ -298,11 +298,11 @@ TizenBaseHandle::Geometry TizenWindowElementary::GetScreenGeometry() {
   return result;
 }
 
-int32_t TizenWindowElementary::GetRotation() {
+int32_t TizenViewElementary::GetRotation() {
   return elm_win_rotation_get(elm_win_);
 }
 
-int32_t TizenWindowElementary::GetDpi() {
+int32_t TizenViewElementary::GetDpi() {
   Ecore_Evas* ecore_evas =
       ecore_evas_ecore_evas_get(evas_object_evas_get(elm_win_));
   int32_t xdpi, ydpi;
@@ -310,37 +310,37 @@ int32_t TizenWindowElementary::GetDpi() {
   return xdpi;
 }
 
-uintptr_t TizenWindowElementary::GetWindowId() {
+uintptr_t TizenViewElementary::GetWindowId() {
   return ecore_evas_window_get(
       ecore_evas_ecore_evas_get(evas_object_evas_get(elm_win_)));
 }
 
-void TizenWindowElementary::ResizeRenderTargetWithRotation(Geometry geometry,
-                                                           int32_t angle) {
+void TizenViewElementary::ResizeRenderTargetWithRotation(Geometry geometry,
+                                                         int32_t angle) {
   TizenRendererEvasGL* renderer_evas_gl =
       reinterpret_cast<TizenRendererEvasGL*>(view_->engine()->renderer());
   renderer_evas_gl->ResizeSurface(geometry.width, geometry.height);
 }
 
-void TizenWindowElementary::SetPreferredOrientations(
+void TizenViewElementary::SetPreferredOrientations(
     const std::vector<int>& rotations) {
   elm_win_wm_rotation_available_rotations_set(
       elm_win_, reinterpret_cast<const int*>(rotations.data()),
       rotations.size());
 }
 
-void TizenWindowElementary::BindKeys(const std::vector<std::string>& keys) {
+void TizenViewElementary::BindKeys(const std::vector<std::string>& keys) {
   for (const std::string& key : keys) {
     eext_win_keygrab_set(elm_win_, key.c_str());
   }
 }
 
-void TizenWindowElementary::Show() {
+void TizenViewElementary::Show() {
   evas_object_show(image_);
   evas_object_show(elm_win_);
 }
 
-void TizenWindowElementary::OnGeometryChanged(Geometry geometry) {
+void TizenViewElementary::OnGeometryChanged(Geometry geometry) {
   SetRenderTargetGeometry(geometry);
   view_->OnResize(geometry.left, geometry.top, geometry.width, geometry.height);
 }

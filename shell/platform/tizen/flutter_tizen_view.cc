@@ -40,8 +40,8 @@ const std::vector<std::string> kBindableSystemKeys = {
 
 namespace flutter {
 
-FlutterTizenView::FlutterTizenView(std::unique_ptr<TizenWindow> window)
-    : window_(std::move(window)) {
+FlutterTizenView::FlutterTizenView(std::unique_ptr<TizenBaseHandle> handle)
+    : window_(std::move(handle)) {
   window_->SetView(this);
   window_->BindKeys(kBindableSystemKeys);
 }
@@ -67,7 +67,7 @@ void FlutterTizenView::SetEngine(std::unique_ptr<FlutterTizenEngine> engine) {
 
 void FlutterTizenView::CreateRenderSurface() {
   if (engine_ && engine_->renderer()) {
-    TizenWindow::Geometry geometry = window_->GetWindowGeometry();
+    TizenBaseHandle::Geometry geometry = window_->GetRenderTargetGeometry();
     engine_->renderer()->CreateSurface(window_->GetRenderTarget(),
                                        window_->GetRenderTargetDisplay(),
                                        geometry.width, geometry.height);
@@ -121,7 +121,7 @@ void FlutterTizenView::OnRotate(int32_t degree) {
   rotation_degree_ = degree;
   // Compute renderer transformation based on the angle of rotation.
   double rad = (360 - rotation_degree_) * M_PI / 180;
-  TizenWindow::Geometry geometry = window_->GetWindowGeometry();
+  TizenBaseHandle::Geometry geometry = window_->GetRenderTargetGeometry();
   int32_t width = geometry.width;
   int32_t height = geometry.height;
 
@@ -267,7 +267,7 @@ void FlutterTizenView::SendFlutterPointerEvent(
     size_t timestamp,
     FlutterPointerDeviceKind device_kind,
     int device_id) {
-  TizenWindow::Geometry geometry = window_->GetWindowGeometry();
+  TizenBaseHandle::Geometry geometry = window_->GetRenderTargetGeometry();
   double new_x = x, new_y = y;
 
   if (rotation_degree_ == 90) {

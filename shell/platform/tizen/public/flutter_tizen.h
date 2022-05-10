@@ -135,6 +135,12 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
     const FlutterDesktopWindowProperties& window_properties,
     FlutterDesktopEngineRef engine);
 
+// Creates a view that hosts and displays the given engine instance.
+FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromNewView(
+    const FlutterDesktopWindowProperties& window_properties,
+    FlutterDesktopEngineRef engine,
+    void* parent);
+
 // ========== Plugin Registrar (extensions) ==========
 
 // Returns the window associated with this registrar's engine instance.

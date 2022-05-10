@@ -3,10 +3,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef EMBEDDER_TIZEN_WINDOW_ELEMENTARY_H_
-#define EMBEDDER_TIZEN_WINDOW_ELEMENTARY_H_
+#ifndef EMBEDDER_TIZEN_VIEW_ELEMENTARY_H_
+#define EMBEDDER_TIZEN_VIEW_ELEMENTARY_H_
 
-#include "flutter/shell/platform/tizen/tizen_window.h"
+#include "flutter/shell/platform/tizen/tizen_view.h"
 
 #define EFL_BETA_API_SUPPORT
 #include <Ecore.h>
@@ -16,14 +16,14 @@
 
 namespace flutter {
 
-class TizenWindowElementary : public TizenWindow {
+class TizenViewElementary : public TizenView {
  public:
-  TizenWindowElementary(TizenBaseHandle::Geometry geometry,
-                        bool transparent,
-                        bool focusable,
-                        bool top_level);
+  TizenViewElementary(TizenBaseHandle::Geometry geometry,
+                      bool transparent,
+                      bool focusable,
+                      bool top_level);
 
-  ~TizenWindowElementary();
+  ~TizenViewElementary();
 
   Geometry GetRenderTargetGeometry() override;
 
@@ -76,4 +76,4 @@ class TizenWindowElementary : public TizenWindow {
 
 }  // namespace flutter
 
-#endif  // EMBEDDER_TIZEN_WINDOW_ELEMENTARY_H_
+#endif  // EMBEDDER_TIZEN_VIEW_ELEMENTARY_H_

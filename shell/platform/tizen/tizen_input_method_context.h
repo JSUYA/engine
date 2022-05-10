@@ -21,7 +21,7 @@ using OnPreeditStart = std::function<void()>;
 using OnPreeditEnd = std::function<void()>;
 using OnInputPanelStateChanged = std::function<void(int value)>;
 
-class TizenWindow;
+class TizenBaseHandle;
 
 struct InputPanelGeometry {
   int32_t x = 0, y = 0, w = 0, h = 0;
@@ -29,7 +29,7 @@ struct InputPanelGeometry {
 
 class TizenInputMethodContext {
  public:
-  TizenInputMethodContext(TizenWindow* window);
+  TizenInputMethodContext(TizenBaseHandle* window);
   ~TizenInputMethodContext();
 
   bool FilterEvent(Ecore_Event_Key* event, const char* dev_name, bool is_down);
@@ -69,7 +69,7 @@ class TizenInputMethodContext {
   void SetContextOptions();
   void SetInputPanelOptions();
 
-  TizenWindow* window_ = nullptr;
+  TizenBaseHandle* window_ = nullptr;
   Ecore_IMF_Context* imf_context_ = nullptr;
   OnCommit on_commit_;
   OnPreeditChanged on_preedit_changed_;

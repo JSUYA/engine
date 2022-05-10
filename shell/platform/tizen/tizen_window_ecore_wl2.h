@@ -6,6 +6,7 @@
 #ifndef EMBEDDER_TIZEN_WINDOW_ECORE_WL2_H_
 #define EMBEDDER_TIZEN_WINDOW_ECORE_WL2_H_
 
+#include "flutter/shell/platform/tizen/tizen_base_handle.h"
 #include "flutter/shell/platform/tizen/tizen_window.h"
 
 #define EFL_BETA_API_SUPPORT
@@ -16,16 +17,16 @@ namespace flutter {
 
 class TizenWindowEcoreWl2 : public TizenWindow {
  public:
-  TizenWindowEcoreWl2(Geometry geometry,
+  TizenWindowEcoreWl2(TizenBaseHandle::Geometry geometry,
                       bool transparent,
                       bool focusable,
                       bool top_level);
 
   ~TizenWindowEcoreWl2();
 
-  Geometry GetWindowGeometry() override;
+  Geometry GetRenderTargetGeometry() override;
 
-  void SetWindowGeometry(Geometry geometry) override;
+  void SetRenderTargetGeometry(Geometry geometry) override;
 
   Geometry GetScreenGeometry() override;
 

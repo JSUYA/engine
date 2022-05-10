@@ -3,8 +3,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef EMBEDDER_TIZEN_WINDOW_H_
-#define EMBEDDER_TIZEN_WINDOW_H_
+#ifndef EMBEDDER_TIZEN_VIEW_H_
+#define EMBEDDER_TIZEN_VIEW_H_
 
 #include <cstdint>
 #include <string>
@@ -16,17 +16,17 @@ namespace flutter {
 
 class FlutterTizenView;
 
-class TizenWindow : public TizenBaseHandle {
+class TizenView : public TizenBaseHandle {
  public:
-  TizenWindow();
+  TizenView();
 
-  virtual ~TizenWindow() = default;
+  virtual ~TizenView() = default;
 
  protected:
-  explicit TizenWindow(TizenBaseHandle::Geometry geometry,
-                       bool transparent,
-                       bool focusable,
-                       bool top_level)
+  explicit TizenView(TizenBaseHandle::Geometry geometry,
+                     bool transparent,
+                     bool focusable,
+                     bool top_level)
       : initial_geometry_(geometry),
         transparent_(transparent),
         focusable_(focusable),
@@ -40,4 +40,4 @@ class TizenWindow : public TizenBaseHandle {
 
 }  // namespace flutter
 
-#endif  // EMBEDDER_TIZEN_WINDOW_H_
+#endif  // EMBEDDER_TIZEN_VIEW_H_
