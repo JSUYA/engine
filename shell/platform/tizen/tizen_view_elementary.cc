@@ -21,11 +21,8 @@ static const int kScrollOffsetMultiplier = 20;
 
 namespace flutter {
 
-TizenViewElementary::TizenViewElementary(TizenBaseHandle::Geometry geometry,
-                                         bool transparent,
-                                         bool focusable,
-                                         bool top_level)
-    : TizenView(geometry, transparent, focusable, top_level) {
+TizenViewElementary::TizenViewElementary(TizenBaseHandle::Geometry geometry)
+    : TizenView(geometry) {
   if (!CreateWindow()) {
     FT_LOG(Error) << "Failed to create a platform window.";
     return;
@@ -44,12 +41,12 @@ TizenViewElementary::~TizenViewElementary() {
 bool TizenViewElementary::CreateWindow() {
   elm_config_accel_preference_set("hw:opengl");
 
-  elm_win_ = elm_win_add(nullptr, nullptr,
+  /*elm_win_ = elm_win_add(nullptr, nullptr,
                          top_level_ ? ELM_WIN_NOTIFICATION : ELM_WIN_BASIC);
   if (!elm_win_) {
     FT_LOG(Error) << "Could not create an Evas window.";
     return false;
-  }
+  }*/
 
   // Please uncomment below and enable setWindowGeometry of window channel when
   // Tizen 5.5 or later was chosen as default.
@@ -94,7 +91,7 @@ void TizenViewElementary::DestroyWindow() {
 }
 
 void TizenViewElementary::SetWindowOptions() {
-  if (top_level_) {
+  /*if (top_level_) {
     efl_util_set_notification_window_level(elm_win_,
                                            EFL_UTIL_NOTIFICATION_LEVEL_TOP);
   }
@@ -118,6 +115,7 @@ void TizenViewElementary::SetWindowOptions() {
 
   const int rotations[4] = {0, 90, 180, 270};
   elm_win_wm_rotation_available_rotations_set(elm_win_, &rotations[0], 4);
+  */
 }
 
 void TizenViewElementary::RegisterEventHandlers() {

@@ -18,10 +18,7 @@ namespace flutter {
 
 class TizenViewElementary : public TizenView {
  public:
-  TizenViewElementary(TizenBaseHandle::Geometry geometry,
-                      bool transparent,
-                      bool focusable,
-                      bool top_level);
+  TizenViewElementary(TizenBaseHandle::Geometry geometry);
 
   ~TizenViewElementary();
 

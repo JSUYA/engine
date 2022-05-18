@@ -23,19 +23,10 @@ class TizenView : public TizenBaseHandle {
   virtual ~TizenView() = default;
 
  protected:
-  explicit TizenView(TizenBaseHandle::Geometry geometry,
-                     bool transparent,
-                     bool focusable,
-                     bool top_level)
-      : initial_geometry_(geometry),
-        transparent_(transparent),
-        focusable_(focusable),
-        top_level_(top_level) {}
+  explicit TizenView(TizenBaseHandle::Geometry geometry)
+      : initial_geometry_(geometry) {}
 
   TizenBaseHandle::Geometry initial_geometry_ = {0, 0, 0, 0};
-  bool transparent_ = false;
-  bool focusable_ = false;
-  bool top_level_ = false;
 };
 
 }  // namespace flutter

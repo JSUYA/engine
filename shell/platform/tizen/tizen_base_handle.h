@@ -50,7 +50,7 @@ class TizenBaseHandle {
   // Returns the dpi of the screen.
   virtual int32_t GetDpi() = 0;
 
-  // Sets the delegate used to communicate state changes from window to view
+  // Sets the delegate used to communicate state changes from render target to view
   // such as key presses, mouse position updates etc.
   void SetView(FlutterTizenView* view) { view_ = view; }
 
@@ -66,20 +66,6 @@ class TizenBaseHandle {
   virtual void Show() = 0;
 
  protected:
-  /*explicit TizenBaseHandle(Geometry geometry,
-                       bool transparent,
-                       bool focusable,
-                       bool top_level)
-      : initial_geometry_(geometry),
-        transparent_(transparent),s
-        focusable_(focusable),
-        top_level_(top_level) {}
-
-  Geometry initial_geometry_ = {0, 0, 0, 0};
-  bool transparent_ = false;
-  bool focusable_ = false;
-  bool top_level_ = false;*/
-
   FlutterTizenView* view_ = nullptr;
 };
 

@@ -43,6 +43,20 @@ typedef struct {
   bool top_level;
 } FlutterDesktopWindowProperties;
 
+// Properties for configuring the initial settings of a Flutter view.
+typedef struct {
+  // The x-coordinate of the top left corner of the view.
+  int32_t x;
+  // The y-coordinate of the top left corner of the view.
+  int32_t y;
+  // The width of the view, or the maximum width if the value is zero.
+  int32_t width;
+  // The height of the view, or the maximum height if the value is zero.
+  int32_t height;
+  // 
+  void* parent;
+} FlutterDesktopViewProperties;
+
 // Properties for configuring a Flutter engine instance.
 typedef struct {
   // The path to the flutter_assets folder for the application to be run.
@@ -137,7 +151,7 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
 
 // Creates a view that hosts and displays the given engine instance.
 FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromNewView(
-    const FlutterDesktopWindowProperties& window_properties,
+    const FlutterDesktopViewProperties& view_properties,
     FlutterDesktopEngineRef engine,
     void* parent);
 
