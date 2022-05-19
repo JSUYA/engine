@@ -18,7 +18,7 @@ namespace flutter {
 
 class TizenViewElementary : public TizenView {
  public:
-  TizenViewElementary(TizenBaseHandle::Geometry geometry);
+  TizenViewElementary(TizenBaseHandle::Geometry geometry, Evas_Object* parent);
 
   ~TizenViewElementary();
 
@@ -63,6 +63,7 @@ class TizenViewElementary : public TizenView {
   void UnregisterEventHandlers();
 
   Evas_Object* elm_win_ = nullptr;
+  Evas_Object* elm_parent_ = nullptr;
   Evas_Object* image_ = nullptr;
 
   Evas_Smart_Cb rotatoin_changed_callback_;

@@ -66,39 +66,7 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewView(
   };
 
   std::unique_ptr<flutter::TizenBaseHandle> view =
-      std::make_unique<flutter::TizenViewElementary>(window_geometry);
-
-  auto flutter_view =
-      std::make_unique<flutter::FlutterTizenView>(std::move(view));
-
-  // Take ownership of the engine, starting it if necessary.
-  flutter_view->SetEngine(
-      std::unique_ptr<flutter::FlutterTizenEngine>(EngineFromHandle(engine)));
-  flutter_view->CreateRenderSurface();
-  if (!flutter_view->engine()->IsRunning()) {
-    if (!flutter_view->engine()->RunEngine()) {
-      return nullptr;
-    }
-  }
-
-  flutter_view->SendInitialGeometry();
-
-  return HandleForView(flutter_view.release());
-}
-
-FlutterDesktopViewRef FlutterAAAA(
-    const FlutterDesktopViewProperties& view_properties,
-    FlutterDesktopEngineRef engine,
-    void* parent) {
-  flutter::TizenBaseHandle::Geometry window_geometry = {
-      view_properties.x,
-      view_properties.y,
-      view_properties.width,
-      view_properties.height,
-  };
-
-  std::unique_ptr<flutter::TizenBaseHandle> view =
-      std::make_unique<flutter::TizenViewElementary>(window_geometry);
+      std::make_unique<flutter::TizenViewElementary>(window_geometry, (Evas_Object*)(view_properties.parent));
 
   auto flutter_view =
       std::make_unique<flutter::FlutterTizenView>(std::move(view));
