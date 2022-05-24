@@ -155,6 +155,9 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromNewView(
     FlutterDesktopEngineRef engine,
     void* parent);
 
+FLUTTER_EXPORT void* FlutterDesktopViewGetEvasImageHandle(
+    FlutterDesktopEngineRef engine);
+
 // ========== Plugin Registrar (extensions) ==========
 
 // Returns the window associated with this registrar's engine instance.

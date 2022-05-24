@@ -245,7 +245,7 @@ embedder("flutter_tizen_wearable") {
 
 embedder("flutter_tizen_tv") {
   target_type = "shared_library"
-  use_evas_gl_renderer = false
+  use_evas_gl_renderer = true
 
   defines = [ "TV_PROFILE" ]
 }

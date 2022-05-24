@@ -85,3 +85,11 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewView(
 
   return HandleForView(flutter_view.release());
 }
+
+
+void* FlutterDesktopViewGetEvasImageHandle(
+    FlutterDesktopEngineRef engine) {
+
+  flutter::TizenViewElementary* tizenView = (flutter::TizenViewElementary*)EngineFromHandle(engine)->view()->handle();
+  return tizenView->GetRenderTargetDisplay();
+}

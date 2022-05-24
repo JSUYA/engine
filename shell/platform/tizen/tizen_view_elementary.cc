@@ -42,19 +42,10 @@ TizenViewElementary::~TizenViewElementary() {
 bool TizenViewElementary::CreateWindow() {
   elm_config_accel_preference_set("hw:opengl");
 
-  /*selm_win_ = elm_win_add(nullptr, nullptr, ELM_WIN_NOTIFICATION);
-  if (!elm_win_) {
-    FT_LOG(Error) << "Could not create an Evas window.";
-    return false;
-  }*/
-
-  // Please uncomment below and enable setWindowGeometry of window channel when
-  // Tizen 5.5 or later was chosen as default.
-  // elm_win_aux_hint_add(elm_win_, "wm.policy.win.user.geometry", "1");
-  //elm_win_ = elm_parent_;
-
   Ecore_Evas* ecore_evas =
       ecore_evas_ecore_evas_get(evas_object_evas_get(elm_parent_));
+
+  elm_win_ = elm_win_get(elm_parent_);
 
   int32_t width, height;
   ecore_evas_screen_geometry_get(ecore_evas, nullptr, nullptr, &width, &height);
@@ -69,15 +60,9 @@ bool TizenViewElementary::CreateWindow() {
   if (initial_geometry_.height == 0) {
     initial_geometry_.height = height;
   }
-/*
-  evas_object_move(elm_win_, initial_geometry_.left, initial_geometry_.top);
-  evas_object_resize(elm_win_, initial_geometry_.width,
-                     initial_geometry_.height);
-  evas_object_raise(elm_win_);*/
 
   image_ = evas_object_image_filled_add(evas_object_evas_get(elm_parent_));
   evas_object_resize(image_, initial_geometry_.width, initial_geometry_.height);
-  //evas_object_move(image_, initial_geometry_.left, initial_geometry_.top);
   evas_object_size_hint_min_set(image_, initial_geometry_.width,
                                 initial_geometry_.height);
   evas_object_size_hint_max_set(image_, initial_geometry_.width,
@@ -86,8 +71,6 @@ bool TizenViewElementary::CreateWindow() {
                              initial_geometry_.height);
   evas_object_image_alpha_set(image_, EINA_TRUE);
   evas_object_show(image_);
-  elm_object_content_set(elm_parent_, image_);
-  //elm_win_resize_object_add(elm_parent_, image_);
 
   if (!image_)
     return false;
@@ -95,36 +78,12 @@ bool TizenViewElementary::CreateWindow() {
 }
 
 void TizenViewElementary::DestroyWindow() {
-  //evas_object_del(elm_win_);
+  // evas_object_del(elm_win_);
   evas_object_del(image_);
 }
 
 void TizenViewElementary::SetWindowOptions() {
-  /*if (top_level_) {
-    efl_util_set_notification_window_level(elm_win_,
-                                           EFL_UTIL_NOTIFICATION_LEVEL_TOP);
-  }
-
-  if (transparent_) {
-    elm_win_alpha_set(elm_win_, EINA_TRUE);
-  } else {
-    elm_win_alpha_set(elm_win_, EINA_FALSE);
-
-    Evas_Object* bg = elm_bg_add(elm_win_);
-    evas_object_color_set(bg, 0, 0, 0, 0);
-
-    evas_object_size_hint_weight_set(bg, EVAS_HINT_EXPAND, EVAS_HINT_EXPAND);
-    elm_win_resize_object_add(elm_win_, bg);
-  }
-
-  elm_win_indicator_mode_set(elm_win_, ELM_WIN_INDICATOR_SHOW);
-  elm_win_indicator_opacity_set(elm_win_, ELM_WIN_INDICATOR_OPAQUE);
-
-  // TODO: focusable_
-
-  const int rotations[4] = {0, 90, 180, 270};
-  elm_win_wm_rotation_available_rotations_set(elm_win_, &rotations[0], 4);
-  */
+  // nothing to do.
 }
 
 void TizenViewElementary::RegisterEventHandlers() {
@@ -283,16 +242,16 @@ TizenBaseHandle::Geometry TizenViewElementary::GetRenderTargetGeometry() {
   // FIXME : evas_object_geometry_get() and ecore_wl2_window_geometry_get() are
   // not equivalent.
   Geometry result;
-  //evas_object_geometry_get(elm_win_, &result.left, &result.top, &result.width,
-                           //&result.height);
+  // evas_object_geometry_get(elm_win_, &result.left, &result.top,
+  // &result.width, &result.height);
   evas_object_geometry_get(image_, &result.left, &result.top, &result.width,
                            &result.height);
   return result;
 }
 
 void TizenViewElementary::SetRenderTargetGeometry(Geometry geometry) {
-  //evas_object_resize(elm_win_, geometry.width, geometry.height);
-  //evas_object_move(elm_win_, geometry.left, geometry.top);
+  // evas_object_resize(elm_win_, geometry.width, geometry.height);
+  // evas_object_move(elm_win_, geometry.left, geometry.top);
 
   evas_object_resize(image_, geometry.width, geometry.height);
   evas_object_move(image_, geometry.left, geometry.top);
@@ -346,7 +305,7 @@ void TizenViewElementary::BindKeys(const std::vector<std::string>& keys) {
 
 void TizenViewElementary::Show() {
   evas_object_show(image_);
- // evas_object_show(elm_win_);
+  // evas_object_show(elm_win_);
 }
 
 void TizenViewElementary::OnGeometryChanged(Geometry geometry) {
