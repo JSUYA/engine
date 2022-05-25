@@ -109,8 +109,14 @@ void TizenViewElementary::RegisterEventHandlers() {
           if (self->image_ == object) {
             auto* mouse_event =
                 reinterpret_cast<Evas_Event_Mouse_Down*>(event_info);
+
+            int x = 0;
+            int y = 0;
+            int w = 0;
+            int h = 0;
+            evas_object_geometry_get(self->image_, &x, &y, &w, &h);
             self->view_->OnPointerDown(
-                mouse_event->canvas.x, mouse_event->canvas.y,
+                mouse_event->output.x - x, mouse_event->output.y - y,
                 mouse_event->timestamp, kFlutterPointerDeviceKindTouch,
                 mouse_event->button);
           }
@@ -127,10 +133,15 @@ void TizenViewElementary::RegisterEventHandlers() {
     if (self->view_) {
       if (self->image_ == object) {
         auto* mouse_event = reinterpret_cast<Evas_Event_Mouse_Up*>(event_info);
-        self->view_->OnPointerUp(mouse_event->canvas.x, mouse_event->canvas.y,
-                                 mouse_event->timestamp,
-                                 kFlutterPointerDeviceKindTouch,
-                                 mouse_event->button);
+        int x = 0;
+        int y = 0;
+        int w = 0;
+        int h = 0;
+        evas_object_geometry_get(self->image_, &x, &y, &w, &h);
+        self->view_->OnPointerUp(
+            mouse_event->output.x - x, mouse_event->output.y - y,
+            mouse_event->timestamp, kFlutterPointerDeviceKindTouch,
+            mouse_event->button);
       }
     }
   };
