@@ -66,7 +66,8 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewView(
   };
 
   std::unique_ptr<flutter::TizenBaseHandle> view =
-      std::make_unique<flutter::TizenViewElementary>(window_geometry, (Evas_Object*)(view_properties.parent));
+      std::make_unique<flutter::TizenViewElementary>(
+          window_geometry, (Evas_Object*)(view_properties.parent));
 
   auto flutter_view =
       std::make_unique<flutter::FlutterTizenView>(std::move(view));
@@ -86,10 +87,8 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewView(
   return HandleForView(flutter_view.release());
 }
 
-
-void* FlutterDesktopViewGetEvasImageHandle(
-    FlutterDesktopEngineRef engine) {
-
-  flutter::TizenViewElementary* tizenView = (flutter::TizenViewElementary*)EngineFromHandle(engine)->view()->handle();
+void* FlutterDesktopViewGetEvasImageHandle(FlutterDesktopEngineRef engine) {
+  flutter::TizenViewElementary* tizenView =
+      (flutter::TizenViewElementary*)EngineFromHandle(engine)->view()->handle();
   return tizenView->GetRenderTargetDisplay();
 }

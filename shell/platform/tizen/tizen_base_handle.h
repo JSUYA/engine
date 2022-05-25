@@ -50,8 +50,8 @@ class TizenBaseHandle {
   // Returns the dpi of the screen.
   virtual int32_t GetDpi() = 0;
 
-  // Sets the delegate used to communicate state changes from render target to view
-  // such as key presses, mouse position updates etc.
+  // Sets the delegate used to communicate state changes from render target to
+  // view such as key presses, mouse position updates etc.
   void SetView(FlutterTizenView* view) { view_ = view; }
 
   virtual void BindKeys(const std::vector<std::string>& keys) = 0;

@@ -191,7 +191,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         if (self->view_) {
           auto* key_event = reinterpret_cast<Ecore_Event_Key*>(event);
           if (key_event->window == self->GetWindowId()) {
-            //self->view_->OnKey(key_event, false);
+            // self->view_->OnKey(key_event, false);
             return ECORE_CALLBACK_DONE;
           }
         }
@@ -206,7 +206,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         if (self->view_) {
           auto* key_event = reinterpret_cast<Ecore_Event_Key*>(event);
           if (key_event->window == self->GetWindowId()) {
-            //self->view_->OnKey(key_event, true);
+            // self->view_->OnKey(key_event, true);
             return ECORE_CALLBACK_DONE;
           }
         }
