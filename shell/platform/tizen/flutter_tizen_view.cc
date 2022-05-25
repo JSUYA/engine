@@ -10,7 +10,8 @@
 namespace {
 
 #if defined(MOBILE_PROFILE)
-constexpr double kProfileFactor = 0.7;
+//constexpr double kProfileFactor = 0.7;
+constexpr double kProfileFactor = 1.5;
 #elif defined(WEARABLE_PROFILE)
 constexpr double kProfileFactor = 0.4;
 #elif defined(TV_PROFILE)

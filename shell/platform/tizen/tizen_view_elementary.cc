@@ -106,7 +106,7 @@ void TizenViewElementary::RegisterEventHandlers() {
       [](void* data, Evas* evas, Evas_Object* object, void* event_info) {
         auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_) {
-          if (self->elm_win_ == object) {
+          if (self->image_ == object) {
             auto* mouse_event =
                 reinterpret_cast<Evas_Event_Mouse_Down*>(event_info);
             self->view_->OnPointerDown(
@@ -117,7 +117,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         }
       };
   evas_object_event_callback_add(
-      elm_win_, EVAS_CALLBACK_MOUSE_DOWN,
+      image_, EVAS_CALLBACK_MOUSE_DOWN,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_DOWN], this);
 
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_UP] = [](void* data, Evas* evas,
@@ -125,7 +125,7 @@ void TizenViewElementary::RegisterEventHandlers() {
                                                       void* event_info) {
     auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_) {
-      if (self->elm_win_ == object) {
+      if (self->image_ == object) {
         auto* mouse_event = reinterpret_cast<Evas_Event_Mouse_Up*>(event_info);
         self->view_->OnPointerUp(mouse_event->canvas.x, mouse_event->canvas.y,
                                  mouse_event->timestamp,
@@ -134,7 +134,7 @@ void TizenViewElementary::RegisterEventHandlers() {
       }
     }
   };
-  evas_object_event_callback_add(elm_win_, EVAS_CALLBACK_MOUSE_UP,
+  evas_object_event_callback_add(image_, EVAS_CALLBACK_MOUSE_UP,
                                  evas_object_callbacks_[EVAS_CALLBACK_MOUSE_UP],
                                  this);
 
@@ -142,7 +142,7 @@ void TizenViewElementary::RegisterEventHandlers() {
       [](void* data, Evas* evas, Evas_Object* object, void* event_info) {
         auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_) {
-          if (self->elm_win_ == object) {
+          if (self->image_ == object) {
             auto* mouse_event =
                 reinterpret_cast<Evas_Event_Mouse_Move*>(event_info);
             self->view_->OnPointerMove(
@@ -153,7 +153,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         }
       };
   evas_object_event_callback_add(
-      elm_win_, EVAS_CALLBACK_MOUSE_MOVE,
+      image_, EVAS_CALLBACK_MOUSE_MOVE,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_MOVE], this);
 
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_WHEEL] = [](void* data, Evas* evas,
@@ -161,7 +161,7 @@ void TizenViewElementary::RegisterEventHandlers() {
                                                          void* event_info) {
     auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_) {
-      if (self->elm_win_ == object) {
+      if (self->image_ == object) {
         auto* wheel_event =
             reinterpret_cast<Ecore_Event_Mouse_Wheel*>(event_info);
         double delta_x = 0.0;
@@ -180,7 +180,7 @@ void TizenViewElementary::RegisterEventHandlers() {
     }
   };
   evas_object_event_callback_add(
-      elm_win_, EVAS_CALLBACK_MOUSE_WHEEL,
+      image_, EVAS_CALLBACK_MOUSE_WHEEL,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_WHEEL], this);
 
   // FIXME: ues EVAS_CALLBACK_KEY_DOWN, EVAS_CALLBACK_KEY_UP
@@ -191,7 +191,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         if (self->view_) {
           auto* key_event = reinterpret_cast<Ecore_Event_Key*>(event);
           if (key_event->window == self->GetWindowId()) {
-            self->view_->OnKey(key_event, false);
+            //self->view_->OnKey(key_event, false);
             return ECORE_CALLBACK_DONE;
           }
         }
@@ -206,7 +206,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         if (self->view_) {
           auto* key_event = reinterpret_cast<Ecore_Event_Key*>(event);
           if (key_event->window == self->GetWindowId()) {
-            self->view_->OnKey(key_event, true);
+            //self->view_->OnKey(key_event, true);
             return ECORE_CALLBACK_DONE;
           }
         }
