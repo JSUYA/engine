@@ -69,3 +69,13 @@ void FlutterDesktopViewResize(FlutterDesktopViewRef view_ref,
                               int32_t height) {
   FT_LOG(Warn) << "Not applicable!";
 }
+
+int32_t FlutterDesktopViewGetWidth(FlutterDesktopViewRef view_ref) {
+  FT_LOG(Warn) << "Not applicable!";
+  return 0;
+}
+
+int32_t FlutterDesktopViewGetHeight(FlutterDesktopViewRef view_ref) {
+  FT_LOG(Warn) << "Not applicable!";
+  return 0;
+}

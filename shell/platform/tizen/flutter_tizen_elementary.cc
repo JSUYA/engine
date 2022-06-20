@@ -95,3 +95,21 @@ void FlutterDesktopViewResize(FlutterDesktopViewRef view_ref,
   flutter::TizenGeometry view_geometry = {0, 0, width, height};
   view->tizen_view()->OnGeometryChanged(view_geometry);
 }
+
+int32_t FlutterDesktopViewGetWidth(FlutterDesktopViewRef view_ref) {
+  auto* view = reinterpret_cast<flutter::FlutterTizenView*>(view_ref);
+  if (view->tizen_view()->GetType() == flutter::TizenViewType::kView) {
+    flutter::TizenGeometry geometry = view->tizen_view()->GetGeometry();
+    return geometry.width;
+  }
+  return 0;
+}
+
+int32_t FlutterDesktopViewGetHeight(FlutterDesktopViewRef view_ref) {
+  auto* view = reinterpret_cast<flutter::FlutterTizenView*>(view_ref);
+  if (view->tizen_view()->GetType() == flutter::TizenViewType::kView) {
+    flutter::TizenGeometry geometry = view->tizen_view()->GetGeometry();
+    return geometry.height;
+  }
+  return 0;
+}

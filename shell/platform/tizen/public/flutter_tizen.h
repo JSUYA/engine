@@ -165,6 +165,14 @@ FLUTTER_EXPORT void FlutterDesktopViewResize(FlutterDesktopViewRef view,
                                              int32_t width,
                                              int32_t height);
 
+// Returns the width of the view.
+// @warning This API is a work-in-progress and may change.
+FLUTTER_EXPORT int32_t FlutterDesktopViewGetWidth(FlutterDesktopViewRef view);
+
+// Returns the height of the view.
+// @warning This API is a work-in-progress and may change.
+FLUTTER_EXPORT int32_t FlutterDesktopViewGetHeight(FlutterDesktopViewRef view);
+
 // ========== Plugin Registrar (extensions) ==========
 
 // Returns the window associated with this registrar's engine instance.
