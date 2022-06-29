@@ -125,7 +125,8 @@ void TizenViewElementary::RegisterEventHandlers() {
           if (self->container_ == object) {
             int32_t width = 0, height = 0;
             evas_object_geometry_get(object, nullptr, nullptr, &width, &height);
-            self->OnGeometryChanged(TizenGeometry{0, 0, width, height});
+
+            self->view_->OnResize(0, 0, width, height);
           }
         }
       };
@@ -331,6 +332,8 @@ uintptr_t TizenViewElementary::GetWindowId() {
 
 void TizenViewElementary::ResizeWithRotation(TizenGeometry geometry,
                                              int32_t angle) {
+  SetGeometry(geometry);
+
   TizenRendererEvasGL* renderer_evas_gl =
       reinterpret_cast<TizenRendererEvasGL*>(view_->engine()->renderer());
   renderer_evas_gl->ResizeSurface(geometry.width, geometry.height);
@@ -340,11 +343,6 @@ void TizenViewElementary::Show() {
   evas_object_show(container_);
   evas_object_show(image_);
   evas_object_show(event_layer_);
-}
-
-void TizenViewElementary::OnGeometryChanged(TizenGeometry geometry) {
-  SetGeometry(geometry);
-  view_->OnResize(geometry.left, geometry.top, geometry.width, geometry.height);
 }
 
 void TizenViewElementary::PrepareInputMethod() {
