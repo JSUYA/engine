@@ -2,22 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "external_texture_pixel_gl.h"
+#include "external_texture_pixel_egl.h"
 
-#ifdef TIZEN_RENDERER_EVAS_GL
-#include "tizen_evas_gl_helper.h"
-extern Evas_GL* g_evas_gl;
-EVAS_GL_GLOBAL_GLES2_DECLARE();
-#else
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-#include <GLES2/gl2ext.h>
 #include <GLES3/gl32.h>
-#endif
 
 namespace flutter {
 
-bool ExternalTexturePixelGL::PopulateTexture(
+bool ExternalTexturePixelEGL::PopulateTexture(
     size_t width,
     size_t height,
     FlutterOpenGLTexture* opengl_texture) {
@@ -36,14 +29,14 @@ bool ExternalTexturePixelGL::PopulateTexture(
   return true;
 }
 
-ExternalTexturePixelGL::ExternalTexturePixelGL(
+ExternalTexturePixelEGL::ExternalTexturePixelEGL(
     FlutterDesktopPixelBufferTextureCallback texture_callback,
     void* user_data)
     : ExternalTexture(),
       texture_callback_(texture_callback),
       user_data_(user_data) {}
 
-bool ExternalTexturePixelGL::CopyPixelBuffer(size_t& width, size_t& height) {
+bool ExternalTexturePixelEGL::CopyPixelBuffer(size_t& width, size_t& height) {
   if (!texture_callback_) {
     return false;
   }
@@ -59,14 +52,14 @@ bool ExternalTexturePixelGL::CopyPixelBuffer(size_t& width, size_t& height) {
   height = pixel_buffer->height;
 
   if (state_->gl_texture == 0) {
-    glGenTextures(1, &state_->gl_texture);
-    glBindTexture(GL_TEXTURE_2D, state_->gl_texture);
+    glGenTextures(1, (GLuint*)&state_->gl_texture);
+    glBindTexture(GL_TEXTURE_2D, (GLuint)state_->gl_texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   } else {
-    glBindTexture(GL_TEXTURE_2D, state_->gl_texture);
+    glBindTexture(GL_TEXTURE_2D, (GLuint)state_->gl_texture);
   }
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, pixel_buffer->width,
                pixel_buffer->height, 0, GL_RGBA, GL_UNSIGNED_BYTE,

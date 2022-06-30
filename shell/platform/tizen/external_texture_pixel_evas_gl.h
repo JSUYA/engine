@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef EMBEDDER_EXTERNAL_TEXTURE_PIXEL_GL_H
-#define EMBEDDER_EXTERNAL_TEXTURE_PIXEL_GL_H
-
-#include <memory>
+#ifndef EMBEDDER_EXTERNAL_TEXTURE_PIXEL_EVAS_GL_H
+#define EMBEDDER_EXTERNAL_TEXTURE_PIXEL_EVAS_GL_H
 
 #include "flutter/shell/platform/common/public/flutter_texture_registrar.h"
 #include "flutter/shell/platform/embedder/embedder.h"
@@ -14,13 +12,13 @@
 namespace flutter {
 
 // An adaptation class of flutter engine and external texture interface.
-class ExternalTexturePixelGL : public ExternalTexture {
+class ExternalTexturePixelEvasGL : public ExternalTexture {
  public:
-  ExternalTexturePixelGL(
+  ExternalTexturePixelEvasGL(
       FlutterDesktopPixelBufferTextureCallback texture_callback,
       void* user_data);
 
-  ~ExternalTexturePixelGL() = default;
+  ~ExternalTexturePixelEvasGL() = default;
 
   bool PopulateTexture(size_t width,
                        size_t height,
@@ -35,4 +33,4 @@ class ExternalTexturePixelGL : public ExternalTexture {
 
 }  // namespace flutter
 
-#endif  // EMBEDDER_EXTERNAL_TEXTURE_PIXEL_GL_H
+#endif  // EMBEDDER_EXTERNAL_TEXTURE_PIXEL_EVAS_GL_H

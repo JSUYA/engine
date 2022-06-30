@@ -51,6 +51,13 @@ typedef struct {
   int32_t height;
 } FlutterDesktopViewProperties;
 
+typedef enum {
+  // The renderer based on EvasGL.
+  kEvasGL,
+  // The renderer based on EGL.
+  kEGL,
+} FlutterDesktopRendererType;
+
 // Properties for configuring a Flutter engine instance.
 typedef struct {
   // The path to the flutter_assets folder for the application to be run.
@@ -74,6 +81,8 @@ typedef struct {
   // Array of Dart entrypoint arguments. This is deep copied during the call
   // to FlutterDesktopRunEngine.
   const char** dart_entrypoint_argv;
+  // The renderer type of the engine.
+  FlutterDesktopRendererType renderer_type;
 } FlutterDesktopEngineProperties;
 
 // ========== Engine ==========

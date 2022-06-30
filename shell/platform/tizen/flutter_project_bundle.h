@@ -67,6 +67,9 @@ class FlutterProjectBundle {
     return dart_entrypoint_arguments_;
   }
 
+  // Returns the renderer type.
+  FlutterDesktopRendererType renderer_type() { return renderer_type_; }
+
  private:
   std::filesystem::path assets_path_;
   std::filesystem::path icu_path_;
@@ -80,6 +83,8 @@ class FlutterProjectBundle {
 
   // Dart entrypoint arguments.
   std::vector<std::string> dart_entrypoint_arguments_;
+
+  FlutterDesktopRendererType renderer_type_;
 };
 
 }  // namespace flutter
