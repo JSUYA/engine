@@ -70,8 +70,6 @@ FlutterProjectBundle::FlutterProjectBundle(
 
   engine_arguments_.insert(engine_arguments_.end(), properties.switches,
                            properties.switches + properties.switches_count);
-
-  renderer_type_ = properties.renderer_type;
 }
 
 bool FlutterProjectBundle::HasValidPaths() {

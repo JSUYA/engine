@@ -36,7 +36,7 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromElmParent(
   // Take ownership of the engine, starting it if necessary.
   view->SetEngine(
       std::unique_ptr<flutter::FlutterTizenEngine>(EngineFromHandle(engine)));
-  view->CreateRenderSurface();
+  view->CreateRenderSurface(FlutterDesktopRendererType::kEvasGL);
   if (!view->engine()->IsRunning()) {
     if (!view->engine()->RunEngine()) {
       return nullptr;

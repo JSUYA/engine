@@ -200,8 +200,7 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
       window_properties.height};
 
   std::unique_ptr<flutter::TizenWindow> window = nullptr;
-  if (EngineFromHandle(engine)->project()->renderer_type() ==
-      FlutterDesktopRendererType::kEvasGL) {
+  if (window_properties.renderer_type == FlutterDesktopRendererType::kEvasGL) {
     window = std::make_unique<flutter::TizenWindowElementary>(
         window_geometry, window_properties.transparent,
         window_properties.focusable, window_properties.top_level);
@@ -220,7 +219,7 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
   // Take ownership of the engine, starting it if necessary.
   view->SetEngine(
       std::unique_ptr<flutter::FlutterTizenEngine>(EngineFromHandle(engine)));
-  view->CreateRenderSurface();
+  view->CreateRenderSurface(window_properties.renderer_type);
   if (!view->engine()->IsRunning()) {
     if (!view->engine()->RunEngine()) {
       return nullptr;

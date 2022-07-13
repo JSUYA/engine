@@ -44,7 +44,7 @@ int64_t FlutterTizenTextureRegistrar::RegisterTexture(
     }
   }
   std::unique_ptr<ExternalTexture> texture_gl =
-      CreateExternalTexture(texture_info, engine_->project()->renderer_type());
+      CreateExternalTexture(texture_info, engine_->renderer()->type());
   int64_t texture_id = texture_gl->TextureId();
 
   {

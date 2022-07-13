@@ -64,27 +64,6 @@ FlutterTizenEngine::FlutterTizenEngine(const FlutterProjectBundle& project)
         }
       });
 
-  if (project_->renderer_type() == FlutterDesktopRendererType::kEvasGL) {
-    renderer_ = std::make_unique<TizenRendererEvasGL>();
-  }
-#ifndef WEARABLE_PROFILE
-  else {
-    renderer_ = std::make_unique<TizenRendererEgl>();
-  }
-#endif
-
-  if (project_->renderer_type() == FlutterDesktopRendererType::kEvasGL) {
-    render_loop_ = std::make_unique<TizenRenderEventLoop>(
-        std::this_thread::get_id(),  // main thread
-        embedder_api_.GetCurrentTime,
-        [this](const auto* task) {
-          if (embedder_api_.RunTask(this->engine_, task) != kSuccess) {
-            FT_LOG(Error) << "Could not post an engine task.";
-          }
-        },
-        renderer_.get());
-  }
-
   messenger_ = std::make_unique<FlutterDesktopMessenger>();
   messenger_->engine = this;
   message_dispatcher_ =
@@ -96,6 +75,30 @@ FlutterTizenEngine::FlutterTizenEngine(const FlutterProjectBundle& project)
 
 FlutterTizenEngine::~FlutterTizenEngine() {
   StopEngine();
+}
+
+void FlutterTizenEngine::CreateRenderer(
+    FlutterDesktopRendererType renderer_type) {
+  if (renderer_type == FlutterDesktopRendererType::kEvasGL) {
+    renderer_ = std::make_unique<TizenRendererEvasGL>();
+  }
+#ifndef WEARABLE_PROFILE
+  else {
+    renderer_ = std::make_unique<TizenRendererEgl>();
+  }
+#endif
+
+  if (renderer_type == FlutterDesktopRendererType::kEvasGL) {
+    render_loop_ = std::make_unique<TizenRenderEventLoop>(
+        std::this_thread::get_id(),  // main thread
+        embedder_api_.GetCurrentTime,
+        [this](const auto* task) {
+          if (embedder_api_.RunTask(this->engine_, task) != kSuccess) {
+            FT_LOG(Error) << "Could not post an engine task.";
+          }
+        },
+        renderer_.get());
+  }
 }
 
 bool FlutterTizenEngine::RunEngine() {
@@ -157,7 +160,7 @@ bool FlutterTizenEngine::RunEngine() {
   custom_task_runners.platform_task_runner = &platform_task_runner;
 
   FlutterTaskRunnerDescription render_task_runner = {};
-  if (project_->renderer_type() == FlutterDesktopRendererType::kEvasGL) {
+  if (renderer_->type() == FlutterDesktopRendererType::kEvasGL) {
     if (IsHeaded()) {
       render_task_runner.struct_size = sizeof(FlutterTaskRunnerDescription);
       render_task_runner.user_data = render_loop_.get();
@@ -204,7 +207,7 @@ bool FlutterTizenEngine::RunEngine() {
 #endif
 
 #ifndef WEARABLE_PROFILE
-  if (project_->renderer_type() == FlutterDesktopRendererType::kEGL) {
+  if (renderer_->type() == FlutterDesktopRendererType::kEGL) {
     if (IsHeaded()) {
       tizen_vsync_waiter_ = std::make_unique<TizenVsyncWaiter>(this);
       args.vsync_callback = [](void* user_data, intptr_t baton) -> void {
@@ -272,7 +275,7 @@ bool FlutterTizenEngine::StopEngine() {
     }
 
 #ifndef WEARABLE_PROFILE
-    if (project_->renderer_type() == FlutterDesktopRendererType::kEGL) {
+    if (renderer_->type() == FlutterDesktopRendererType::kEGL) {
       tizen_vsync_waiter_.reset();
     }
 #endif
