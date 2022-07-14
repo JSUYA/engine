@@ -36,7 +36,7 @@ ExternalTextureSurfaceEGL::ExternalTextureSurfaceEGL(
 
 ExternalTextureSurfaceEGL::~ExternalTextureSurfaceEGL() {
   if (state_->gl_texture != 0) {
-    glDeleteTextures(1, (GLuint*)&state_->gl_texture);
+    glDeleteTextures(1, static_cast<GLuint*>(&state_->gl_texture));
   }
   state_.release();
 }
@@ -137,8 +137,9 @@ bool ExternalTextureSurfaceEGL::PopulateTexture(
     return false;
   }
   if (state_->gl_texture == 0) {
-    glGenTextures(1, (GLuint*)&state_->gl_texture);
-    glBindTexture(GL_TEXTURE_EXTERNAL_OES, (GLuint)state_->gl_texture);
+    glGenTextures(1, static_cast<GLuint*>(&state_->gl_texture));
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES,
+                  static_cast<GLuint>(state_->gl_texture));
     // set the texture wrapping parameters
     glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_WRAP_S,
                     GL_CLAMP_TO_BORDER);
@@ -148,7 +149,8 @@ bool ExternalTextureSurfaceEGL::PopulateTexture(
     glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_EXTERNAL_OES, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   } else {
-    glBindTexture(GL_TEXTURE_EXTERNAL_OES, (GLuint)state_->gl_texture);
+    glBindTexture(GL_TEXTURE_EXTERNAL_OES,
+                  static_cast<GLuint>(state_->gl_texture));
   }
   PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES =
       reinterpret_cast<PFNGLEGLIMAGETARGETTEXTURE2DOESPROC>(

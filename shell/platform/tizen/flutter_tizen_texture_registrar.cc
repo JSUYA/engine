@@ -103,7 +103,7 @@ FlutterTizenTextureRegistrar::CreateExternalTexture(
         break;
       }
 #ifndef WEARABLE_PROFILE
-      return std::make_unique<ExternalTexturePixelEvasGL>(
+      return std::make_unique<ExternalTexturePixelEGL>(
           texture_info->pixel_buffer_config.callback,
           texture_info->pixel_buffer_config.user_data);
       break;

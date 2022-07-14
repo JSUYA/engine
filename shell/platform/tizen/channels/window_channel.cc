@@ -43,8 +43,6 @@ void WindowChannel::HandleMethodCall(
     map[EncodableValue("height")] = EncodableValue(geometry.height);
     result->Success(EncodableValue(map));
   } else if (method_name == "setWindowGeometry") {
-    FT_LOG(Error) << "setWindowGeometry is not supported on Evas GL.";
-    result->NotImplemented();
 #ifndef WEARABLE_PROFILE
     const auto* arguments = std::get_if<EncodableMap>(method_call.arguments());
     if (!arguments) {

@@ -88,8 +88,8 @@ config("rootstrap_include_dirs") {
 # Template for the embedder build. Used to generate embedders for different
 # device profiles.
 #
-# If target profile is wearable, only the Evas_GL renderer is used,
-# otherwise the Evas_GL and the Ecore_Wl2 renderers are used.
+# If the target profile is wearable, only the Evas GL renderer is supported.
+# Otherwise, both the Evas GL and EGL renderers are supported.
 template("embedder") {
   forward_variables_from(invoker,
                          [
@@ -192,7 +192,6 @@ template("embedder") {
       sources += [
         "external_texture_pixel_egl.cc",
         "external_texture_surface_egl.cc",
-        "flutter_tizen_ecore.cc",
         "tizen_renderer_egl.cc",
         "tizen_vsync_waiter.cc",
         "tizen_window_ecore_wl2.cc",

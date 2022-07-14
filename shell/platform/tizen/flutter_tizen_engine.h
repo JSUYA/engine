@@ -97,8 +97,6 @@ class FlutterTizenEngine {
 
   TizenRenderer* renderer() { return renderer_.get(); }
 
-  FlutterProjectBundle* project() { return project_.get(); }
-
   AppControlChannel* app_control_channel() {
     return app_control_channel_.get();
   }
