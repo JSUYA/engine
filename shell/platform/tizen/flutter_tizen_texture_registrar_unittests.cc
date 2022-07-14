@@ -90,6 +90,8 @@ TEST_F(FlutterTizenTextureRegistrarTest, RegisterUnregisterTexture) {
                          return kSuccess;
                        }));
 
+  engine_->CreateRenderer(FlutterDesktopRendererType::kEvasGL);
+
   int64_t texture_id = registrar.RegisterTexture(&texture_info);
   EXPECT_TRUE(register_called);
   EXPECT_NE(texture_id, -1);
