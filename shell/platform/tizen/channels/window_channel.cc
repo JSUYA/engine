@@ -43,7 +43,6 @@ void WindowChannel::HandleMethodCall(
     map[EncodableValue("height")] = EncodableValue(geometry.height);
     result->Success(EncodableValue(map));
   } else if (method_name == "setWindowGeometry") {
-#ifndef WEARABLE_PROFILE
     const auto* arguments = std::get_if<EncodableMap>(method_call.arguments());
     if (!arguments) {
       result->Error("Invalid arguments");
@@ -62,7 +61,6 @@ void WindowChannel::HandleMethodCall(
         height ? *height : geometry.height,
     });
     result->Success();
-#endif
   } else if (method_name == "getScreenGeometry") {
     TizenGeometry geometry = window_->GetScreenGeometry();
     EncodableMap map;

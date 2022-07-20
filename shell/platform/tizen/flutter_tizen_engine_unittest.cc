@@ -94,8 +94,6 @@ TEST_F(FlutterTizenEngineTest, RunDoesExpectedInitialization) {
         return kSuccess;
       }));
 
-  engine_->CreateRenderer(FlutterDesktopRendererType::kEvasGL);
-
   engine_->RunEngine();
 
   EXPECT_TRUE(run_called);
@@ -208,8 +206,6 @@ TEST_F(FlutterTizenEngineTest, AddPluginRegistrarDestructionCallback) {
   modifier.embedder_api().SendPlatformMessage =
       MOCK_ENGINE_PROC(SendPlatformMessage,
                        ([](auto engine, auto message) { return kSuccess; }));
-
-  engine_->CreateRenderer(FlutterDesktopRendererType::kEvasGL);
 
   engine_->RunEngine();
 

@@ -22,7 +22,6 @@ struct ExternalTextureGLState {
 
 static std::atomic_long next_texture_id = {1};
 
-// An adaptation class of flutter engine and external texture interface.
 class ExternalTexture {
  public:
   ExternalTexture(ExternalTextureExtensionType gl_extension =

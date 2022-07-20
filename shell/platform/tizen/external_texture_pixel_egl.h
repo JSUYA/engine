@@ -11,7 +11,6 @@
 
 namespace flutter {
 
-// An adaptation class of flutter engine and external texture interface.
 class ExternalTexturePixelEGL : public ExternalTexture {
  public:
   ExternalTexturePixelEGL(

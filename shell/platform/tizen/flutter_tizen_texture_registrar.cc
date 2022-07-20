@@ -43,8 +43,12 @@ int64_t FlutterTizenTextureRegistrar::RegisterTexture(
       return -1;
     }
   }
+  FlutterDesktopRendererType renderer_type = FlutterDesktopRendererType::kEGL;
+  if (engine_->renderer()) {
+    renderer_type = engine_->renderer()->type();
+  }
   std::unique_ptr<ExternalTexture> texture_gl =
-      CreateExternalTexture(texture_info, engine_->renderer()->type());
+      CreateExternalTexture(texture_info, renderer_type);
   int64_t texture_id = texture_gl->TextureId();
 
   {

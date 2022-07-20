@@ -53,6 +53,7 @@ FlutterTizenEngine::FlutterTizenEngine(const FlutterProjectBundle& project)
       aot_data_(nullptr, nullptr) {
   embedder_api_.struct_size = sizeof(FlutterEngineProcTable);
   FlutterEngineGetProcAddresses(&embedder_api_);
+
   // Run flutter task on Tizen main loop.
   // Tizen engine has four threads (GPU thread, UI thread, IO thread, platform
   // thread). UI threads need to send flutter task to platform thread.
@@ -81,14 +82,7 @@ void FlutterTizenEngine::CreateRenderer(
     FlutterDesktopRendererType renderer_type) {
   if (renderer_type == FlutterDesktopRendererType::kEvasGL) {
     renderer_ = std::make_unique<TizenRendererEvasGL>();
-  }
-#ifndef WEARABLE_PROFILE
-  else {
-    renderer_ = std::make_unique<TizenRendererEgl>();
-  }
-#endif
 
-  if (renderer_type == FlutterDesktopRendererType::kEvasGL) {
     render_loop_ = std::make_unique<TizenRenderEventLoop>(
         std::this_thread::get_id(),  // main thread
         embedder_api_.GetCurrentTime,
@@ -99,6 +93,11 @@ void FlutterTizenEngine::CreateRenderer(
         },
         renderer_.get());
   }
+#ifndef WEARABLE_PROFILE
+  else {
+    renderer_ = std::make_unique<TizenRendererEgl>();
+  }
+#endif
 }
 
 bool FlutterTizenEngine::RunEngine() {
@@ -160,21 +159,20 @@ bool FlutterTizenEngine::RunEngine() {
   custom_task_runners.platform_task_runner = &platform_task_runner;
 
   FlutterTaskRunnerDescription render_task_runner = {};
-  if (renderer_->type() == FlutterDesktopRendererType::kEvasGL) {
-    if (IsHeaded()) {
-      render_task_runner.struct_size = sizeof(FlutterTaskRunnerDescription);
-      render_task_runner.user_data = render_loop_.get();
-      render_task_runner.runs_task_on_current_thread_callback =
-          [](void* data) -> bool {
-        return static_cast<TizenEventLoop*>(data)->RunsTasksOnCurrentThread();
-      };
-      render_task_runner.post_task_callback =
-          [](FlutterTask task, uint64_t target_time_nanos, void* data) -> void {
-        static_cast<TizenEventLoop*>(data)->PostTask(task, target_time_nanos);
-      };
-      render_task_runner.identifier = kRenderTaskRunnerIdentifier;
-      custom_task_runners.render_task_runner = &render_task_runner;
-    }
+
+  if (IsHeaded() && renderer_->type() == FlutterDesktopRendererType::kEvasGL) {
+    render_task_runner.struct_size = sizeof(FlutterTaskRunnerDescription);
+    render_task_runner.user_data = render_loop_.get();
+    render_task_runner.runs_task_on_current_thread_callback =
+        [](void* data) -> bool {
+      return static_cast<TizenEventLoop*>(data)->RunsTasksOnCurrentThread();
+    };
+    render_task_runner.post_task_callback =
+        [](FlutterTask task, uint64_t target_time_nanos, void* data) -> void {
+      static_cast<TizenEventLoop*>(data)->PostTask(task, target_time_nanos);
+    };
+    render_task_runner.identifier = kRenderTaskRunnerIdentifier;
+    custom_task_runners.render_task_runner = &render_task_runner;
   }
 
   FlutterProjectArgs args = {};
@@ -207,14 +205,12 @@ bool FlutterTizenEngine::RunEngine() {
 #endif
 
 #ifndef WEARABLE_PROFILE
-  if (renderer_->type() == FlutterDesktopRendererType::kEGL) {
-    if (IsHeaded()) {
-      tizen_vsync_waiter_ = std::make_unique<TizenVsyncWaiter>(this);
-      args.vsync_callback = [](void* user_data, intptr_t baton) -> void {
-        reinterpret_cast<FlutterTizenEngine*>(user_data)
-            ->tizen_vsync_waiter_->AsyncWaitForVsync(baton);
-      };
-    }
+  if (IsHeaded() && renderer_->type() == FlutterDesktopRendererType::kEGL) {
+    tizen_vsync_waiter_ = std::make_unique<TizenVsyncWaiter>(this);
+    args.vsync_callback = [](void* user_data, intptr_t baton) -> void {
+      reinterpret_cast<FlutterTizenEngine*>(user_data)
+          ->tizen_vsync_waiter_->AsyncWaitForVsync(baton);
+    };
   }
 #endif
   if (aot_data_) {
@@ -275,7 +271,7 @@ bool FlutterTizenEngine::StopEngine() {
     }
 
 #ifndef WEARABLE_PROFILE
-    if (renderer_->type() == FlutterDesktopRendererType::kEGL) {
+    if (IsHeaded() && renderer_->type() == FlutterDesktopRendererType::kEGL) {
       tizen_vsync_waiter_.reset();
     }
 #endif

@@ -14,7 +14,9 @@
 #include "flutter/shell/platform/tizen/logger.h"
 #include "flutter/shell/platform/tizen/public/flutter_platform_view.h"
 #include "flutter/shell/platform/tizen/tizen_window.h"
+#ifndef WEARABLE_PROFILE
 #include "flutter/shell/platform/tizen/tizen_window_ecore_wl2.h"
+#endif
 #include "flutter/shell/platform/tizen/tizen_window_elementary.h"
 
 namespace {
@@ -199,7 +201,7 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
       window_properties.x, window_properties.y, window_properties.width,
       window_properties.height};
 
-  std::unique_ptr<flutter::TizenWindow> window = nullptr;
+  std::unique_ptr<flutter::TizenWindow> window;
   if (window_properties.renderer_type == FlutterDesktopRendererType::kEvasGL) {
     window = std::make_unique<flutter::TizenWindowElementary>(
         window_geometry, window_properties.transparent,
