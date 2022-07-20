@@ -54,13 +54,16 @@ void WindowChannel::HandleMethodCall(
     EncodableValueHolder<int32_t> height(arguments, "height");
 
     TizenGeometry geometry = window_->GetGeometry();
-    window_->SetGeometry({
-        x ? *x : geometry.left,
-        y ? *y : geometry.top,
-        width ? *width : geometry.width,
-        height ? *height : geometry.height,
-    });
-    result->Success();
+    if (window_->SetGeometry({
+            x ? *x : geometry.left,
+            y ? *y : geometry.top,
+            width ? *width : geometry.width,
+            height ? *height : geometry.height,
+        })) {
+      result->Success();
+    } else {
+      result->NotImplemented();
+    }
   } else if (method_name == "getScreenGeometry") {
     TizenGeometry geometry = window_->GetScreenGeometry();
     EncodableMap map;

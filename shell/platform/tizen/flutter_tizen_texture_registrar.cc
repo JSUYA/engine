@@ -104,7 +104,6 @@ FlutterTizenTextureRegistrar::CreateExternalTexture(
     case kFlutterDesktopPixelBufferTexture:
       FT_UNIMPLEMENTED();
       return nullptr;
-      break;
     case kFlutterDesktopGpuBufferTexture:
       ExternalTextureExtensionType gl_extension =
           ExternalTextureExtensionType::kNone;
@@ -128,7 +127,6 @@ FlutterTizenTextureRegistrar::CreateExternalTexture(
 #else
       return nullptr;
 #endif
-      break;
   }
 }
 
