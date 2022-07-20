@@ -8,10 +8,8 @@
 #include <mutex>
 
 #ifndef WEARABLE_PROFILE
-#include "flutter/shell/platform/tizen/external_texture_pixel_egl.h"
 #include "flutter/shell/platform/tizen/external_texture_surface_egl.h"
 #endif
-#include "flutter/shell/platform/tizen/external_texture_pixel_evas_gl.h"
 #include "flutter/shell/platform/tizen/external_texture_surface_evas_gl.h"
 #include "flutter/shell/platform/tizen/flutter_tizen_engine.h"
 #include "flutter/shell/platform/tizen/logger.h"
@@ -49,6 +47,10 @@ int64_t FlutterTizenTextureRegistrar::RegisterTexture(
   }
   std::unique_ptr<ExternalTexture> texture_gl =
       CreateExternalTexture(texture_info, renderer_type);
+  if (!texture_gl) {
+    FT_LOG(Error) << "Failed to create ExternalTexture.";
+    return -1;
+  }
   int64_t texture_id = texture_gl->TextureId();
 
   {
@@ -100,28 +102,17 @@ FlutterTizenTextureRegistrar::CreateExternalTexture(
     FlutterDesktopRendererType renderer_type) {
   switch (texture_info->type) {
     case kFlutterDesktopPixelBufferTexture:
-      if (FlutterDesktopRendererType::kEvasGL == renderer_type) {
-        return std::make_unique<ExternalTexturePixelEvasGL>(
-            texture_info->pixel_buffer_config.callback,
-            texture_info->pixel_buffer_config.user_data);
-        break;
-      }
-#ifndef WEARABLE_PROFILE
-      return std::make_unique<ExternalTexturePixelEGL>(
-          texture_info->pixel_buffer_config.callback,
-          texture_info->pixel_buffer_config.user_data);
-      break;
-#else
+      FT_UNIMPLEMENTED();
       return nullptr;
-#endif
       break;
     case kFlutterDesktopGpuBufferTexture:
       ExternalTextureExtensionType gl_extension =
           ExternalTextureExtensionType::kNone;
-      if (engine_->renderer()->IsSupportedExtension(
-              "EGL_TIZEN_image_native_surface")) {
+      if (engine_->renderer() && engine_->renderer()->IsSupportedExtension(
+                                     "EGL_TIZEN_image_native_surface")) {
         gl_extension = ExternalTextureExtensionType::kNativeSurface;
-      } else if (engine_->renderer()->IsSupportedExtension(
+      } else if (engine_->renderer() &&
+                 engine_->renderer()->IsSupportedExtension(
                      "EGL_EXT_image_dma_buf_import")) {
         gl_extension = ExternalTextureExtensionType::kDmaBuffer;
       }
