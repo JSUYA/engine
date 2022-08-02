@@ -6,7 +6,7 @@
 
 #include "flutter/shell/platform/tizen/flutter_tizen_engine.h"
 #include "flutter/shell/platform/tizen/flutter_tizen_view.h"
-#include "flutter/shell/platform/tizen/tizen_view_elementary.h"
+#include "flutter/shell/platform/tizen/tizen_view_nui.h"
 
 namespace {
 
@@ -21,14 +21,16 @@ FlutterDesktopViewRef HandleForView(flutter::FlutterTizenView* view) {
 
 }  // namespace
 
-FlutterDesktopViewRef FlutterDesktopViewCreateFromElmParent(
+FlutterDesktopViewRef FlutterDesktopViewCreateFromImageView(
     const FlutterDesktopViewProperties& view_properties,
     FlutterDesktopEngineRef engine,
-    void* parent) {
+    void* image_view,
+    void* native_image_queue,
+    int default_window_id) {
   std::unique_ptr<flutter::TizenViewBase> tizen_view =
-      std::make_unique<flutter::TizenViewElementary>(
-          view_properties.width, view_properties.height,
-          static_cast<Evas_Object*>(parent));
+      std::make_unique<flutter::TizenViewNui>(
+          view_properties.width, view_properties.height, image_view,
+          native_image_queue, default_window_id);
 
   auto view =
       std::make_unique<flutter::FlutterTizenView>(std::move(tizen_view));
@@ -36,7 +38,8 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromElmParent(
   // Take ownership of the engine, starting it if necessary.
   view->SetEngine(
       std::unique_ptr<flutter::FlutterTizenEngine>(EngineFromHandle(engine)));
-  view->CreateRenderSurface(FlutterDesktopRendererType::kEvasGL, nullptr);
+  view->CreateRenderSurface(FlutterDesktopRendererType::kEGL,
+                            native_image_queue);
   if (!view->engine()->IsRunning()) {
     if (!view->engine()->RunEngine()) {
       return nullptr;

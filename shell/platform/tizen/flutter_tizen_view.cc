@@ -7,6 +7,7 @@
 
 #include "flutter/shell/platform/tizen/logger.h"
 #include "flutter/shell/platform/tizen/tizen_view.h"
+#include "flutter/shell/platform/tizen/tizen_view_nui.h"
 #include "flutter/shell/platform/tizen/tizen_window.h"
 
 namespace {
@@ -85,7 +86,8 @@ void FlutterTizenView::SetEngine(std::unique_ptr<FlutterTizenEngine> engine) {
 }
 
 void FlutterTizenView::CreateRenderSurface(
-    FlutterDesktopRendererType renderer_type) {
+    FlutterDesktopRendererType renderer_type,
+    void* render_target) {
   if (engine_) {
     engine_->CreateRenderer(renderer_type);
   }
@@ -99,8 +101,14 @@ void FlutterTizenView::CreateRenderSurface(
                                          geometry.width, geometry.height);
     } else {
       auto* tizen_view = reinterpret_cast<TizenView*>(tizen_view_.get());
-      engine_->renderer()->CreateSurface(tizen_view->GetRenderTarget(), nullptr,
-                                         geometry.width, geometry.height);
+      if (renderer_type == FlutterDesktopRendererType::kEvasGL) {
+        engine_->renderer()->CreateSurface(tizen_view->GetRenderTarget(),
+                                           nullptr, geometry.width,
+                                           geometry.height);
+      } else {
+        engine_->renderer()->CreateSurface(render_target, nullptr,
+                                           geometry.width, geometry.height);
+      }
     }
   }
 }
@@ -119,7 +127,15 @@ void FlutterTizenView::Resize(int32_t width, int32_t height) {
 }
 
 bool FlutterTizenView::OnMakeCurrent() {
-  return engine_->renderer()->OnMakeCurrent();
+  bool result = engine_->renderer()->OnMakeCurrent();
+
+  if (tizen_view_->GetType() == flutter::TizenViewType::kView &&
+      engine_->renderer()->type() == FlutterDesktopRendererType::kEGL) {
+    auto view = reinterpret_cast<TizenViewNui*>(tizen_view_.get());
+    view->KeepRenderingEventThreadCallback()->Trigger();
+  }
+
+  return result;
 }
 
 bool FlutterTizenView::OnClearCurrent() {

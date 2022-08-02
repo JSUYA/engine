@@ -32,6 +32,12 @@ typedef enum {
   kEGL,
 } FlutterDesktopRendererType;
 
+typedef enum {
+  kMouseDown,
+  kMouseUp,
+  kMouseMove,
+} FlutterDesktopViewMouseEventType;
+
 // Properties for configuring the initial settings of a Flutter window.
 typedef struct {
   // The x-coordinate of the top left corner of the window.
@@ -161,6 +167,19 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromElmParent(
     FlutterDesktopEngineRef engine,
     void* parent);
 
+// Creates a view that hosts and displays the given engine instance.
+//
+// The type of image_view should be ImageViewN*, Cast
+// ImageViewN* to void* and the type of native_image_queue should be
+// NativeImageQueue*, Cast NativeImageQueue* to void*.
+// @warning This API is a work-in-progress and may change.
+FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromImageView(
+    const FlutterDesktopViewProperties& view_properties,
+    FlutterDesktopEngineRef engine,
+    void* image_view,
+    void* native_image_queue,
+    int default_window_id);
+
 // Destroys the view.
 //
 // The engine owned by the view will also be shut down implicitly.
@@ -182,6 +201,21 @@ FLUTTER_EXPORT void* FlutterDesktopViewGetNativeHandle(
 FLUTTER_EXPORT void FlutterDesktopViewResize(FlutterDesktopViewRef view,
                                              int32_t width,
                                              int32_t height);
+
+FLUTTER_EXPORT void FlutterDesktopViewOnMouseEvent(
+    FlutterDesktopViewRef view,
+    FlutterDesktopViewMouseEventType type,
+    double x,
+    double y,
+    size_t timestamp,
+    int32_t device_id);
+
+FLUTTER_EXPORT void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
+                                                 const char* key,
+                                                 const char* string,
+                                                 uint32_t modifiers,
+                                                 uint32_t scan_code,
+                                                 bool is_down);
 
 // ========== Plugin Registrar (extensions) ==========
 

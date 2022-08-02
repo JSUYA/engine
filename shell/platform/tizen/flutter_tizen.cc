@@ -216,7 +216,8 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
   // Take ownership of the engine, starting it if necessary.
   view->SetEngine(
       std::unique_ptr<flutter::FlutterTizenEngine>(EngineFromHandle(engine)));
-  view->CreateRenderSurface(window_properties.renderer_type);
+  view->CreateRenderSurface(window_properties.renderer_type, nullptr);
+
   if (!view->engine()->IsRunning()) {
     if (!view->engine()->RunEngine()) {
       return nullptr;
@@ -239,6 +240,39 @@ void FlutterDesktopViewResize(FlutterDesktopViewRef view,
                               int32_t width,
                               int32_t height) {
   ViewFromHandle(view)->Resize(width, height);
+}
+
+void FlutterDesktopViewOnMouseEvent(FlutterDesktopViewRef view,
+                                    FlutterDesktopViewMouseEventType type,
+                                    double x,
+                                    double y,
+                                    size_t timestamp,
+                                    int32_t device_id) {
+  switch (type) {
+    case FlutterDesktopViewMouseEventType::kMouseDown:
+    default:
+      ViewFromHandle(view)->OnPointerDown(
+          x, y, timestamp, kFlutterPointerDeviceKindTouch, device_id);
+      break;
+    case FlutterDesktopViewMouseEventType::kMouseUp:
+      ViewFromHandle(view)->OnPointerUp(
+          x, y, timestamp, kFlutterPointerDeviceKindTouch, device_id);
+      break;
+    case FlutterDesktopViewMouseEventType::kMouseMove:
+      ViewFromHandle(view)->OnPointerMove(
+          x, y, timestamp, kFlutterPointerDeviceKindTouch, device_id);
+      break;
+  }
+}
+
+void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
+                                  const char* key,
+                                  const char* string,
+                                  uint32_t modifiers,
+                                  uint32_t scan_code,
+                                  bool is_down) {
+  ViewFromHandle(view)->OnKey(key, string, nullptr, modifiers, scan_code,
+                              is_down);
 }
 
 void FlutterDesktopRegisterViewFactory(
