@@ -97,8 +97,13 @@ template("embedder") {
   forward_variables_from(invoker,
                          [
                            "target_type",
+                           "enable_nui_support",
                            "defines",
                          ])
+
+  if (!defined(enable_nui_support)) {
+    enable_nui_support = false
+  }
 
   target(target_type, target_name) {
     public = _public_headers
@@ -124,7 +129,6 @@ template("embedder") {
       "flutter_tizen.cc",
       "flutter_tizen_elementary.cc",
       "flutter_tizen_engine.cc",
-      "flutter_tizen_nui.cc",
       "flutter_tizen_texture_registrar.cc",
       "flutter_tizen_view.cc",
       "logger.cc",
@@ -134,22 +138,11 @@ template("embedder") {
       "tizen_renderer.cc",
       "tizen_renderer_evas_gl.cc",
       "tizen_view_elementary.cc",
-      "tizen_view_nui.cc",
       "tizen_window_elementary.cc",
     ]
 
-    if (target_name != "flutter_tizen_wearable") {
-      sources += [
-        "accessibility_bridge_delegate_tizen.cc",
-        "flutter_platform_node_delegate_tizen.cc",
-      ]
-    }
-
     libs = [
       "base-utils-i18n",
-      "dali2-adaptor",
-      "dali2-core",
-      "dali2-toolkit",
       "capi-appfw-application",
       "capi-appfw-app-common",
       "capi-appfw-app-control",
@@ -172,6 +165,26 @@ template("embedder") {
       "wayland-client",
     ]
 
+    if (target_name != "flutter_tizen_wearable") {
+      sources += [
+        "accessibility_bridge_delegate_tizen.cc",
+        "external_texture_pixel_egl.cc",
+        "external_texture_surface_egl.cc",
+        "flutter_platform_node_delegate_tizen.cc",
+        "tizen_renderer_egl.cc",
+        "tizen_vsync_waiter.cc",
+        "tizen_window_ecore_wl2.cc",
+      ]
+
+      libs += [
+        "ecore_wl2",
+        "tdm-client",
+        "tizen-extension-client",
+        "EGL",
+        "GLESv2",
+      ]
+    }
+
     if (target_name == "flutter_tizen_common") {
       sources += [ "channels/tizen_shell.cc" ]
 
@@ -187,32 +200,28 @@ template("embedder") {
     configs +=
         [ "//flutter/shell/platform/common:desktop_library_implementation" ]
 
-    configs -= [ "//build/config/compiler:no_rtti" ]
-    configs += [ "//build/config/compiler:rtti" ]
+    if (enable_nui_support) {
+      sources += [
+        "flutter_tizen_nui.cc",
+        "tizen_view_nui.cc",
+      ]
+
+      libs += [
+        "dali2-adaptor",
+        "dali2-core",
+      ]
+
+      defines += [ "NUI_SUPPORT" ]
+
+      configs -= [ "//build/config/compiler:no_rtti" ]
+      configs += [ "//build/config/compiler:rtti" ]
+    }
 
     public_configs = [
       ":relative_client_wrapper_headers",
       ":rootstrap_include_dirs",
       "//flutter:config",
     ]
-
-    if (target_name != "flutter_tizen_wearable") {
-      sources += [
-        "external_texture_pixel_egl.cc",
-        "external_texture_surface_egl.cc",
-        "tizen_renderer_egl.cc",
-        "tizen_vsync_waiter.cc",
-        "tizen_window_ecore_wl2.cc",
-      ]
-
-      libs += [
-        "ecore_wl2",
-        "tdm-client",
-        "tizen-extension-client",
-        "EGL",
-        "GLESv2",
-      ]
-    }
 
     public_deps = [ ":flutter_engine" ]
 
@@ -237,6 +246,13 @@ embedder("flutter_tizen_mobile") {
   defines = [ "MOBILE_PROFILE" ]
 }
 
+embedder("flutter_tizen_mobile_nui") {
+  target_type = "shared_library"
+  enable_nui_support = true
+
+  defines = [ "MOBILE_PROFILE" ]
+}
+
 embedder("flutter_tizen_wearable") {
   target_type = "shared_library"
 
@@ -245,6 +261,13 @@ embedder("flutter_tizen_wearable") {
 
 embedder("flutter_tizen_tv") {
   target_type = "shared_library"
+
+  defines = [ "TV_PROFILE" ]
+}
+
+embedder("flutter_tizen_tv_nui") {
+  target_type = "shared_library"
+  enable_nui_support = true
 
   defines = [ "TV_PROFILE" ]
 }
@@ -323,11 +346,14 @@ group("tizen") {
     ":publish_cpp_client_wrapper",
     ":publish_headers_tizen",
   ]
+
   if (embedder_for_target) {
     deps += [
       ":flutter_tizen_common",
       ":flutter_tizen_mobile",
+      ":flutter_tizen_mobile_nui",
       ":flutter_tizen_tv",
+      ":flutter_tizen_tv_nui",
       ":flutter_tizen_wearable",
     ]
   }

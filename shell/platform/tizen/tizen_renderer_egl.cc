@@ -8,7 +8,9 @@
 #include <Ecore_Wl2.h>
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#ifdef NUI_SUPPORT
 #include <dali/devel-api/adaptor-framework/native-image-source-queue.h>
+#endif
 #include <tbm_dummy_display.h>
 #include <tbm_surface.h>
 #include <tbm_surface_queue.h>
@@ -79,6 +81,7 @@ bool TizenRendererEgl::CreateSurface(void* render_target,
       egl_surface_ = eglCreateWindowSurface(egl_display_, egl_config_,
                                             egl_window, attribs);
     } else {
+#ifdef NUI_SUPPORT
       Dali::NativeImageSourceQueuePtr dali_native_image_queue_ =
           static_cast<Dali::NativeImageSourceQueue*>(render_target);
       tbm_surface_queue_h tbm_surface_queue_ =
@@ -89,6 +92,7 @@ bool TizenRendererEgl::CreateSurface(void* render_target,
           reinterpret_cast<EGLNativeWindowType*>(tbm_surface_queue_);
       egl_surface_ = eglCreateWindowSurface(egl_display_, egl_config_,
                                             egl_window, attribs);
+#endif
     }
 
     if (egl_surface_ == EGL_NO_SURFACE) {
