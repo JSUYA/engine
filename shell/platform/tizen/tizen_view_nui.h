@@ -35,7 +35,7 @@ class TizenViewNui : public TizenView {
 
   void* GetRenderTarget() override { return native_image_queue_.Get(); }
 
-  void* GetRenderTargetContainer() override { return image_view_; }
+  void* GetNativeHandle() override { return image_view_; }
 
   int32_t GetDpi() override;
 
