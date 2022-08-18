@@ -43,7 +43,7 @@ config("rootstrap_include_dirs") {
     "$custom_sysroot/usr/include/appfw",
     "$custom_sysroot/usr/include/base",
     "$custom_sysroot/usr/include/dali",
-    "$custom_sysroot/usr/include/dali-tookit",
+    "$custom_sysroot/usr/include/dali-toolkit",
     "$custom_sysroot/usr/include/dali-adaptor",
     "$custom_sysroot/usr/include/dlog",
     "$custom_sysroot/usr/include/ecore-1",
