@@ -214,7 +214,6 @@ template("embedder") {
       defines += [ "NUI_SUPPORT" ]
 
       configs -= [ "//build/config/compiler:no_rtti" ]
-      configs += [ "//build/config/compiler:rtti" ]
     }
 
     public_configs = [

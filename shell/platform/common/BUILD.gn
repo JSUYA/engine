@@ -92,7 +92,6 @@ source_set("common_cpp_accessibility") {
       [ "//flutter/third_party/accessibility:accessibility_config" ]
 
   configs -= [ "//build/config/compiler:no_rtti" ]
-  configs += [ "//build/config/compiler:rtti" ]
 
   public_deps = [
     "//flutter/fml:fml",

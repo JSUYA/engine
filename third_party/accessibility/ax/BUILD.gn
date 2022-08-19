@@ -10,7 +10,6 @@ source_set("ax") {
       [ "//flutter/third_party/accessibility:accessibility_config" ]
 
   configs -= [ "//build/config/compiler:no_rtti" ]
-  configs += [ "//build/config/compiler:rtti" ]
 
   sources = [
     "platform/ax_platform_node.cc",
@@ -121,16 +120,6 @@ source_set("ax") {
       "atk-bridge-2.0",
       "glib-2.0",
       "gobject-2.0",
-    ]
-
-    cflags = [
-      "-Wno-deprecated-declarations",
-      "-Wno-c++11-narrowing",
-    ]
-
-    cflags_cc = [
-      "-Wno-deprecated-declarations",
-      "-Wno-c++11-narrowing",
     ]
   }
 
