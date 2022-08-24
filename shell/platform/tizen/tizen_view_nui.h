@@ -5,15 +5,12 @@
 #ifndef EMBEDDER_TIZEN_VIEW_NUI_H_
 #define EMBEDDER_TIZEN_VIEW_NUI_H_
 
-#include <cstdint>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 #include <dali-toolkit/public-api/controls/image-view/image-view.h>
 #include <dali/devel-api/adaptor-framework/event-thread-callback.h>
 #include <dali/devel-api/adaptor-framework/native-image-source-queue.h>
 #include <dali/devel-api/common/stage.h>
+
+#include <memory>
 
 #include "flutter/shell/platform/tizen/tizen_view.h"
 
@@ -23,9 +20,9 @@ class TizenViewNui : public TizenView {
  public:
   TizenViewNui(int32_t width,
                int32_t height,
-               void* image_view,
-               void* native_image_queue,
-               int default_window_id);
+               Dali::Toolkit::ImageView* image_view,
+               Dali::NativeImageSourceQueuePtr native_image_queue,
+               int32_t default_window_id);
 
   ~TizenViewNui();
 
@@ -43,8 +40,8 @@ class TizenViewNui : public TizenView {
 
   void Show() override;
 
-  Dali::EventThreadCallback* KeepRenderingEventThreadCallback() {
-    return keepRenderingEventThreadCallback_.get();
+  Dali::EventThreadCallback* updateRenderCallback() {
+    return updateRenderCallback_.get();
   };
 
  private:
@@ -54,12 +51,12 @@ class TizenViewNui : public TizenView {
 
   void PrepareInputMethod();
 
-  void OnKeepRenderingEventThreadCallback();
+  void OnUpdateRenderCallback();
 
   Dali::Toolkit::ImageView* image_view_;
   Dali::NativeImageSourceQueuePtr native_image_queue_;
-  int default_window_id_;
-  std::unique_ptr<Dali::EventThreadCallback> keepRenderingEventThreadCallback_;
+  int32_t default_window_id_;
+  std::unique_ptr<Dali::EventThreadCallback> updateRenderCallback_;
 };
 
 }  // namespace flutter

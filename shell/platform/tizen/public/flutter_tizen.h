@@ -36,7 +36,7 @@ typedef enum {
   kMouseDown,
   kMouseUp,
   kMouseMove,
-} FlutterDesktopViewMouseEventType;
+} FlutterDesktopPointerEventType;
 
 // Properties for configuring the initial settings of a Flutter window.
 typedef struct {
@@ -160,18 +160,18 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
 
 // Creates a view that hosts and displays the given engine instance.
 //
-// The type of parent should be Evas_Object*, Cast Evas_Object* to void*.
+// The type of |parent| must be Evas_Object*.
 // @warning This API is a work-in-progress and may change.
 FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromElmParent(
     const FlutterDesktopViewProperties& view_properties,
     FlutterDesktopEngineRef engine,
     void* parent);
 
+#ifdef NUI_SUPPORT
 // Creates a view that hosts and displays the given engine instance.
 //
-// The type of image_view should be ImageViewN*, Cast
-// ImageViewN* to void* and the type of native_image_queue should be
-// NativeImageQueue*, Cast NativeImageQueue* to void*.
+// The type of |image_view| must be Dali::Toolkit::ImageView*.
+// The type of |native_image_queue| must be Dali::NativeImageSourceQueue*.
 // @warning This API is a work-in-progress and may change.
 FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromImageView(
     const FlutterDesktopViewProperties& view_properties,
@@ -179,6 +179,7 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromImageView(
     void* image_view,
     void* native_image_queue,
     int default_window_id);
+#endif
 
 // Destroys the view.
 //
@@ -202,9 +203,9 @@ FLUTTER_EXPORT void FlutterDesktopViewResize(FlutterDesktopViewRef view,
                                              int32_t width,
                                              int32_t height);
 
-FLUTTER_EXPORT void FlutterDesktopViewOnMouseEvent(
+FLUTTER_EXPORT void FlutterDesktopViewOnPointerEvent(
     FlutterDesktopViewRef view,
-    FlutterDesktopViewMouseEventType type,
+    FlutterDesktopPointerEventType type,
     double x,
     double y,
     size_t timestamp,

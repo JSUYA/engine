@@ -82,11 +82,11 @@ bool TizenRendererEgl::CreateSurface(void* render_target,
                                             egl_window, attribs);
     } else {
 #ifdef NUI_SUPPORT
-      Dali::NativeImageSourceQueuePtr dali_native_image_queue_ =
+      Dali::NativeImageSourceQueuePtr dali_native_image_queue =
           static_cast<Dali::NativeImageSourceQueue*>(render_target);
       tbm_surface_queue_h tbm_surface_queue_ =
           static_cast<Dali::Any::AnyContainerImpl<tbm_surface_queue_h>*>(
-              dali_native_image_queue_->GetNativeImageSourceQueue().mContainer)
+              dali_native_image_queue->GetNativeImageSourceQueue().mContainer)
               ->GetValue();
       auto* egl_window =
           reinterpret_cast<EGLNativeWindowType*>(tbm_surface_queue_);

@@ -216,7 +216,7 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
   // Take ownership of the engine, starting it if necessary.
   view->SetEngine(
       std::unique_ptr<flutter::FlutterTizenEngine>(EngineFromHandle(engine)));
-  view->CreateRenderSurface(window_properties.renderer_type, nullptr);
+  view->CreateRenderSurface(window_properties.renderer_type);
 
   if (!view->engine()->IsRunning()) {
     if (!view->engine()->RunEngine()) {
@@ -242,23 +242,23 @@ void FlutterDesktopViewResize(FlutterDesktopViewRef view,
   ViewFromHandle(view)->Resize(width, height);
 }
 
-void FlutterDesktopViewOnMouseEvent(FlutterDesktopViewRef view,
-                                    FlutterDesktopViewMouseEventType type,
-                                    double x,
-                                    double y,
-                                    size_t timestamp,
-                                    int32_t device_id) {
+void FlutterDesktopViewOnPointerEvent(FlutterDesktopViewRef view,
+                                      FlutterDesktopPointerEventType type,
+                                      double x,
+                                      double y,
+                                      size_t timestamp,
+                                      int32_t device_id) {
   switch (type) {
-    case FlutterDesktopViewMouseEventType::kMouseDown:
+    case FlutterDesktopPointerEventType::kMouseDown:
     default:
       ViewFromHandle(view)->OnPointerDown(
           x, y, timestamp, kFlutterPointerDeviceKindTouch, device_id);
       break;
-    case FlutterDesktopViewMouseEventType::kMouseUp:
+    case FlutterDesktopPointerEventType::kMouseUp:
       ViewFromHandle(view)->OnPointerUp(
           x, y, timestamp, kFlutterPointerDeviceKindTouch, device_id);
       break;
-    case FlutterDesktopViewMouseEventType::kMouseMove:
+    case FlutterDesktopPointerEventType::kMouseMove:
       ViewFromHandle(view)->OnPointerMove(
           x, y, timestamp, kFlutterPointerDeviceKindTouch, device_id);
       break;
