@@ -51,7 +51,7 @@ class TizenViewNui : public TizenView {
 
   void PrepareInputMethod();
 
-  void OnUpdateRenderCallback();
+  void UpdateRender();
 
   Dali::Toolkit::ImageView* image_view_;
   Dali::NativeImageSourceQueuePtr native_image_queue_;

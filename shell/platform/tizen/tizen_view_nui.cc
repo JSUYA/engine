@@ -33,7 +33,7 @@ TizenViewNui::~TizenViewNui() {
 
 void TizenViewNui::RegisterEventHandlers() {
   updateRenderCallback_ = std::make_unique<Dali::EventThreadCallback>(
-      Dali::MakeCallback(this, &TizenViewNui::OnUpdateRenderCallback));
+      Dali::MakeCallback(this, &TizenViewNui::UpdateRender));
 }
 
 void TizenViewNui::UnregisterEventHandlers() {
@@ -87,7 +87,7 @@ void TizenViewNui::PrepareInputMethod() {
       [this](std::string str) { view_delegate_->OnCommit(str); });
 }
 
-void TizenViewNui::OnUpdateRenderCallback() {
+void TizenViewNui::UpdateRender() {
   Dali::Stage::GetCurrent().KeepRendering(0.0f);
 }
 
