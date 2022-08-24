@@ -26,7 +26,7 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromImageView(
     FlutterDesktopEngineRef engine,
     void* image_view,
     void* native_image_queue,
-    int default_window_id) {
+    int32_t default_window_id) {
   std::unique_ptr<flutter::TizenViewBase> tizen_view =
       std::make_unique<flutter::TizenViewNui>(
           view_properties.width, view_properties.height,

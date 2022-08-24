@@ -178,7 +178,7 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromImageView(
     FlutterDesktopEngineRef engine,
     void* image_view,
     void* native_image_queue,
-    int default_window_id);
+    int32_t default_window_id);
 #endif
 
 // Destroys the view.
