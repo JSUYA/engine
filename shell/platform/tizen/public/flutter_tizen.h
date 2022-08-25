@@ -167,7 +167,6 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromElmParent(
     FlutterDesktopEngineRef engine,
     void* parent);
 
-#ifdef NUI_SUPPORT
 // Creates a view that hosts and displays the given engine instance.
 //
 // The type of |image_view| must be Dali::Toolkit::ImageView*.
@@ -179,7 +178,6 @@ FLUTTER_EXPORT FlutterDesktopViewRef FlutterDesktopViewCreateFromImageView(
     void* image_view,
     void* native_image_queue,
     int32_t default_window_id);
-#endif
 
 // Destroys the view.
 //

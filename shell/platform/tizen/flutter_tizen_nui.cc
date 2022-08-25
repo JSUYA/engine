@@ -4,6 +4,11 @@
 
 #include "public/flutter_tizen.h"
 
+#include <dali-toolkit/public-api/controls/image-view/image-view.h>
+#include <dali/devel-api/adaptor-framework/native-image-source-queue.h>
+
+#include <memory>
+
 #include "flutter/shell/platform/tizen/flutter_tizen_engine.h"
 #include "flutter/shell/platform/tizen/flutter_tizen_view.h"
 #include "flutter/shell/platform/tizen/tizen_view_nui.h"

@@ -217,7 +217,6 @@ FlutterDesktopViewRef FlutterDesktopViewCreateFromNewWindow(
   view->SetEngine(
       std::unique_ptr<flutter::FlutterTizenEngine>(EngineFromHandle(engine)));
   view->CreateRenderSurface(window_properties.renderer_type);
-
   if (!view->engine()->IsRunning()) {
     if (!view->engine()->RunEngine()) {
       return nullptr;

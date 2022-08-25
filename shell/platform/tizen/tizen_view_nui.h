@@ -40,9 +40,7 @@ class TizenViewNui : public TizenView {
 
   void Show() override;
 
-  Dali::EventThreadCallback* updateRenderCallback() {
-    return updateRenderCallback_.get();
-  };
+  void RequestRendering();
 
  private:
   void RegisterEventHandlers();
@@ -51,12 +49,12 @@ class TizenViewNui : public TizenView {
 
   void PrepareInputMethod();
 
-  void UpdateRender();
+  void Rendering();
 
-  Dali::Toolkit::ImageView* image_view_;
+  Dali::Toolkit::ImageView* image_view_ = nullptr;
   Dali::NativeImageSourceQueuePtr native_image_queue_;
   int32_t default_window_id_;
-  std::unique_ptr<Dali::EventThreadCallback> updateRenderCallback_;
+  std::unique_ptr<Dali::EventThreadCallback> renderingCallback_;
 };
 
 }  // namespace flutter

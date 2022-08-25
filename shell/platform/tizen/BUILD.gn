@@ -345,7 +345,6 @@ group("tizen") {
     ":publish_cpp_client_wrapper",
     ":publish_headers_tizen",
   ]
-
   if (embedder_for_target) {
     deps += [
       ":flutter_tizen_common",

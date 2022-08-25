@@ -101,11 +101,7 @@ void FlutterTizenView::CreateRenderSurface(
                                          window->GetRenderTargetDisplay(),
                                          geometry.width, geometry.height);
     } else {
-#ifdef NUI_SUPPORT
-      auto* tizen_view = reinterpret_cast<TizenViewNui*>(tizen_view_.get());
-#else
       auto* tizen_view = reinterpret_cast<TizenView*>(tizen_view_.get());
-#endif
       engine_->renderer()->CreateSurface(tizen_view->GetRenderTarget(), nullptr,
                                          geometry.width, geometry.height);
     }
@@ -130,8 +126,8 @@ bool FlutterTizenView::OnMakeCurrent() {
 #ifdef NUI_SUPPORT
   if (tizen_view_->GetType() == flutter::TizenViewType::kView &&
       engine_->renderer()->type() == FlutterDesktopRendererType::kEGL) {
-    auto view = reinterpret_cast<TizenViewNui*>(tizen_view_.get());
-    view->updateRenderCallback()->Trigger();
+    auto* view = reinterpret_cast<TizenViewNui*>(tizen_view_.get());
+    view->RequestRendering();
   }
 #endif
   return result;
