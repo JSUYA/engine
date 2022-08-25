@@ -49,12 +49,12 @@ class TizenViewNui : public TizenView {
 
   void PrepareInputMethod();
 
-  void Rendering();
+  void RenderOnce();
 
   Dali::Toolkit::ImageView* image_view_ = nullptr;
   Dali::NativeImageSourceQueuePtr native_image_queue_;
   int32_t default_window_id_;
-  std::unique_ptr<Dali::EventThreadCallback> renderingCallback_;
+  std::unique_ptr<Dali::EventThreadCallback> rendering_callback_;
 };
 
 }  // namespace flutter

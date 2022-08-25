@@ -32,12 +32,12 @@ TizenViewNui::~TizenViewNui() {
 }
 
 void TizenViewNui::RegisterEventHandlers() {
-  renderingCallback_ = std::make_unique<Dali::EventThreadCallback>(
-      Dali::MakeCallback(this, &TizenViewNui::Rendering));
+  rendering_callback_ = std::make_unique<Dali::EventThreadCallback>(
+      Dali::MakeCallback(this, &TizenViewNui::RenderOnce));
 }
 
 void TizenViewNui::UnregisterEventHandlers() {
-  renderingCallback_.release();
+  rendering_callback_.release();
 }
 
 TizenGeometry TizenViewNui::GetGeometry() {
@@ -71,7 +71,7 @@ void TizenViewNui::Show() {
 }
 
 void TizenViewNui::RequestRendering() {
-  renderingCallback_->Trigger();
+  rendering_callback_->Trigger();
 }
 
 void TizenViewNui::PrepareInputMethod() {
@@ -91,7 +91,7 @@ void TizenViewNui::PrepareInputMethod() {
       [this](std::string str) { view_delegate_->OnCommit(str); });
 }
 
-void TizenViewNui::Rendering() {
+void TizenViewNui::RenderOnce() {
   Dali::Stage::GetCurrent().KeepRendering(0.0f);
 }
 
