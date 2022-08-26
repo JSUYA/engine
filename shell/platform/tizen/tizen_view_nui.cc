@@ -49,12 +49,12 @@ TizenGeometry TizenViewNui::GetGeometry() {
 }
 
 bool TizenViewNui::SetGeometry(TizenGeometry geometry) {
+  view_delegate_->OnResize(0, 0, geometry.width, geometry.height);
+
   image_view_->SetProperty(Dali::Actor::Property::SIZE,
                            Dali::Vector2(geometry.width, geometry.height));
 
   native_image_queue_->SetSize(geometry.width, geometry.height);
-
-  view_delegate_->OnResize(0, 0, geometry.width, geometry.height);
   return true;
 }
 

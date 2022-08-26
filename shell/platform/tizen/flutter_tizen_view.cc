@@ -122,15 +122,7 @@ void FlutterTizenView::Resize(int32_t width, int32_t height) {
 }
 
 bool FlutterTizenView::OnMakeCurrent() {
-  bool result = engine_->renderer()->OnMakeCurrent();
-#ifdef NUI_SUPPORT
-  if (tizen_view_->GetType() == flutter::TizenViewType::kView &&
-      engine_->renderer()->type() == FlutterDesktopRendererType::kEGL) {
-    auto* view = reinterpret_cast<TizenViewNui*>(tizen_view_.get());
-    view->RequestRendering();
-  }
-#endif
-  return result;
+  return engine_->renderer()->OnMakeCurrent();
 }
 
 bool FlutterTizenView::OnClearCurrent() {
@@ -142,7 +134,15 @@ bool FlutterTizenView::OnMakeResourceCurrent() {
 }
 
 bool FlutterTizenView::OnPresent() {
-  return engine_->renderer()->OnPresent();
+  bool result = engine_->renderer()->OnPresent();
+#ifdef NUI_SUPPORT
+  if (tizen_view_->GetType() == flutter::TizenViewType::kView &&
+      engine_->renderer()->type() == FlutterDesktopRendererType::kEGL) {
+    auto* view = reinterpret_cast<TizenViewNui*>(tizen_view_.get());
+    view->RequestRendering();
+  }
+#endif
+  return result;
 }
 
 uint32_t FlutterTizenView::OnGetFBO() {
