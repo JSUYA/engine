@@ -19,7 +19,6 @@ TizenViewNui::TizenViewNui(int32_t width,
                            Dali::NativeImageSourceQueuePtr native_image_queue,
                            int32_t default_window_id)
     : TizenView(width, height),
-      view_size_(Dali::Vector2(width, height)),
       image_view_(image_view),
       native_image_queue_(native_image_queue),
       default_window_id_(default_window_id) {
@@ -44,31 +43,18 @@ void TizenViewNui::UnregisterEventHandlers() {
 TizenGeometry TizenViewNui::GetGeometry() {
   Dali::Vector2 size = image_view_->GetProperty(Dali::Actor::Property::SIZE)
                            .Get<Dali::Vector2>();
-  TizenGeometry result;
-  if (size.width == 0 && size.height == 0) {
-    result = {0, 0, static_cast<int32_t>(view_size_.width),
-              static_cast<int32_t>(view_size_.height)};
-  } else {
-    result = {0, 0, static_cast<int32_t>(size.width),
-              static_cast<int32_t>(size.height)};
-  }
+  TizenGeometry result = {0, 0, static_cast<int32_t>(size.width),
+                          static_cast<int32_t>(size.height)};
   return result;
 }
 
 bool TizenViewNui::SetGeometry(TizenGeometry geometry) {
-  if (view_size_.width == geometry.width &&
-      view_size_.height == geometry.height) {
-    return false;
-  }
-
   view_delegate_->OnResize(0, 0, geometry.width, geometry.height);
 
   image_view_->SetProperty(Dali::Actor::Property::SIZE,
                            Dali::Vector2(geometry.width, geometry.height));
 
   native_image_queue_->SetSize(geometry.width, geometry.height);
-
-  view_size_ = Dali::Vector2(geometry.width, geometry.height);
   return true;
 }
 
