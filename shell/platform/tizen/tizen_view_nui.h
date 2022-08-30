@@ -51,6 +51,7 @@ class TizenViewNui : public TizenView {
 
   void RenderOnce();
 
+  Dali::Vector2 view_size_;
   Dali::Toolkit::ImageView* image_view_ = nullptr;
   Dali::NativeImageSourceQueuePtr native_image_queue_;
   int32_t default_window_id_;
