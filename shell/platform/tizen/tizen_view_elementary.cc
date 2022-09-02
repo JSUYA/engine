@@ -80,6 +80,7 @@ bool TizenViewElementary::CreateView() {
     FT_LOG(Error) << "Failed to create an Evas object container.";
     return false;
   }
+  evas_object_propagate_events_set(container_, false);
   evas_object_size_hint_weight_set(container_, EVAS_HINT_EXPAND,
                                    EVAS_HINT_EXPAND);
   EvasObjectResizeWithMinMaxHint(container_, initial_width_, initial_height_);
@@ -151,6 +152,8 @@ void TizenViewElementary::RegisterEventHandlers() {
             auto* mouse_event =
                 reinterpret_cast<Evas_Event_Mouse_Down*>(event_info);
             TizenGeometry geometry = self->GetGeometry();
+            mouse_event->event_flags = Evas_Event_Flags(
+                mouse_event->event_flags | EVAS_EVENT_FLAG_ON_HOLD);
             self->view_delegate_->OnPointerDown(
                 mouse_event->canvas.x - geometry.left,
                 mouse_event->canvas.y - geometry.top, mouse_event->timestamp,
@@ -193,8 +196,6 @@ void TizenViewElementary::RegisterEventHandlers() {
       if (self->event_layer_ == object) {
         auto* mouse_event =
             reinterpret_cast<Evas_Event_Mouse_Move*>(event_info);
-        mouse_event->event_flags = Evas_Event_Flags(mouse_event->event_flags |
-                                                    EVAS_EVENT_FLAG_ON_HOLD);
         if (!self->scroll_hold_) {
           elm_object_scroll_hold_push(self->event_layer_);
           self->scroll_hold_ = true;
@@ -246,17 +247,22 @@ void TizenViewElementary::RegisterEventHandlers() {
       if (self->event_layer_ == object) {
         auto* key_event = reinterpret_cast<Evas_Event_Key_Down*>(event_info);
         bool handled = false;
-        key_event->event_flags =
-            Evas_Event_Flags(key_event->event_flags | EVAS_EVENT_FLAG_ON_HOLD);
         if (self->input_method_context_->IsInputPanelShown()) {
           handled =
               self->input_method_context_->HandleEvasEventKeyDown(key_event);
         }
         if (!handled) {
-          self->view_delegate_->OnKey(
-              key_event->key, key_event->string, key_event->compose,
-              EvasModifierToEcoreEventModifiers(key_event->modifiers),
-              key_event->keycode, true);
+          if (self->last_down_event_time_ != key_event->timestamp) {
+            key_event->event_flags = Evas_Event_Flags(key_event->event_flags |
+                                                      EVAS_EVENT_FLAG_ON_HOLD);
+            self->last_down_event_time_ = key_event->timestamp;
+            self->view_delegate_->OnKey(
+                key_event->key, key_event->string, key_event->compose,
+                EvasModifierToEcoreEventModifiers(key_event->modifiers),
+                key_event->keycode, key_event->timestamp, true);
+          } else {
+            key_event->event_flags = EVAS_EVENT_FLAG_CANCEL;
+          }
         }
       }
     }
@@ -272,17 +278,22 @@ void TizenViewElementary::RegisterEventHandlers() {
           if (self->event_layer_ == object) {
             auto* key_event = reinterpret_cast<Evas_Event_Key_Up*>(event_info);
             bool handled = false;
-            key_event->event_flags = Evas_Event_Flags(key_event->event_flags |
-                                                      EVAS_EVENT_FLAG_ON_HOLD);
             if (self->input_method_context_->IsInputPanelShown()) {
               handled =
                   self->input_method_context_->HandleEvasEventKeyUp(key_event);
             }
             if (!handled) {
-              self->view_delegate_->OnKey(
-                  key_event->key, key_event->string, key_event->compose,
-                  EvasModifierToEcoreEventModifiers(key_event->modifiers),
-                  key_event->keycode, false);
+              if (self->last_up_event_time_ != key_event->timestamp) {
+                key_event->event_flags = Evas_Event_Flags(
+                    key_event->event_flags | EVAS_EVENT_FLAG_ON_HOLD);
+                self->last_up_event_time_ = key_event->timestamp;
+                self->view_delegate_->OnKey(
+                    key_event->key, key_event->string, key_event->compose,
+                    EvasModifierToEcoreEventModifiers(key_event->modifiers),
+                    key_event->keycode, key_event->timestamp, false);
+              } else {
+                key_event->event_flags = EVAS_EVENT_FLAG_CANCEL;
+              }
             }
           }
         }

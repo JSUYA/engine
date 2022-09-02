@@ -326,7 +326,8 @@ void TizenWindowEcoreWl2::RegisterEventHandlers() {
             if (!handled) {
               self->view_delegate_->OnKey(
                   key_event->key, key_event->string, key_event->compose,
-                  key_event->modifiers, key_event->keycode, true);
+                  key_event->modifiers, key_event->keycode,
+                  key_event->timestamp, true);
             }
             return ECORE_CALLBACK_DONE;
           }
@@ -350,7 +351,8 @@ void TizenWindowEcoreWl2::RegisterEventHandlers() {
             if (!handled) {
               self->view_delegate_->OnKey(
                   key_event->key, key_event->string, key_event->compose,
-                  key_event->modifiers, key_event->keycode, false);
+                  key_event->modifiers, key_event->keycode,
+                  key_event->timestamp, false);
             }
             return ECORE_CALLBACK_DONE;
           }

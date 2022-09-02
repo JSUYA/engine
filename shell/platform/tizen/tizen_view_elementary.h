@@ -58,6 +58,9 @@ class TizenViewElementary : public TizenView {
   std::vector<Ecore_Event_Handler*> ecore_event_key_handlers_;
 
   bool scroll_hold_ = false;
+
+  uint32_t last_down_event_time_ = 0;
+  uint32_t last_up_event_time_ = 0;
 };
 
 }  // namespace flutter

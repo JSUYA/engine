@@ -249,12 +249,12 @@ void FlutterTizenView::OnKey(const char* key,
                              const char* compose,
                              uint32_t modifiers,
                              uint32_t scan_code,
+                             uint32_t time_stamp,
                              bool is_down) {
   if (is_down) {
     FT_LOG(Info) << "Key symbol: " << key << ", code: 0x" << std::setw(8)
                  << std::setfill('0') << std::right << std::hex << scan_code;
   }
-
   // Do not handle the TV system menu key.
   if (strcmp(key, kSysMenuKey) == 0) {
     return;
@@ -277,17 +277,75 @@ void FlutterTizenView::OnKey(const char* key,
   if (engine_->key_event_channel()) {
     engine_->key_event_channel()->SendKey(
         key, string, compose, modifiers, scan_code, is_down,
-        [engine = engine_.get(), symbol = std::string(key),
-         is_down](bool handled) {
+        [engine = engine_.get(), symbol = std::string(key), string, compose,
+         scan_code, time_stamp, is_down,
+         latest_keydown_stamp = &latest_keydown_stamp_](bool handled) {
           if (handled) {
+            if (is_down && (symbol == "Down" || symbol == "Up" ||
+                            symbol == "Left" || symbol == "Right")) {
+              *latest_keydown_stamp = time_stamp;
+            } else if (!is_down) {
+              *latest_keydown_stamp = 0;
+            }
             return;
           }
+
           if (symbol == kBackKey && !is_down) {
             if (engine->navigation_channel()) {
               engine->navigation_channel()->PopRoute();
             }
           } else if (symbol == kExitKey && !is_down) {
             ui_app_exit();
+          } else {
+            if (engine->view()->tizen_view()->GetType() ==
+                    TizenViewType::kView &&
+                engine->renderer()->type() ==
+                    FlutterDesktopRendererType::kEvasGL) {
+              Evas_Object* parent = static_cast<Evas_Object*>(
+                  engine->view()->tizen_view()->GetNativeHandle());
+
+              if (*latest_keydown_stamp != 0 &&
+                  (symbol == "Down" || symbol == "Up" || symbol == "Left" ||
+                   symbol == "Right")) {
+                Evas_Event_Key_Down event;
+                event.key = symbol.c_str();
+                event.string = string;
+                event.compose = compose;
+                event.keycode = scan_code;
+                event.timestamp = *latest_keydown_stamp;
+                evas_event_refeed_event(evas_object_evas_get(parent), &event,
+                                        EVAS_CALLBACK_KEY_DOWN);
+
+                Evas_Event_Key_Up event_up;
+                event_up.key = symbol.c_str();
+                event_up.string = string;
+                event_up.compose = compose;
+                event_up.keycode = scan_code;
+                event_up.timestamp = time_stamp;
+                evas_event_refeed_event(evas_object_evas_get(parent), &event_up,
+                                        EVAS_CALLBACK_KEY_UP);
+              } else {
+                if (is_down) {
+                  Evas_Event_Key_Down event;
+                  event.key = symbol.c_str();
+                  event.string = string;
+                  event.compose = compose;
+                  event.keycode = scan_code;
+                  event.timestamp = time_stamp;
+                  evas_event_refeed_event(evas_object_evas_get(parent), &event,
+                                          EVAS_CALLBACK_KEY_DOWN);
+                } else {
+                  Evas_Event_Key_Up event;
+                  event.key = symbol.c_str();
+                  event.string = string;
+                  event.compose = compose;
+                  event.keycode = scan_code;
+                  event.timestamp = time_stamp;
+                  evas_event_refeed_event(evas_object_evas_get(parent), &event,
+                                          EVAS_CALLBACK_KEY_UP);
+                }
+              }
+            }
           }
         });
   }

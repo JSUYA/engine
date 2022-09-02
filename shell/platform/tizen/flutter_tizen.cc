@@ -271,7 +271,7 @@ void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                                   uint32_t scan_code,
                                   bool is_down) {
   ViewFromHandle(view)->OnKey(key, string, nullptr, modifiers, scan_code,
-                              is_down);
+                              /*temporary*/ 0, is_down);
 }
 
 void FlutterDesktopRegisterViewFactory(

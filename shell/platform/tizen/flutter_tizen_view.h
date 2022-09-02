@@ -93,6 +93,7 @@ class FlutterTizenView : public TizenViewEventHandlerDelegate {
              const char* compose,
              uint32_t modifiers,
              uint32_t scan_code,
+             uint32_t time_stamp,
              bool is_down) override;
 
   void OnComposeBegin() override;
@@ -157,6 +158,8 @@ class FlutterTizenView : public TizenViewEventHandlerDelegate {
   // The current view transformation.
   FlutterTransformation flutter_transformation_ = {1.0, 0.0, 0.0, 0.0, 1.0,
                                                    0.0, 0.0, 0.0, 1.0};
+
+  uint32_t latest_keydown_stamp_ = 0;
 };
 
 }  // namespace flutter
