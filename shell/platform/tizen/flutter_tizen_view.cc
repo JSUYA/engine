@@ -167,31 +167,33 @@ void FlutterTizenView::OnResize(int32_t left,
 }
 
 void FlutterTizenView::OnRotate(int32_t degree) {
-  rotation_degree_ = degree;
-  // Compute renderer transformation based on the angle of rotation.
-  double rad = (360 - rotation_degree_) * M_PI / 180;
   TizenGeometry geometry = tizen_view_->GetGeometry();
   int32_t width = geometry.width;
   int32_t height = geometry.height;
 
-  double trans_x = 0.0, trans_y = 0.0;
-  if (rotation_degree_ == 90) {
-    trans_y = height;
-  } else if (rotation_degree_ == 180) {
-    trans_x = width;
-    trans_y = height;
-  } else if (rotation_degree_ == 270) {
-    trans_x = width;
-  }
+  if (engine_->renderer()->type() == FlutterDesktopRendererType::kEGL) {
+    rotation_degree_ = degree;
+    // Compute renderer transformation based on the angle of rotation.
+    double rad = (360 - rotation_degree_) * M_PI / 180;
+    double trans_x = 0.0, trans_y = 0.0;
+    if (rotation_degree_ == 90) {
+      trans_y = height;
+    } else if (rotation_degree_ == 180) {
+      trans_x = width;
+      trans_y = height;
+    } else if (rotation_degree_ == 270) {
+      trans_x = width;
+    }
 
-  flutter_transformation_ = {
-      cos(rad), -sin(rad), trans_x,  // x
-      sin(rad), cos(rad),  trans_y,  // y
-      0.0,      0.0,       1.0       // perspective
-  };
+    flutter_transformation_ = {
+        cos(rad), -sin(rad), trans_x,  // x
+        sin(rad), cos(rad),  trans_y,  // y
+        0.0,      0.0,       1.0       // perspective
+    };
 
-  if (rotation_degree_ == 90 || rotation_degree_ == 270) {
-    std::swap(width, height);
+    if (rotation_degree_ == 90 || rotation_degree_ == 270) {
+      std::swap(width, height);
+    }
   }
 
   engine_->renderer()->ResizeSurface(width, height);

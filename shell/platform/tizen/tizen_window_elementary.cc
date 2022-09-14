@@ -140,8 +140,6 @@ void TizenWindowElementary::RegisterEventHandlers() {
     auto* self = reinterpret_cast<TizenWindowElementary*>(data);
     if (self->view_delegate_) {
       if (self->elm_win_ == object) {
-        // FIXME
-        FT_UNIMPLEMENTED();
         self->view_delegate_->OnRotate(self->GetRotation());
         elm_win_wm_rotation_manual_rotation_done(self->elm_win_);
       }
