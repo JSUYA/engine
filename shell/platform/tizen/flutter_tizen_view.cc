@@ -113,6 +113,15 @@ void FlutterTizenView::DestroyRenderSurface() {
   }
 }
 
+void FlutterTizenView::KeyEvent(const char* key,
+                                const char* string,
+                                const char* compose,
+                                uint32_t modifiers,
+                                uint32_t scan_code,
+                                bool is_down) {
+  tizen_view_->KeyEvent(key, string, compose, modifiers, scan_code, is_down);
+}
+
 void FlutterTizenView::Resize(int32_t width, int32_t height) {
   TizenGeometry geometry = tizen_view_->GetGeometry();
   geometry.width = width;
