@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <vector>
 
+#include "flutter/shell/platform/tizen/logger.h"
 #include "flutter/shell/platform/tizen/tizen_view_base.h"
 
 namespace flutter {
@@ -31,6 +32,15 @@ class TizenWindow : public TizenViewBase {
   virtual void BindKeys(const std::vector<std::string>& keys) = 0;
 
   TizenViewType GetType() override { return TizenViewType::kWindow; };
+
+  void KeyEvent(const char* key,
+                const char* string,
+                const char* compose,
+                uint32_t modifiers,
+                uint32_t scan_code,
+                bool is_down) override {
+    FT_UNIMPLEMENTED();
+  };
 
  protected:
   explicit TizenWindow(TizenGeometry geometry,

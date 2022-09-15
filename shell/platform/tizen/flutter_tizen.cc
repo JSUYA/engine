@@ -271,8 +271,8 @@ void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                                   uint32_t modifiers,
                                   uint32_t scan_code,
                                   bool is_down) {
-  ViewFromHandle(view)->OnKey(key, string, nullptr, modifiers, scan_code,
-                              is_down);
+  ViewFromHandle(view)->KeyEvent(key, string, nullptr, modifiers, scan_code,
+                                 is_down);
 }
 
 void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view, bool focused) {

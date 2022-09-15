@@ -339,6 +339,15 @@ void TizenViewElementary::Show() {
   evas_object_show(image_);
 }
 
+void TizenViewElementary::KeyEvent(const char* key,
+                                   const char* string,
+                                   const char* compose,
+                                   uint32_t modifiers,
+                                   uint32_t scan_code,
+                                   bool is_down) {
+  FT_UNIMPLEMENTED();
+}
+
 void TizenViewElementary::PrepareInputMethod() {
   input_method_context_ =
       std::make_unique<TizenInputMethodContext>(GetWindowId());

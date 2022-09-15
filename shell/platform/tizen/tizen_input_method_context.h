@@ -35,6 +35,12 @@ class TizenInputMethodContext {
 
   bool HandleEvasEventKeyUp(Evas_Event_Key_Up* event);
 
+  bool HandleNUIEventKey(const char* key,
+                         const char* string,
+                         uint32_t modifiers,
+                         uint32_t scan_code,
+                         bool is_down);
+
   InputPanelGeometry GetInputPanelGeometry();
 
   void ResetInputMethodContext();
