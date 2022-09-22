@@ -271,8 +271,12 @@ void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                                   uint32_t modifiers,
                                   uint32_t scan_code,
                                   bool is_down) {
-  ViewFromHandle(view)->KeyEvent(key, string, nullptr, modifiers, scan_code,
-                                 is_down);
+  auto* tizen_view = reinterpret_cast<flutter::TizenViewBase*>(
+      ViewFromHandle(view)->tizen_view());
+  if (tizen_view->GetType() == flutter::TizenViewType::kView) {
+    reinterpret_cast<flutter::TizenView*>(tizen_view)
+        ->OnKey(key, string, nullptr, modifiers, scan_code, is_down);
+  }
 }
 
 void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view, bool focused) {

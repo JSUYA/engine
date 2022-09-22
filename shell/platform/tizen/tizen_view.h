@@ -18,6 +18,13 @@ class TizenView : public TizenViewBase {
   TizenView() = default;
   virtual ~TizenView() = default;
 
+  virtual void OnKey(const char* key,
+                     const char* string,
+                     const char* compose,
+                     uint32_t modifiers,
+                     uint32_t scan_code,
+                     bool is_down) = 0;
+
   TizenViewType GetType() override { return TizenViewType::kView; };
 
   bool focused() { return focused_; };
