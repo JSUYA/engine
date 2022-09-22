@@ -216,6 +216,11 @@ FLUTTER_EXPORT void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                                                  uint32_t scan_code,
                                                  bool is_down);
 
+FLUTTER_EXPORT void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view,
+                                               bool focus);
+
+FLUTTER_EXPORT bool FlutterDesktopViewIsFocused(FlutterDesktopViewRef view);
+
 // ========== Plugin Registrar (extensions) ==========
 
 // Returns the view associated with this registrar's engine instance.

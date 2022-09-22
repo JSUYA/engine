@@ -20,7 +20,9 @@ class TizenView : public TizenViewBase {
 
   TizenViewType GetType() override { return TizenViewType::kView; };
 
-  void Unfocus() { focused_ = false; };
+  bool focused() { return focused_; };
+
+  void SetFocus(bool focus) { focused_ = focus; };
 
  protected:
   explicit TizenView(int32_t width, int32_t height)
