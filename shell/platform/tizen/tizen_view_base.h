@@ -43,13 +43,6 @@ class TizenViewBase {
   // Returns the dpi of the screen.
   virtual int32_t GetDpi() = 0;
 
-  virtual void KeyEvent(const char* key,
-                        const char* string,
-                        const char* compose,
-                        uint32_t modifiers,
-                        uint32_t scan_code,
-                        bool is_down) = 0;
-
   // Sets the delegate used to communicate state changes from render target to
   // view such as key presses, mouse position updates etc.
   void SetView(TizenViewEventHandlerDelegate* view_delegate) {

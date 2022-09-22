@@ -33,15 +33,6 @@ class TizenWindow : public TizenViewBase {
 
   TizenViewType GetType() override { return TizenViewType::kWindow; };
 
-  void KeyEvent(const char* key,
-                const char* string,
-                const char* compose,
-                uint32_t modifiers,
-                uint32_t scan_code,
-                bool is_down) override {
-    FT_UNIMPLEMENTED();
-  };
-
  protected:
   explicit TizenWindow(TizenGeometry geometry,
                        bool transparent,

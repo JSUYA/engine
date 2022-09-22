@@ -358,13 +358,13 @@ void TizenViewElementary::Show() {
   evas_object_show(event_layer_);
 }
 
-void TizenViewElementary::KeyEvent(const char* key,
-                                   const char* string,
-                                   const char* compose,
-                                   uint32_t modifiers,
-                                   uint32_t scan_code,
-                                   bool is_down) {
-  FT_UNIMPLEMENTED();
+void TizenViewElementary::OnKey(const char* key,
+                                const char* string,
+                                const char* compose,
+                                uint32_t modifiers,
+                                uint32_t scan_code,
+                                bool is_down) {
+  // no-op
 }
 
 void TizenViewElementary::PrepareInputMethod() {

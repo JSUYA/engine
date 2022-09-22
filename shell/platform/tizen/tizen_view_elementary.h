@@ -37,12 +37,12 @@ class TizenViewElementary : public TizenView {
 
   void Show() override;
 
-  void KeyEvent(const char* key,
-                const char* string,
-                const char* compose,
-                uint32_t modifiers,
-                uint32_t scan_code,
-                bool is_down) override;
+  void OnKey(const char* key,
+             const char* string,
+             const char* compose,
+             uint32_t modifiers,
+             uint32_t scan_code,
+             bool is_down) override;
 
  private:
   bool CreateView();
