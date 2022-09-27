@@ -37,17 +37,6 @@ class TizenViewElementary : public TizenView {
 
   void Show() override;
 
-  void OnKey(const char* device_name,
-             uint32_t device_class,
-             uint32_t device_subclass,
-             const char* key,
-             const char* string,
-             const char* compose,
-             uint32_t modifiers,
-             uint32_t scan_code,
-             size_t timestamp,
-             bool is_down) override;
-
  private:
   bool CreateView();
 

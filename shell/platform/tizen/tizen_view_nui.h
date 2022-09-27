@@ -51,7 +51,7 @@ class TizenViewNui : public TizenView {
              uint32_t modifiers,
              uint32_t scan_code,
              size_t timestamp,
-             bool is_down) override;
+             bool is_down);
 
  private:
   void RegisterEventHandlers();

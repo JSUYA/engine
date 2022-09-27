@@ -13,7 +13,9 @@
 #include "flutter/shell/platform/tizen/flutter_tizen_view.h"
 #include "flutter/shell/platform/tizen/logger.h"
 #include "flutter/shell/platform/tizen/public/flutter_platform_view.h"
-#include "flutter/shell/platform/tizen/tizen_view.h"
+#ifdef NUI_SUPPORT
+#include "flutter/shell/platform/tizen/tizen_view_nui.h"
+#endif
 #include "flutter/shell/platform/tizen/tizen_window.h"
 #ifndef WEARABLE_PROFILE
 #include "flutter/shell/platform/tizen/tizen_window_ecore_wl2.h"
@@ -275,13 +277,21 @@ void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                                   uint32_t scan_code,
                                   size_t timestamp,
                                   bool is_down) {
+#ifdef NUI_SUPPORT
   auto* tizen_view = reinterpret_cast<flutter::TizenViewBase*>(
       ViewFromHandle(view)->tizen_view());
-  if (tizen_view->GetType() == flutter::TizenViewType::kView) {
-    reinterpret_cast<flutter::TizenView*>(tizen_view)
+
+  if (tizen_view->GetType() == flutter::TizenViewType::kView &&
+      ViewFromHandle(view)->engine()->renderer()->type() ==
+          FlutterDesktopRendererType::kEGL) {
+    reinterpret_cast<flutter::TizenViewNui*>(tizen_view)
         ->OnKey(device_name, device_class, device_subclass, key, string,
                 nullptr, modifiers, scan_code, timestamp, is_down);
   }
+#else
+  ViewFromHandle(view)->OnKey(key, string, nullptr, modifiers, scan_code,
+                              is_down);
+#endif
 }
 
 void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view, bool focused) {

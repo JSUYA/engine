@@ -146,6 +146,12 @@ TizenInputMethodContext::TizenInputMethodContext(uintptr_t window_id) {
 TizenInputMethodContext::~TizenInputMethodContext() {
   UnregisterEventCallbacks();
 
+#ifdef NUI_SUPPORT
+  if (ecore_device_) {
+    ecore_device_del(ecore_device_);
+  }
+#endif
+
   if (imf_context_) {
     ecore_imf_context_del(imf_context_);
   }
@@ -191,6 +197,7 @@ bool TizenInputMethodContext::HandleEvasEventKeyUp(Evas_Event_Key_Up* event) {
       reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
 }
 
+#ifdef NUI_SUPPORT
 bool TizenInputMethodContext::HandleNuiKeyEvent(const char* device_name,
                                                 uint32_t device_class,
                                                 uint32_t device_subclass,
@@ -207,7 +214,11 @@ bool TizenInputMethodContext::HandleNuiKeyEvent(const char* device_name,
   event.keycode = scan_code;
   event.timestamp = timestamp;
   if (device_name) {
-    event.dev = ecore_device_add();
+    if (!ecore_device_) {
+      ecore_device_ = ecore_device_add();
+    }
+
+    event.dev = ecore_device_;
     ecore_device_name_set(event.dev, device_name);
     ecore_device_class_set(event.dev,
                            static_cast<Ecore_IMF_Device_Class>(device_class));
@@ -218,23 +229,18 @@ bool TizenInputMethodContext::HandleNuiKeyEvent(const char* device_name,
   if (is_down) {
     Ecore_IMF_Event_Key_Down imf_event =
         EcoreEventKeyToEcoreImfEvent<Ecore_IMF_Event_Key_Down>(&event);
-    if (event.dev) {
-      ecore_device_del(event.dev);
-    }
     return ecore_imf_context_filter_event(
         imf_context_, ECORE_IMF_EVENT_KEY_DOWN,
         reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
   } else {
     Ecore_IMF_Event_Key_Up imf_event =
         EcoreEventKeyToEcoreImfEvent<Ecore_IMF_Event_Key_Up>(&event);
-    if (event.dev) {
-      ecore_device_del(event.dev);
-    }
     return ecore_imf_context_filter_event(
         imf_context_, ECORE_IMF_EVENT_KEY_UP,
         reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
   }
 }
+#endif
 
 InputPanelGeometry TizenInputMethodContext::GetInputPanelGeometry() {
   FT_ASSERT(imf_context_);
