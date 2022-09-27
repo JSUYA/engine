@@ -35,7 +35,7 @@ class TizenInputMethodContext {
 
   bool HandleEvasEventKeyUp(Evas_Event_Key_Up* event);
 
-  bool HandleNuiEventKey(const char* device_name,
+  bool HandleNuiKeyEvent(const char* device_name,
                          uint32_t device_class,
                          uint32_t device_subclass,
                          const char* key,

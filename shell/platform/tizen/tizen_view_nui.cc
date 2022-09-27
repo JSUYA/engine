@@ -87,7 +87,7 @@ void TizenViewNui::OnKey(const char* device_name,
   bool handled = false;
 
   if (input_method_context_->IsInputPanelShown()) {
-    handled = input_method_context_->HandleNuiEventKey(
+    handled = input_method_context_->HandleNuiKeyEvent(
         device_name, device_class, device_subclass, key, string, modifiers,
         scan_code, timestamp, is_down);
   }

@@ -191,7 +191,7 @@ bool TizenInputMethodContext::HandleEvasEventKeyUp(Evas_Event_Key_Up* event) {
       reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
 }
 
-bool TizenInputMethodContext::HandleNuiEventKey(const char* device_name,
+bool TizenInputMethodContext::HandleNuiKeyEvent(const char* device_name,
                                                 uint32_t device_class,
                                                 uint32_t device_subclass,
                                                 const char* key,
