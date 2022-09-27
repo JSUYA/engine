@@ -191,7 +191,10 @@ bool TizenInputMethodContext::HandleEvasEventKeyUp(Evas_Event_Key_Up* event) {
       reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
 }
 
-bool TizenInputMethodContext::HandleNuiEventKey(const char* key,
+bool TizenInputMethodContext::HandleNuiEventKey(const char* device_name,
+                                                uint32_t device_class,
+                                                uint32_t device_subclass,
+                                                const char* key,
                                                 const char* string,
                                                 uint32_t modifiers,
                                                 uint32_t scan_code,
@@ -203,16 +206,30 @@ bool TizenInputMethodContext::HandleNuiEventKey(const char* key,
   event.modifiers = modifiers;
   event.keycode = scan_code;
   event.timestamp = timestamp;
+  if (device_name) {
+    event.dev = ecore_device_add();
+    ecore_device_name_set(event.dev, device_name);
+    ecore_device_class_set(event.dev,
+                           static_cast<Ecore_IMF_Device_Class>(device_class));
+    ecore_device_subclass_set(
+        event.dev, static_cast<Ecore_IMF_Device_Subclass>(device_subclass));
+  }
 
   if (is_down) {
     Ecore_IMF_Event_Key_Down imf_event =
         EcoreEventKeyToEcoreImfEvent<Ecore_IMF_Event_Key_Down>(&event);
+    if (event.dev) {
+      ecore_device_del(event.dev);
+    }
     return ecore_imf_context_filter_event(
         imf_context_, ECORE_IMF_EVENT_KEY_DOWN,
         reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
   } else {
     Ecore_IMF_Event_Key_Up imf_event =
         EcoreEventKeyToEcoreImfEvent<Ecore_IMF_Event_Key_Up>(&event);
+    if (event.dev) {
+      ecore_device_del(event.dev);
+    }
     return ecore_imf_context_filter_event(
         imf_context_, ECORE_IMF_EVENT_KEY_UP,
         reinterpret_cast<Ecore_IMF_Event*>(&imf_event));

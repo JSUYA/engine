@@ -74,7 +74,10 @@ void TizenViewNui::RequestRendering() {
   rendering_callback_->Trigger();
 }
 
-void TizenViewNui::OnKey(const char* key,
+void TizenViewNui::OnKey(const char* device_name,
+                         uint32_t device_class,
+                         uint32_t device_subclass,
+                         const char* key,
                          const char* string,
                          const char* compose,
                          uint32_t modifiers,
@@ -85,7 +88,8 @@ void TizenViewNui::OnKey(const char* key,
 
   if (input_method_context_->IsInputPanelShown()) {
     handled = input_method_context_->HandleNuiEventKey(
-        key, string, modifiers, scan_code, timestamp, is_down);
+        device_name, device_class, device_subclass, key, string, modifiers,
+        scan_code, timestamp, is_down);
   }
 
   if (!handled) {

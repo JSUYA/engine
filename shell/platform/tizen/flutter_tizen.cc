@@ -266,6 +266,9 @@ void FlutterDesktopViewOnPointerEvent(FlutterDesktopViewRef view,
 }
 
 void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
+                                  const char* device_name,
+                                  uint32_t device_class,
+                                  uint32_t device_subclass,
                                   const char* key,
                                   const char* string,
                                   uint32_t modifiers,
@@ -276,7 +279,8 @@ void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
       ViewFromHandle(view)->tizen_view());
   if (tizen_view->GetType() == flutter::TizenViewType::kView) {
     reinterpret_cast<flutter::TizenView*>(tizen_view)
-        ->OnKey(key, string, nullptr, modifiers, scan_code, timestamp, is_down);
+        ->OnKey(device_name, device_class, device_subclass, key, string,
+                nullptr, modifiers, scan_code, timestamp, is_down);
   }
 }
 

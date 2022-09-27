@@ -18,7 +18,10 @@ class TizenView : public TizenViewBase {
   TizenView() = default;
   virtual ~TizenView() = default;
 
-  virtual void OnKey(const char* key,
+  virtual void OnKey(const char* device_name,
+                     uint32_t device_class,
+                     uint32_t device_subclass,
+                     const char* key,
                      const char* string,
                      const char* compose,
                      uint32_t modifiers,

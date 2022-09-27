@@ -339,7 +339,10 @@ void TizenViewElementary::Show() {
   evas_object_show(image_);
 }
 
-void TizenViewElementary::OnKey(const char* key,
+void TizenViewElementary::OnKey(const char* device_name,
+                                uint32_t device_class,
+                                uint32_t device_subclass,
+                                const char* key,
                                 const char* string,
                                 const char* compose,
                                 uint32_t modifiers,
