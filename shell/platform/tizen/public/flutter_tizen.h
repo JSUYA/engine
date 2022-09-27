@@ -214,6 +214,7 @@ FLUTTER_EXPORT void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                                                  const char* string,
                                                  uint32_t modifiers,
                                                  uint32_t scan_code,
+                                                 size_t timestamp,
                                                  bool is_down);
 
 FLUTTER_EXPORT void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view,

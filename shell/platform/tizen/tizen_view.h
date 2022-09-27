@@ -23,6 +23,7 @@ class TizenView : public TizenViewBase {
                      const char* compose,
                      uint32_t modifiers,
                      uint32_t scan_code,
+                     size_t timestamp,
                      bool is_down) = 0;
 
   TizenViewType GetType() override { return TizenViewType::kView; };

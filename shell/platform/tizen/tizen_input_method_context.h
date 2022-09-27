@@ -39,6 +39,7 @@ class TizenInputMethodContext {
                          const char* string,
                          uint32_t modifiers,
                          uint32_t scan_code,
+                         size_t timestamp,
                          bool is_down);
 
   InputPanelGeometry GetInputPanelGeometry();

@@ -8,7 +8,6 @@
 #include <cstdint>
 #include <vector>
 
-#include "flutter/shell/platform/tizen/logger.h"
 #include "flutter/shell/platform/tizen/tizen_view_base.h"
 
 namespace flutter {

@@ -79,16 +79,17 @@ void TizenViewNui::OnKey(const char* key,
                          const char* compose,
                          uint32_t modifiers,
                          uint32_t scan_code,
+                         size_t timestamp,
                          bool is_down) {
   bool handled = false;
 
   if (input_method_context_->IsInputPanelShown()) {
-    handled = input_method_context_->HandleNuiEventKey(key, string, modifiers,
-                                                       scan_code, is_down);
+    handled = input_method_context_->HandleNuiEventKey(
+        key, string, modifiers, scan_code, timestamp, is_down);
   }
 
   if (!handled) {
-    view_delegate_->OnKey(key, string, nullptr, modifiers, scan_code, is_down);
+    view_delegate_->OnKey(key, string, compose, modifiers, scan_code, is_down);
   }
 }
 
