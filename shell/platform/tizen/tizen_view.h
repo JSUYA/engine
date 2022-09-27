@@ -22,7 +22,7 @@ class TizenView : public TizenViewBase {
 
   bool focused() { return focused_; };
 
-  void SetFocus(bool focus) { focused_ = focus; };
+  void SetFocus(bool focused) { focused_ = focused; };
 
  protected:
   explicit TizenView(int32_t width, int32_t height)
