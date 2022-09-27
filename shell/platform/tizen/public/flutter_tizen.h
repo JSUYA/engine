@@ -217,7 +217,7 @@ FLUTTER_EXPORT void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                                                  bool is_down);
 
 FLUTTER_EXPORT void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view,
-                                               bool focus);
+                                               bool focused);
 
 FLUTTER_EXPORT bool FlutterDesktopViewIsFocused(FlutterDesktopViewRef view);
 

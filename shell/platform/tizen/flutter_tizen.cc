@@ -275,23 +275,19 @@ void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
                               is_down);
 }
 
-void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view_ref, bool focus) {
-  flutter::FlutterTizenView* view = ViewFromHandle(view_ref);
-  auto* tizen_view_base =
-      reinterpret_cast<flutter::TizenViewBase*>(view->tizen_view());
-  if (tizen_view_base->GetType() == flutter::TizenViewType::kView) {
-    auto* tizen_view = reinterpret_cast<flutter::TizenView*>(tizen_view_base);
-    tizen_view->SetFocus(focus);
+void FlutterDesktopViewSetFocus(FlutterDesktopViewRef view, bool focused) {
+  auto* tizen_view = reinterpret_cast<flutter::TizenViewBase*>(
+      ViewFromHandle(view)->tizen_view());
+  if (tizen_view->GetType() == flutter::TizenViewType::kView) {
+    reinterpret_cast<flutter::TizenView*>(tizen_view)->SetFocus(focused);
   }
 }
 
-bool FlutterDesktopViewIsFocused(FlutterDesktopViewRef view_ref) {
-  flutter::FlutterTizenView* view = ViewFromHandle(view_ref);
-  auto* tizen_view_base =
-      reinterpret_cast<flutter::TizenViewBase*>(view->tizen_view());
-  if (tizen_view_base->GetType() == flutter::TizenViewType::kView) {
-    auto* tizen_view = reinterpret_cast<flutter::TizenView*>(tizen_view_base);
-    return tizen_view->focused();
+bool FlutterDesktopViewIsFocused(FlutterDesktopViewRef view) {
+  auto* tizen_view = reinterpret_cast<flutter::TizenViewBase*>(
+      ViewFromHandle(view)->tizen_view());
+  if (tizen_view->GetType() == flutter::TizenViewType::kView) {
+    return reinterpret_cast<flutter::TizenView*>(tizen_view)->focused();
   }
   return false;
 }
