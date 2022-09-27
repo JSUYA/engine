@@ -210,10 +210,12 @@ FLUTTER_EXPORT void FlutterDesktopViewOnPointerEvent(
     int32_t device_id);
 
 FLUTTER_EXPORT void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
+                                                 const char* device_name,
                                                  const char* key,
                                                  const char* string,
                                                  uint32_t modifiers,
                                                  uint32_t scan_code,
+                                                 size_t timestamp,
                                                  bool is_down);
 
 // ========== Plugin Registrar (extensions) ==========

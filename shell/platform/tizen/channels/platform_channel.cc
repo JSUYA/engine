@@ -159,8 +159,10 @@ void PlatformChannel::HandleMethodCall(
 
 void PlatformChannel::SystemNavigatorPop() {
   if (view_->GetType() == TizenViewType::kWindow) {
+    FT_LOG(Error) << "CJS exit";
     ui_app_exit();
   } else {
+    FT_LOG(Error) << "CJS unfocus";
     reinterpret_cast<TizenView*>(view_)->Unfocus();
   }
 }

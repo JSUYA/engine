@@ -74,21 +74,23 @@ void TizenViewNui::RequestRendering() {
   rendering_callback_->Trigger();
 }
 
-void TizenViewNui::OnKey(const char* key,
+void TizenViewNui::OnKey(const char* device_name,
+                         const char* key,
                          const char* string,
                          const char* compose,
                          uint32_t modifiers,
                          uint32_t scan_code,
+                         size_t timestamp,
                          bool is_down) {
   bool handled = false;
 
   if (input_method_context_->IsInputPanelShown()) {
-    handled = input_method_context_->HandleNuiEventKey(key, string, modifiers,
-                                                       scan_code, is_down);
+    handled = input_method_context_->HandleNuiEventKey(
+        device_name, key, string, modifiers, scan_code, timestamp, is_down);
   }
-
+  FT_LOG(Error) << "CJS Handled " << handled << " " << key;
   if (!handled) {
-    view_delegate_->OnKey(key, string, nullptr, modifiers, scan_code, is_down);
+    view_delegate_->OnKey(key, string, compose, modifiers, scan_code, is_down);
   }
 }
 

@@ -117,18 +117,20 @@ template <typename T>
 T NuiEventKeyToEcoreImfEvent(const char* key,
                              const char* string,
                              uint32_t modifiers,
-                             uint32_t scan_code) {
+                             uint32_t scan_code,
+                             size_t timestamp) {
   T imf_event;
 
-  imf_event.key = key;
-  imf_event.string = string;
+  imf_event.keyname = key ? key : "";
+  imf_event.key = key ? key : "";
+  imf_event.string = string ? string : "";
   imf_event.modifiers = EcoreInputModifiersToEcoreImfModifiers(modifiers);
   imf_event.locks = EcoreInputModifiersToEcoreImfLocks(modifiers);
   imf_event.keycode = scan_code;
+  imf_event.timestamp = timestamp;
 
   return imf_event;
 }
-
 }  // namespace
 
 namespace flutter {
@@ -207,25 +209,44 @@ bool TizenInputMethodContext::HandleEvasEventKeyUp(Evas_Event_Key_Up* event) {
       reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
 }
 
-bool TizenInputMethodContext::HandleNuiEventKey(const char* key,
+bool TizenInputMethodContext::HandleNuiEventKey(const char* device_name,
+                                                const char* key,
                                                 const char* string,
                                                 uint32_t modifiers,
                                                 uint32_t scan_code,
+                                                size_t timestamp,
                                                 bool is_down) {
+  FT_LOG(Error) << "CJS KEY (" << device_name << ") (" << key << ") (" << string
+                << ") " << modifiers << " " << scan_code << " " << timestamp;
+
+  bool handled = false;
+  std::string keyName = std::string(key);
   if (is_down) {
     Ecore_IMF_Event_Key_Down imf_event =
         NuiEventKeyToEcoreImfEvent<Ecore_IMF_Event_Key_Down>(
-            key, string, modifiers, scan_code);
-    return ecore_imf_context_filter_event(
+            key, string, modifiers, scan_code, timestamp);
+    FT_LOG(Error) << "CJS Down";
+    handled = ecore_imf_context_filter_event(
         imf_context_, ECORE_IMF_EVENT_KEY_DOWN,
         reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
+
+    /*if (!handled &&
+        (keyName == "Escape" || keyName == "Return" || keyName == "KP_Enter")) {
+      FT_LOG(Error) << "CJS Reset Handle (" << std::string(key) << ")";
+      ecore_imf_context_reset(imf_context_);
+    }*/
+
+    return handled;
   } else {
     Ecore_IMF_Event_Key_Up imf_event =
         NuiEventKeyToEcoreImfEvent<Ecore_IMF_Event_Key_Up>(
-            key, string, modifiers, scan_code);
-    return ecore_imf_context_filter_event(
+            key, string, modifiers, scan_code, timestamp);
+    FT_LOG(Error) << "CJS Up";
+    handled = ecore_imf_context_filter_event(
         imf_context_, ECORE_IMF_EVENT_KEY_UP,
         reinterpret_cast<Ecore_IMF_Event*>(&imf_event));
+
+    return handled;
   }
 }
 

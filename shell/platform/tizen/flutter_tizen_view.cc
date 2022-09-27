@@ -249,9 +249,10 @@ void FlutterTizenView::OnKey(const char* key,
                              uint32_t modifiers,
                              uint32_t scan_code,
                              bool is_down) {
+  FT_LOG(Error) << "Key symbol: " << key << ", code: 0x" << std::setw(8)
+                << std::setfill('0') << std::right << std::hex << scan_code
+                << " " << is_down;
   if (is_down) {
-    FT_LOG(Info) << "Key symbol: " << key << ", code: 0x" << std::setw(8)
-                 << std::setfill('0') << std::right << std::hex << scan_code;
   }
 
   // Do not handle the TV system menu key.
@@ -279,13 +280,17 @@ void FlutterTizenView::OnKey(const char* key,
         [engine = engine_.get(), symbol = std::string(key),
          is_down](bool handled) {
           if (handled) {
+            FT_LOG(Info) << "CJS handled ";
             return;
           }
+          FT_LOG(Info) << "CJS Un handled ";
           if (symbol == kBackKey && !is_down) {
             if (engine->navigation_channel()) {
+              FT_LOG(Info) << "CJS POP";
               engine->navigation_channel()->PopRoute();
             }
           } else if (symbol == kExitKey && !is_down) {
+            FT_LOG(Info) << "CJS Exit ";
             ui_app_exit();
           }
         });

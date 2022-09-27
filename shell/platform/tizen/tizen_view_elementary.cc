@@ -358,11 +358,13 @@ void TizenViewElementary::Show() {
   evas_object_show(event_layer_);
 }
 
-void TizenViewElementary::OnKey(const char* key,
+void TizenViewElementary::OnKey(const char* device_name,
+                                const char* key,
                                 const char* string,
                                 const char* compose,
                                 uint32_t modifiers,
                                 uint32_t scan_code,
+                                size_t timestamp,
                                 bool is_down) {
   // no-op
 }
