@@ -337,7 +337,6 @@ uintptr_t TizenViewElementary::GetWindowId() {
 void TizenViewElementary::Show() {
   evas_object_show(container_);
   evas_object_show(image_);
-  evas_object_show(container_);
 }
 
 void TizenViewElementary::PrepareInputMethod() {
