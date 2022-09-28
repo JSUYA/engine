@@ -13,6 +13,7 @@
 #include "flutter/shell/platform/tizen/flutter_tizen_view.h"
 #include "flutter/shell/platform/tizen/logger.h"
 #include "flutter/shell/platform/tizen/public/flutter_platform_view.h"
+#include "flutter/shell/platform/tizen/tizen_view.h"
 #ifdef NUI_SUPPORT
 #include "flutter/shell/platform/tizen/tizen_view_nui.h"
 #endif
