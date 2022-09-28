@@ -75,14 +75,14 @@ bool TizenViewElementary::CreateView() {
     initial_height_ = parent_height;
   }
 
-  container_ = elm_table_add(parent_);
+  container_ = elm_bg_add(parent_);
   if (!container_) {
     FT_LOG(Error) << "Failed to create an Evas object container.";
     return false;
   }
-  evas_object_size_hint_weight_set(container_, EVAS_HINT_EXPAND,
-                                   EVAS_HINT_EXPAND);
+  evas_object_size_hint_align_set(container_, EVAS_HINT_FILL, EVAS_HINT_FILL);
   EvasObjectResizeWithMinMaxHint(container_, initial_width_, initial_height_);
+  elm_object_focus_allow_set(container_, EINA_TRUE);
 
   image_ = evas_object_image_filled_add(evas_object_evas_get(container_));
   if (!image_) {
@@ -93,29 +93,11 @@ bool TizenViewElementary::CreateView() {
   EvasObjectResizeWithMinMaxHint(image_, initial_width_, initial_height_);
   evas_object_image_size_set(image_, initial_width_, initial_height_);
   evas_object_image_alpha_set(image_, EINA_TRUE);
-
-  elm_table_pack(container_, image_, 0, 0, 1, 1);
-
-  // FIXME: Button widgets can receive both mouse events and key events. But the
-  // button widget is temporary. It should be changed to the appropriate object
-  // that can be used as event layer.
-  event_layer_ = elm_button_add(container_);
-  if (!event_layer_) {
-    FT_LOG(Error) << "Failed to create an event layer.";
-    return false;
-  }
-  evas_object_size_hint_weight_set(event_layer_, EVAS_HINT_EXPAND,
-                                   EVAS_HINT_EXPAND);
-  evas_object_size_hint_align_set(event_layer_, EVAS_HINT_FILL, EVAS_HINT_FILL);
-  elm_object_style_set(event_layer_, "transparent");
-  evas_object_color_set(event_layer_, 0, 0, 0, 0);
-  elm_table_pack(container_, event_layer_, 0, 0, 1, 1);
-
+  elm_object_part_content_set(container_, "overlay", image_);
   return true;
 }
 
 void TizenViewElementary::DestroyView() {
-  evas_object_del(event_layer_);
   evas_object_del(image_);
   evas_object_del(container_);
 }
@@ -147,7 +129,7 @@ void TizenViewElementary::RegisterEventHandlers() {
       [](void* data, Evas* evas, Evas_Object* object, void* event_info) {
         auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_delegate_) {
-          if (self->event_layer_ == object) {
+          if (self->container_ == object) {
             auto* mouse_event =
                 reinterpret_cast<Evas_Event_Mouse_Down*>(event_info);
             TizenGeometry geometry = self->GetGeometry();
@@ -159,7 +141,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         }
       };
   evas_object_event_callback_add(
-      event_layer_, EVAS_CALLBACK_MOUSE_DOWN,
+      container_, EVAS_CALLBACK_MOUSE_DOWN,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_DOWN], this);
 
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_UP] = [](void* data, Evas* evas,
@@ -167,10 +149,10 @@ void TizenViewElementary::RegisterEventHandlers() {
                                                       void* event_info) {
     auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_delegate_) {
-      if (self->event_layer_ == object) {
+      if (self->container_ == object) {
         auto* mouse_event = reinterpret_cast<Evas_Event_Mouse_Up*>(event_info);
         if (self->scroll_hold_) {
-          elm_object_scroll_hold_pop(self->event_layer_);
+          elm_object_scroll_hold_pop(self->container_);
           self->scroll_hold_ = false;
         }
         TizenGeometry geometry = self->GetGeometry();
@@ -181,7 +163,7 @@ void TizenViewElementary::RegisterEventHandlers() {
       }
     }
   };
-  evas_object_event_callback_add(event_layer_, EVAS_CALLBACK_MOUSE_UP,
+  evas_object_event_callback_add(container_, EVAS_CALLBACK_MOUSE_UP,
                                  evas_object_callbacks_[EVAS_CALLBACK_MOUSE_UP],
                                  this);
 
@@ -190,13 +172,13 @@ void TizenViewElementary::RegisterEventHandlers() {
                                                         void* event_info) {
     auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_delegate_) {
-      if (self->event_layer_ == object) {
+      if (self->container_ == object) {
         auto* mouse_event =
             reinterpret_cast<Evas_Event_Mouse_Move*>(event_info);
         mouse_event->event_flags = Evas_Event_Flags(mouse_event->event_flags |
                                                     EVAS_EVENT_FLAG_ON_HOLD);
         if (!self->scroll_hold_) {
-          elm_object_scroll_hold_push(self->event_layer_);
+          elm_object_scroll_hold_push(self->container_);
           self->scroll_hold_ = true;
         }
         TizenGeometry geometry = self->GetGeometry();
@@ -208,14 +190,14 @@ void TizenViewElementary::RegisterEventHandlers() {
     }
   };
   evas_object_event_callback_add(
-      event_layer_, EVAS_CALLBACK_MOUSE_MOVE,
+      container_, EVAS_CALLBACK_MOUSE_MOVE,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_MOVE], this);
 
   evas_object_callbacks_[EVAS_CALLBACK_MOUSE_WHEEL] =
       [](void* data, Evas* evas, Evas_Object* object, void* event_info) {
         auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_delegate_) {
-          if (self->event_layer_ == object) {
+          if (self->container_ == object) {
             auto* wheel_event =
                 reinterpret_cast<Ecore_Event_Mouse_Wheel*>(event_info);
             double delta_x = 0.0;
@@ -235,7 +217,7 @@ void TizenViewElementary::RegisterEventHandlers() {
         }
       };
   evas_object_event_callback_add(
-      event_layer_, EVAS_CALLBACK_MOUSE_WHEEL,
+      container_, EVAS_CALLBACK_MOUSE_WHEEL,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_WHEEL], this);
 
   evas_object_callbacks_[EVAS_CALLBACK_KEY_DOWN] = [](void* data, Evas* evas,
@@ -243,7 +225,7 @@ void TizenViewElementary::RegisterEventHandlers() {
                                                       void* event_info) {
     auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_delegate_) {
-      if (self->event_layer_ == object && self->focused_) {
+      if (self->container_ == object && self->focused_) {
         auto* key_event = reinterpret_cast<Evas_Event_Key_Down*>(event_info);
         bool handled = false;
         key_event->event_flags =
@@ -261,7 +243,7 @@ void TizenViewElementary::RegisterEventHandlers() {
       }
     }
   };
-  evas_object_event_callback_add(event_layer_, EVAS_CALLBACK_KEY_DOWN,
+  evas_object_event_callback_add(container_, EVAS_CALLBACK_KEY_DOWN,
                                  evas_object_callbacks_[EVAS_CALLBACK_KEY_DOWN],
                                  this);
 
@@ -269,7 +251,7 @@ void TizenViewElementary::RegisterEventHandlers() {
       [](void* data, Evas* evas, Evas_Object* object, void* event_info) {
         auto* self = reinterpret_cast<TizenViewElementary*>(data);
         if (self->view_delegate_) {
-          if (self->event_layer_ == object && self->focused_) {
+          if (self->container_ == object && self->focused_) {
             auto* key_event = reinterpret_cast<Evas_Event_Key_Up*>(event_info);
             bool handled = false;
             key_event->event_flags = Evas_Event_Flags(key_event->event_flags |
@@ -287,19 +269,19 @@ void TizenViewElementary::RegisterEventHandlers() {
           }
         }
       };
-  evas_object_event_callback_add(event_layer_, EVAS_CALLBACK_KEY_UP,
+  evas_object_event_callback_add(container_, EVAS_CALLBACK_KEY_UP,
                                  evas_object_callbacks_[EVAS_CALLBACK_KEY_UP],
                                  this);
 
   focused_callback_ = [](void* data, Evas_Object* object, void* event_info) {
     auto* self = reinterpret_cast<TizenViewElementary*>(data);
     if (self->view_delegate_) {
-      if (self->event_layer_ == object) {
+      if (self->container_ == object) {
         self->focused_ = true;
       }
     }
   };
-  evas_object_smart_callback_add(event_layer_, "focused", focused_callback_,
+  evas_object_smart_callback_add(container_, "focused", focused_callback_,
                                  this);
 }
 
@@ -307,23 +289,23 @@ void TizenViewElementary::UnregisterEventHandlers() {
   evas_object_event_callback_del(container_, EVAS_CALLBACK_RESIZE,
                                  evas_object_callbacks_[EVAS_CALLBACK_RESIZE]);
   evas_object_event_callback_del(
-      event_layer_, EVAS_CALLBACK_MOUSE_DOWN,
+      container_, EVAS_CALLBACK_MOUSE_DOWN,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_DOWN]);
   evas_object_event_callback_del(
-      event_layer_, EVAS_CALLBACK_MOUSE_UP,
+      container_, EVAS_CALLBACK_MOUSE_UP,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_UP]);
   evas_object_event_callback_del(
-      event_layer_, EVAS_CALLBACK_MOUSE_MOVE,
+      container_, EVAS_CALLBACK_MOUSE_MOVE,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_MOVE]);
   evas_object_event_callback_del(
-      event_layer_, EVAS_CALLBACK_MOUSE_WHEEL,
+      container_, EVAS_CALLBACK_MOUSE_WHEEL,
       evas_object_callbacks_[EVAS_CALLBACK_MOUSE_WHEEL]);
   evas_object_event_callback_del(
-      event_layer_, EVAS_CALLBACK_KEY_DOWN,
+      container_, EVAS_CALLBACK_KEY_DOWN,
       evas_object_callbacks_[EVAS_CALLBACK_KEY_DOWN]);
-  evas_object_event_callback_del(event_layer_, EVAS_CALLBACK_KEY_UP,
+  evas_object_event_callback_del(container_, EVAS_CALLBACK_KEY_UP,
                                  evas_object_callbacks_[EVAS_CALLBACK_KEY_UP]);
-  evas_object_smart_callback_del(event_layer_, "focused", focused_callback_);
+  evas_object_smart_callback_del(container_, "focused", focused_callback_);
 }
 
 TizenGeometry TizenViewElementary::GetGeometry() {
@@ -355,7 +337,7 @@ uintptr_t TizenViewElementary::GetWindowId() {
 void TizenViewElementary::Show() {
   evas_object_show(container_);
   evas_object_show(image_);
-  evas_object_show(event_layer_);
+  evas_object_show(container_);
 }
 
 void TizenViewElementary::PrepareInputMethod() {
