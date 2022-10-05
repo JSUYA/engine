@@ -269,15 +269,15 @@ void FlutterDesktopViewOnPointerEvent(FlutterDesktopViewRef view,
 }
 
 void FlutterDesktopViewOnKeyEvent(FlutterDesktopViewRef view,
+                                  const char* device_name,
+                                  uint32_t device_class,
+                                  uint32_t device_subclass,
                                   const char* key,
                                   const char* string,
                                   uint32_t modifiers,
                                   uint32_t scan_code,
-                                  bool is_down,
-                                  size_t timestamp = 0,
-                                  const char* device_name = nullptr,
-                                  uint32_t device_class = 0,
-                                  uint32_t device_subclass = 0) {
+                                  size_t timestamp,
+                                  bool is_down) {
 #ifdef NUI_SUPPORT
   auto* tizen_view = reinterpret_cast<flutter::TizenViewBase*>(
       ViewFromHandle(view)->tizen_view());
