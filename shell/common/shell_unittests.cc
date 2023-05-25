@@ -4086,11 +4086,6 @@ TEST_F(ShellTest, PictureToImageSync) {
       }),
   });
 
-  AddNativeCallback("NativeOnBeforeToImageSync",
-                    CREATE_NATIVE_ENTRY([&](auto args) {
-                      // nop
-                    }));
-
   fml::CountDownLatch latch(2);
   AddNativeCallback("NotifyNative", CREATE_NATIVE_ENTRY([&](auto args) {
                       // Teardown and set up rasterizer again.
