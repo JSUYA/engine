@@ -366,7 +366,7 @@ std::unique_ptr<Rasterizer::GpuImageResult> Rasterizer::MakeSkiaGpuImage(
 #if SLIMPELLER
   FML_LOG(FATAL) << "Impeller opt-out unavailable.";
   return nullptr;
-#else   // SLIMPELLER
+#else  // SLIMPELLER
   TRACE_EVENT0("flutter", "Rasterizer::MakeGpuImage");
   FML_DCHECK(display_list);
 
@@ -375,8 +375,7 @@ std::unique_ptr<Rasterizer::GpuImageResult> Rasterizer::MakeSkiaGpuImage(
 // https://github.com/flutter/flutter/issues/108835
 #if FML_OS_LINUX
   return MakeBitmapImage(display_list, image_info);
-#endif
-
+#else   // FML_OS_LINUX
   std::unique_ptr<SnapshotDelegate::GpuImageResult> result;
   delegate_.GetIsGpuDisabledSyncSwitch()->Execute(
       fml::SyncSwitch::Handlers()
@@ -428,6 +427,7 @@ std::unique_ptr<Rasterizer::GpuImageResult> Rasterizer::MakeSkiaGpuImage(
                 texture, sk_ref_sp(context), nullptr, "");
           }));
   return result;
+#endif  //  !FML_OS_LINUX
 #endif  //  !SLIMPELLER
 }
 
