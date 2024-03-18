@@ -938,7 +938,7 @@ deps = {
         'version': 'I-3hiLjX2DDy6mu22Q51o4ktda9zg0wZWdk-QolLicoC'
        }
      ],
-     'condition': 'host_os == "linux" and not download_fuchsia_sdk',
+     'condition': 'host_os == "linux" and download_fuchsia_sdk',
      'dep_type': 'cipd',
    },
 
