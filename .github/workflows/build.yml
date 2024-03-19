@@ -47,7 +47,7 @@ jobs:
       - name: Run gclient sync
         run: |
           gclient config --name=src/flutter --unmanaged https://github.com/flutter-tizen/engine
-          gclient setdep --var=download_dart_sdk=False --var=download_android_deps=False --deps-file=src/flutter/DEPS
+          gclient setdep --var=download_dart_sdk=False --var=download_android_deps=False --var=download_fuchsia_deps=False --deps-file=src/flutter/DEPS
           gclient sync -v --no-history --shallow
 
       - name: Generate sysroot
