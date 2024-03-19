@@ -106,6 +106,13 @@ vars = {
   # Checkout Linux dependencies only when building on Linux.
   'download_linux_deps': 'host_os == "linux"',
 
+  # Checkout Fuchsia dependencies only on Linux. This is the umbrella flag which
+  # controls the behavior of all fuchsia related flags. I.e. any fuchsia related
+  # logic or condition may not work if this flag is False.
+  # TODO(zijiehe): Make this condition more strict to only download fuchsia
+  # dependencies when necessary: b/40935282
+  'download_fuchsia_deps': 'host_os == "linux"',
+
   # Downloads the fuchsia SDK as listed in fuchsia_sdk_path var. This variable
   # is currently only used for the Fuchsia LSC process and is not intended for
   # local development.
@@ -938,7 +945,7 @@ deps = {
         'version': 'I-3hiLjX2DDy6mu22Q51o4ktda9zg0wZWdk-QolLicoC'
        }
      ],
-     'condition': 'host_os == "linux" and not download_fuchsia_sdk',
+     'condition': 'download_fuchsia_deps and not download_fuchsia_sdk',
      'dep_type': 'cipd',
    },
 
@@ -1032,7 +1039,7 @@ hooks = [
   {
     'name': 'Download Fuchsia SDK',
     'pattern': '.',
-    'condition': 'download_fuchsia_sdk',
+    'condition': 'download_fuchsia_deps and download_fuchsia_sdk',
     'action': [
       'python3',
       'src/flutter/tools/download_fuchsia_sdk.py',
