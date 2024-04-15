@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "flutter/common/graphics/texture.h"
+#include "flutter/shell/platform/embedder/embedder.h"
 
 #ifdef SHELL_ENABLE_GL
 #include "flutter/shell/platform/embedder/embedder_external_texture_gl.h"
@@ -35,6 +36,8 @@ class EmbedderExternalTextureResolver {
 #endif
 
   std::unique_ptr<Texture> ResolveExternalTexture(int64_t texture_id);
+  std::unique_ptr<Texture> ResolveExternalTexture(int64_t texture_id,
+                                                  FlutterTextureType type);
 
   bool SupportsExternalTextures();
 

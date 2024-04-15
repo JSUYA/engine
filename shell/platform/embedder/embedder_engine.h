@@ -58,6 +58,8 @@ class EmbedderEngine {
 
   bool RegisterTexture(int64_t texture);
 
+  bool RegisterTexture(int64_t texture, FlutterTextureType type);
+
   bool UnregisterTexture(int64_t texture);
 
   bool MarkTextureFrameAvailable(int64_t texture);

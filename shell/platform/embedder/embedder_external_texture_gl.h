@@ -22,14 +22,6 @@ class EmbedderExternalTextureGL : public flutter::Texture {
 
   ~EmbedderExternalTextureGL();
 
- private:
-  const ExternalTextureCallback& external_texture_callback_;
-  sk_sp<DlImage> last_image_;
-
-  sk_sp<DlImage> ResolveTexture(int64_t texture_id,
-                                GrDirectContext* context,
-                                const SkISize& size);
-
   // |flutter::Texture|
   void Paint(PaintContext& context,
              const SkRect& bounds,
@@ -48,7 +40,68 @@ class EmbedderExternalTextureGL : public flutter::Texture {
   // |flutter::Texture|
   void OnTextureUnregistered() override;
 
+ protected:
+  virtual sk_sp<DlImage> ResolveTexture(int64_t texture_id,
+                                        PaintContext& context,
+                                        const SkISize& size) = 0;
+  const ExternalTextureCallback& external_texture_callback_;
+  sk_sp<DlImage> last_image_;
+
+ private:
   FML_DISALLOW_COPY_AND_ASSIGN(EmbedderExternalTextureGL);
+};
+
+class EmbedderExternalTextureSkiaGL
+    : public flutter::EmbedderExternalTextureGL {
+ public:
+  EmbedderExternalTextureSkiaGL(int64_t texture_identifier,
+                                const ExternalTextureCallback& callback);
+
+  ~EmbedderExternalTextureSkiaGL();
+
+ protected:
+  sk_sp<DlImage> ResolveTexture(int64_t texture_id,
+                                PaintContext& context,
+                                const SkISize& size) override;
+
+ private:
+  FML_DISALLOW_COPY_AND_ASSIGN(EmbedderExternalTextureSkiaGL);
+};
+
+class EmbedderExternalTextureGLImpellerPixelBuffer
+    : public flutter::EmbedderExternalTextureGL {
+ public:
+  EmbedderExternalTextureGLImpellerPixelBuffer(
+      int64_t texture_identifier,
+      const ExternalTextureCallback& callback);
+
+  ~EmbedderExternalTextureGLImpellerPixelBuffer();
+
+ protected:
+  sk_sp<DlImage> ResolveTexture(int64_t texture_id,
+                                PaintContext& context,
+                                const SkISize& size) override;
+
+ private:
+  FML_DISALLOW_COPY_AND_ASSIGN(EmbedderExternalTextureGLImpellerPixelBuffer);
+};
+
+class EmbedderExternalTextureGLImpellerSurface
+    : public flutter::EmbedderExternalTextureGL {
+ public:
+  EmbedderExternalTextureGLImpellerSurface(
+      int64_t texture_identifier,
+      const ExternalTextureCallback& callback);
+
+  ~EmbedderExternalTextureGLImpellerSurface();
+
+ protected:
+  sk_sp<DlImage> ResolveTexture(int64_t texture_id,
+                                PaintContext& context,
+                                const SkISize& size) override;
+
+ private:
+  FML_DISALLOW_COPY_AND_ASSIGN(EmbedderExternalTextureGLImpellerSurface);
 };
 
 }  // namespace flutter

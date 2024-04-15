@@ -153,6 +153,15 @@ bool EmbedderEngine::RegisterTexture(int64_t texture) {
   return true;
 }
 
+bool EmbedderEngine::RegisterTexture(int64_t texture, FlutterTextureType type) {
+  if (!IsValid()) {
+    return false;
+  }
+  shell_->GetPlatformView()->RegisterTexture(
+      external_texture_resolver_->ResolveExternalTexture(texture, type));
+  return true;
+}
+
 bool EmbedderEngine::UnregisterTexture(int64_t texture) {
   if (!IsValid()) {
     return false;

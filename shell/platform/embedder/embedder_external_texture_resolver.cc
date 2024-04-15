@@ -22,11 +22,37 @@ EmbedderExternalTextureResolver::EmbedderExternalTextureResolver(
 #endif
 
 std::unique_ptr<Texture>
+EmbedderExternalTextureResolver::ResolveExternalTexture(
+    int64_t texture_id,
+    FlutterTextureType type) {
+#ifdef SHELL_ENABLE_GL
+  if (gl_callback_) {
+    if (type == FlutterTextureType::kFlutterGpuSurfaceTexture) {
+      return std::make_unique<EmbedderExternalTextureGLImpellerSurface>(
+          texture_id, gl_callback_);
+    } else {
+      return std::make_unique<EmbedderExternalTextureGLImpellerPixelBuffer>(
+          texture_id, gl_callback_);
+    }
+  }
+#endif
+
+#ifdef SHELL_ENABLE_METAL
+  if (metal_callback_) {
+    return std::make_unique<EmbedderExternalTextureMetal>(texture_id,
+                                                          metal_callback_);
+  }
+#endif
+
+  return nullptr;
+}
+
+std::unique_ptr<Texture>
 EmbedderExternalTextureResolver::ResolveExternalTexture(int64_t texture_id) {
 #ifdef SHELL_ENABLE_GL
   if (gl_callback_) {
-    return std::make_unique<EmbedderExternalTextureGL>(texture_id,
-                                                       gl_callback_);
+    return std::make_unique<EmbedderExternalTextureSkiaGL>(texture_id,
+                                                           gl_callback_);
   }
 #endif
 
