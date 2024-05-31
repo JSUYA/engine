@@ -70,7 +70,7 @@ jobs:
             --disable-desktop-embeddings \
             --target-dir build
           ninja -C src/out/build flutter_engine_library
-          cp -f src/third_party/icu/flutter/icudtl.dat src/out/build
+          cp -f src/flutter/third_party/icu/flutter/icudtl.dat src/out/build
 
       - name: Build gen_snapshot
         if: ${{ matrix.mode != 'debug' }}
