@@ -13,21 +13,20 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-
 base_packages = [
-  'gcc',
-  'glibc',
-  'glibc-devel',
-  'libgcc',
-  'linux-glibc-devel',
-  'zlib-devel',
+    'gcc',
+    'glibc',
+    'glibc-devel',
+    'libgcc',
+    'linux-glibc-devel',
+    'zlib-devel',
 ]
 
 unified_packages = [
-  'fontconfig',
-  'fontconfig-devel',
-  'freetype2-devel',
-  'libpng-devel',
+    'fontconfig',
+    'fontconfig-devel',
+    'freetype2-devel',
+    'libpng-devel',
 ]
 
 
@@ -42,16 +41,16 @@ def generate_sysroot(sysroot: Path, api_version: float, arch: str, quiet=False):
     sys.exit('Unknown arch: ' + arch)
 
   base_repo = 'http://download.tizen.org/snapshots/TIZEN/Tizen-{}/Tizen-{}-Base/latest/repos/standard/packages'.format(
-    api_version,api_version)
+      api_version, api_version
+  )
   unified_repo = 'http://download.tizen.org/snapshots/TIZEN/Tizen-{}/Tizen-{}-Unified/latest/repos/standard/packages'.format(
-    api_version, api_version)
+      api_version, api_version
+  )
 
   # Retrieve html documents.
   documents = {}
-  for url in ['{}/{}'.format(base_repo, tizen_arch),
-              '{}/{}'.format(base_repo, 'noarch'),
-              '{}/{}'.format(unified_repo, tizen_arch),
-              '{}/{}'.format(unified_repo, 'noarch')]:
+  for url in ['{}/{}'.format(base_repo, tizen_arch), '{}/{}'.format(base_repo, 'noarch'),
+              '{}/{}'.format(unified_repo, tizen_arch), '{}/{}'.format(unified_repo, 'noarch')]:
     request = urllib.request.Request(url)
     with urllib.request.urlopen(request) as response:
       documents[url] = response.read().decode('utf-8')
@@ -99,8 +98,7 @@ def generate_sysroot(sysroot: Path, api_version: float, arch: str, quiet=False):
     libpath = sysroot / 'usr' / 'lib64'
   else:
     libpath = sysroot / 'usr' / 'lib'
-  subprocess.run('cp gcc/*/*/*.o gcc/*/*/*.a .',
-                 shell=True, cwd=libpath, check=True)
+  subprocess.run('cp gcc/*/*/*.o gcc/*/*/*.a .', shell=True, cwd=libpath, check=True)
 
   # Apply a patch if applicable.
   patch = Path(__file__).parent / '{}.patch'.format(arch)
@@ -118,14 +116,16 @@ def main():
 
   # Parse arguments.
   parser = argparse.ArgumentParser(description='Tizen sysroot generator')
-  parser.add_argument('-o', '--out', metavar='PATH', type=str,
-                      help='Path to the output directory')
-  parser.add_argument('-f', '--force', action='store_true',
-                      help='Force re-downloading of packages')
-  parser.add_argument('-q', '--quiet', action='store_true',
-                      help='Suppress log output')
-  parser.add_argument('--api-version', metavar='VER', default=5.5, type=float,
-                      help='Target API version (defaults to 5.5)')
+  parser.add_argument('-o', '--out', metavar='PATH', type=str, help='Path to the output directory')
+  parser.add_argument('-f', '--force', action='store_true', help='Force re-downloading of packages')
+  parser.add_argument('-q', '--quiet', action='store_true', help='Suppress log output')
+  parser.add_argument(
+      '--api-version',
+      metavar='VER',
+      default=5.5,
+      type=float,
+      help='Target API version (defaults to 5.5)'
+  )
   args = parser.parse_args()
 
   if args.out:

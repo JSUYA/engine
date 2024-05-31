@@ -32,8 +32,7 @@ def check_symbol(sofile, allowlist):
     sys.exit('{} is not a valid file.'.format(allowlist))
 
   try:
-    symbols_raw = subprocess.check_output(
-      ['nm', '-gDC', sofile]).decode('utf-8').splitlines()
+    symbols_raw = subprocess.check_output(['nm', '-gDC', sofile]).decode('utf-8').splitlines()
     symbols = [Symbol.parse(line) for line in symbols_raw]
   except subprocess.CalledProcessError as error:
     sys.exit('nm failed: {}'.format(error))
@@ -60,10 +59,8 @@ def check_symbol(sofile, allowlist):
 
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument('--allowlist', type=str, required=True,
-                      help='Path to the allowlist file')
-  parser.add_argument('sofile', type=str, nargs='+',
-                      help='Path to the .so file')
+  parser.add_argument('--allowlist', type=str, required=True, help='Path to the allowlist file')
+  parser.add_argument('sofile', type=str, nargs='+', help='Path to the .so file')
   args = parser.parse_args()
 
   for sofile in args.sofile:
