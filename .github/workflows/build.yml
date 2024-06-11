@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        arch: [arm, arm64, x86]
+        arch: [arm, arm64, x86, x64]
         mode: [debug, release, profile]
         include:
           - arch: arm
@@ -22,10 +22,16 @@ jobs:
             triple: aarch64-linux-gnu
           - arch: x86
             triple: i686-linux-gnu
+          - arch: x64
+            triple: x86_64-linux-gnu
         exclude:
           - arch: x86
             mode: release
           - arch: x86
+            mode: profile
+          - arch: x64
+            mode: release
+          - arch: x64
             mode: profile
 
     steps:
