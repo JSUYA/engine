@@ -18,6 +18,8 @@ base_packages = [
     'glibc',
     'glibc-devel',
     'libgcc',
+    'libstdc++',
+    'libstdc++-devel',
     'linux-glibc-devel',
     'zlib-devel',
 ]
