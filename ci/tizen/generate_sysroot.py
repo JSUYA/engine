@@ -100,7 +100,7 @@ def generate_sysroot(sysroot: Path, api_version: float, arch: str, quiet=False):
     libpath = sysroot / 'usr' / 'lib64'
   else:
     libpath = sysroot / 'usr' / 'lib'
-  subprocess.run('cp -f gcc/*/*/*.o gcc/*/*/*.a .', shell=True, cwd=libpath, check=True)
+  subprocess.run('cp gcc/*/*/*.o gcc/*/*/*.a .', shell=True, cwd=libpath, check=True)
 
   # Apply a patch if applicable.
   patch = Path(__file__).parent / '{}.patch'.format(arch)
