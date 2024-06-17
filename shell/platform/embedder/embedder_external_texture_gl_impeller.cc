@@ -17,7 +17,7 @@ namespace flutter {
 
 EmbedderExternalTextureGLImpeller::EmbedderExternalTextureGLImpeller(
     int64_t texture_identifier,
-    const ExternalTextureCallback& callback)
+    const EmbedderExternalTextureGL::ExternalTextureCallback& callback)
     : Texture(texture_identifier), external_texture_callback_(callback) {
   FML_DCHECK(external_texture_callback_);
 }
@@ -74,11 +74,19 @@ sk_sp<DlImage> EmbedderExternalTextureGLImpeller::ResolveTexture(
   if (!texture) {
     return nullptr;
   }
+  size_t width = size.width();
+  size_t height = size.height();
+  if (texture->width != 0 && texture->height != 0) {
+    width = texture->width;
+    height = texture->height;
+  }
   if (texture->impeller_texture_type ==
       FlutterGLImpellerTextureType::kFlutterGLImpellerTexturePixelBuffer) {
-    return ResolvePixelBufferTexture(texture.get(), context, size);
+    return ResolvePixelBufferTexture(texture.get(), context,
+                                     SkISize::Make(width, height));
   } else {
-    return ResolveGpuSurfaceTexture(texture.get(), context, size);
+    return ResolveGpuSurfaceTexture(texture.get(), context,
+                                    SkISize::Make(width, height));
   }
 }
 
@@ -86,21 +94,14 @@ sk_sp<DlImage> EmbedderExternalTextureGLImpeller::ResolvePixelBufferTexture(
     FlutterOpenGLTexture* texture,
     PaintContext& context,
     const SkISize& size) {
-  size_t width = size.width();
-  size_t height = size.height();
-  if (texture->width != 0 && texture->height != 0) {
-    width = texture->width;
-    height = texture->height;
-  }
   impeller::TextureDescriptor desc;
   desc.type = impeller::TextureType::kTexture2D;
-
   impeller::AiksContext* aiks_context = context.aiks_context;
   const auto& gl_context =
       impeller::ContextGLES::Cast(*aiks_context->GetContext());
   desc.storage_mode = impeller::StorageMode::kDevicePrivate;
   desc.format = impeller::PixelFormat::kR8G8B8A8UNormInt;
-  desc.size = {static_cast<int>(width), static_cast<int>(height)};
+  desc.size = {static_cast<int>(size.width()), static_cast<int>(size.height())};
   desc.mip_count = 1;
 
   auto textureGLES =
@@ -121,12 +122,6 @@ sk_sp<DlImage> EmbedderExternalTextureGLImpeller::ResolveGpuSurfaceTexture(
     FlutterOpenGLTexture* texture,
     PaintContext& context,
     const SkISize& size) {
-  size_t width = size.width();
-  size_t height = size.height();
-  if (texture->width != 0 && texture->height != 0) {
-    width = texture->width;
-    height = texture->height;
-  }
   impeller::TextureDescriptor desc;
   desc.type = impeller::TextureType::kTextureExternalOES;
   impeller::AiksContext* aiks_context = context.aiks_context;
@@ -134,8 +129,7 @@ sk_sp<DlImage> EmbedderExternalTextureGLImpeller::ResolveGpuSurfaceTexture(
       impeller::ContextGLES::Cast(*aiks_context->GetContext());
   desc.storage_mode = impeller::StorageMode::kDevicePrivate;
   desc.format = impeller::PixelFormat::kR8G8B8A8UNormInt;
-  desc.size = {static_cast<int>(texture->width),
-               static_cast<int>(texture->height)};
+  desc.size = {static_cast<int>(size.width()), static_cast<int>(size.height())};
   desc.mip_count = 1;
   auto textureGLES = std::make_shared<impeller::TextureGLES>(
       gl_context.GetReactor(), desc,

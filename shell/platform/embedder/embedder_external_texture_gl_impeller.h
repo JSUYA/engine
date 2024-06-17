@@ -8,22 +8,22 @@
 #include "flutter/common/graphics/texture.h"
 #include "flutter/fml/macros.h"
 #include "flutter/shell/platform/embedder/embedder.h"
+#include "flutter/shell/platform/embedder/embedder_external_texture_gl.h"
 #include "third_party/skia/include/core/SkSize.h"
 
 namespace flutter {
 
 class EmbedderExternalTextureGLImpeller : public flutter::Texture {
  public:
-  using ExternalTextureCallback = std::function<
-      std::unique_ptr<FlutterOpenGLTexture>(int64_t, size_t, size_t)>;
-
-  EmbedderExternalTextureGLImpeller(int64_t texture_identifier,
-                                    const ExternalTextureCallback& callback);
+  EmbedderExternalTextureGLImpeller(
+      int64_t texture_identifier,
+      const EmbedderExternalTextureGL::ExternalTextureCallback& callback);
 
   ~EmbedderExternalTextureGLImpeller();
 
  private:
-  const ExternalTextureCallback& external_texture_callback_;
+  const EmbedderExternalTextureGL::ExternalTextureCallback&
+      external_texture_callback_;
   sk_sp<DlImage> last_image_;
 
   sk_sp<DlImage> ResolveTexture(int64_t texture_id,
