@@ -8,6 +8,7 @@
 #include "flutter/impeller/display_list/dl_image_impeller.h"
 #include "flutter/impeller/renderer/backend/gles/context_gles.h"
 #include "flutter/impeller/renderer/backend/gles/texture_gles.h"
+#include "flutter/shell/platform/embedder/embedder_tizen.h"
 #include "impeller/aiks/aiks_context.h"
 #include "impeller/renderer/backend/gles/gles.h"
 #include "include/core/SkCanvas.h"
@@ -80,7 +81,9 @@ sk_sp<DlImage> EmbedderExternalTextureGLImpeller::ResolveTexture(
     width = texture->width;
     height = texture->height;
   }
-  if (texture->impeller_texture_type ==
+  FlutterOpenGLTextureTizen* texture_tizen =
+      static_cast<FlutterOpenGLTextureTizen*>(texture->user_data);
+  if (texture_tizen->impeller_texture_type ==
       FlutterGLImpellerTextureType::kFlutterGLImpellerTexturePixelBuffer) {
     return ResolvePixelBufferTexture(texture.get(), context,
                                      SkISize::Make(width, height));
@@ -106,7 +109,10 @@ sk_sp<DlImage> EmbedderExternalTextureGLImpeller::ResolvePixelBufferTexture(
 
   auto textureGLES =
       std::make_shared<impeller::TextureGLES>(gl_context.GetReactor(), desc);
-  if (!textureGLES->SetContents(texture->buffer, texture->buffer_size)) {
+  FlutterOpenGLTextureTizen* texture_tizen =
+      static_cast<FlutterOpenGLTextureTizen*>(texture->user_data);
+  if (!textureGLES->SetContents(texture_tizen->buffer,
+                                texture_tizen->buffer_size)) {
     if (texture->destruction_callback) {
       texture->destruction_callback(texture->user_data);
     }
@@ -143,7 +149,9 @@ sk_sp<DlImage> EmbedderExternalTextureGLImpeller::ResolveGpuSurfaceTexture(
     return nullptr;
   }
 
-  if (!texture->bind_callback(texture->user_data)) {
+  FlutterOpenGLTextureTizen* texture_tizen =
+      static_cast<FlutterOpenGLTextureTizen*>(texture->user_data);
+  if (!texture_tizen->bind_callback(texture->user_data)) {
     if (texture->destruction_callback) {
       texture->destruction_callback(texture->user_data);
     }

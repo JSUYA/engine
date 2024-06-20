@@ -203,7 +203,10 @@ embedder_source_set("embedder_as_internal_library") {
 }
 
 source_set("embedder_headers") {
-  public = [ "embedder.h" ]
+  public = [
+    "embedder.h",
+    "embedder_tizen.h",
+  ]
 
   public_configs = [ "//flutter:config" ]
 }
