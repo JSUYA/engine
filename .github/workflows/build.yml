@@ -171,7 +171,7 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install depot_tools
         run: |
@@ -186,7 +186,7 @@ jobs:
 
       - name: Build
         run: |
-          # Change host_toolchain to mac/clang_x64.
+          # Change host_toolchain to mac/clang_arm64.
           sed -i "" "s|//build/toolchain/linux:clang_$host_cpu|//build/toolchain/mac:clang_$host_cpu|g" src/build/config/BUILDCONFIG.gn
 
           # Pass dummy values to prevent using the default (Linux) toolchain.
@@ -200,12 +200,12 @@ jobs:
             --runtime-mode=${{ matrix.mode }} \
             --disable-desktop-embeddings \
             --target-dir build
-          ninja -C src/out/build clang_x64/gen_snapshot
+          ninja -C src/out/build clang_arm64/gen_snapshot
 
       - uses: actions/upload-artifact@v4
         with:
           name: tizen-${{ matrix.arch }}-${{ matrix.mode }}_darwin-x64
-          path: src/out/build/clang_x64/gen_snapshot
+          path: src/out/build/clang_arm64/gen_snapshot
           if-no-files-found: error
 
   release:
